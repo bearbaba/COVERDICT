@@ -1,6 +1,6 @@
 # COVERDICT — GenLayer Projects acceptance evidence
 
-**Current status: IN DEVELOPMENT.** Code is a testnet prototype and does not yet have a verified contract deployment, independent AI consensus receipt, completed two-wallet demo or deployed HTTPS URL. Not submission ready.
+**Current status: DEPLOYED TO STUDIONET (SCREENSHOT), REVIEW IN PROGRESS.** Studio displays a FINALIZED deployment; deployed-source parity, actual AI consensus receipt, full claim demo and HTTPS site have not yet been verified. Not submission ready.
 
 ## Concrete contested consequence
 
@@ -31,12 +31,20 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 | Gate | State | Proof |
 | --- | --- | --- |
 | Source repo + contract | Started | `contracts/Coverdict.py` |
-| CI | Pending until workflow succeeds | GitHub Actions |
-| GenVM lint | Not run | — |
-| Studionet deployment | **Not deployed** | — |
+| CI | PASS on `fix/testnet-readiness` | [CI run](https://github.com/bearbaba/COVERDICT/actions/runs/39638135874) |
+| GenVM lint | PASS in GitHub Actions | [CI run](https://github.com/bearbaba/COVERDICT/actions/runs/39638135874) |
+| Studionet deployment | FINALIZED per user's Studio screenshot; source parity pending | [deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045) · [Studio import](https://studio.genlayer.com/?import-contract=0x044DB5B1d148d30f8EdF591497d8726F66C22a16) |
 | AI leader/validator consensus | **Not tested live** | — |
 | Program & case lifecycle | Shimmed local test only | `tests/test_coverdict.py` |
 | Wallet award claim on-chain | **Not tested live** | — |
 | HTTPS production preview | **Not deployed** | — |
 
 **Suggested category:** Dispute Resolution (not “AI & Agents” merely because an LLM is used). This is a full application effort; submit under Projects only after completing the real contract + frontend flow. The exact awards/points are decided by GenLayer stewards, not the repository.
+
+## Actual deployment reference (2026-10-21)
+
+- Address: `0x044DB5B1d148d30f8EdF591497d8726F66C22a16`
+- Hash: `0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045`
+- Screenshot: Normal (Full Consensus), contract methods available, `FINALIZED` status and deployed log. A final receipt and source match should still be checked in Explorer/Studio before asserting all contract code is identical to the branch.
+- Immediate next check: `get_program_count()` and `get_case_count()` from the imported contract; expect both `0` for an unused instance. This is an **expected value, not a recorded read**.
+- Do not publish any fabricated program/case/claim result or present test-ETH transfer as evidence of real DeFi loss.
