@@ -10,13 +10,13 @@ When a DeFi protocol experiences a vulnerability, reimbursement programs have tw
 
 COVERDICT is **not** a production insurance, loss oracle or decentralized guarantee. It **does not** independently prove economic loss. It is distinct from milestone acceptance projects because the consequence concerns an incident program and wallet-specific transaction eligibility; this distinction must be demonstrated with real GenLayer evidence before a Projects submission.
 
-## v0.1 lifecycle
+## v0.2 testnet-hardening lifecycle
 
-1. **Issuer precommits a program** before the incident window: affected Ethereum receiving contract, future bounded incident window, claim cutoff, immutable GitHub commit-pinned policy and SHA256 digest, fixed demo award size, fixed maximum claims. The immutable policy may not be replaced.
+1. **Issuer precommits a program** before the incident window: affected Sepolia testnet receiving address, future bounded incident window, claim cutoff, immutable GitHub commit-pinned policy and SHA256 digest, fixed demo award size, fixed maximum claims. The immutable policy may not be replaced.
 2. **Issuer pins an incident report** only after the incident window. Report source is a single raw file from a specific `bearbaba/COVERDICT` GitHub commit with an exact SHA256. This is an issuer-authored statement, **not** independent authentication or official incident proof.
-3. **Claimant submits exactly one Ethereum transaction hash**, with their connected GenLayer wallet bound as the claimant address. Each transaction hash can be used only once per program. This MVP accepts **direct native ETH transfers on Ethereum mainnet only**; ERC20, DeFi shares, cross-chain receipts, internal transfers and purported loss totals are deliberately unsupported.
+3. **Claimant submits exactly one Sepolia testnet transaction hash**, with their connected GenLayer wallet bound as the claimant address. Each transaction hash can be used only once per program. This MVP accepts **direct native test-ETH transfers on Ethereum Sepolia only**; ERC20, real-world loss, DeFi shares, cross-chain receipts, internal transfers and purported loss totals are deliberately unsupported.
 4. **GenLayer validators independently fetch** the hashed policy/report and public Blockscout transaction. Deterministic checks require success, positive native ETH, matching `from`/`to`, and the pinned timestamp interval. The AI evaluates whether the issuer's incident report explicitly qualifies under the simulated program terms; validators run the same assessment independently, then compare both the verdict and normalized source fingerprint.
-5. A terminal **ELIGIBLE** verdict marks a claim `APPROVED`, enabling the connected claimant to call `claim_demo_award(case_id)` exactly once. **INELIGIBLE** marks `DENIED`; **UNVERIFIABLE** stays `SUBMITTED`, without inventing a rejection, and may be retried after 600 seconds. Award capacity is bounded by `max_claims * award_credits` (all synthetic; no banked funds).
+5. A terminal **ELIGIBLE** verdict marks a claim `APPROVED`, enabling the connected claimant to call `claim_demo_award(case_id)` exactly once. **INELIGIBLE** marks `DENIED`; **UNVERIFIABLE** stays `SUBMITTED`, without inventing a rejection, and may be retried after 600 seconds. Claims remaining unresolved after the 7-day grace following the submission deadline can be closed as CLOSED_UNVERIFIABLE without minting credits. Award capacity is bounded by `max_claims * award_credits` (all synthetic; no banked funds).
 
 ### Contract ABI (v0.1)
 
@@ -28,16 +28,17 @@ attach_report(program_id, report_url, report_sha256)
 submit_claim(program_id, tx_hash) -> case_id
 resolve_claim(case_id) -> status
 claim_demo_award(case_id) -> credits
+close_unverifiable_claim(case_id) -> CLOSED_UNVERIFIABLE (after deadline + 7 days)
 
 get_program(program_id), get_case(case_id), get_program_count(),
 get_case_count(), get_demo_balance(wallet)
 ```
 
-**Do not publish production coverage terms in this version.** Repository `evidence/` files are synthetic placeholders for the test harness only; they must not be presented as true incident attestations.
+**Do not send real ETH to test COVERDICT.** Use Sepolia faucet test-ETH only; current contract validates only simulated eligibility and cannot prove financial loss. **Do not publish production coverage terms in this version.** Repository `evidence/` files are synthetic placeholders for the test harness only; they must not be presented as true incident attestations.
 
 ## Evidence trust boundary
 
-Policy and report URLs must match: `https://raw.githubusercontent.com/bearbaba/COVERDICT/<40-hex-commit>/evidence/<filename>.txt`. Contract SHA256 checks detect changed bytes. For receipts, the resolver constructs the exact `https://eth.blockscout.com/api/v2/transactions/<64-hex-hash>` URL: claimants cannot inject arbitrary API hosts or query parameters. GenLayer validator **re-fetches all three sources** and independently computes a stable fingerprint.
+Policy and report URLs must match: `https://raw.githubusercontent.com/bearbaba/COVERDICT/<40-hex-commit>/evidence/<filename>.txt`. Contract SHA256 checks detect changed bytes. For receipts, the resolver constructs the exact `https://eth-sepolia.blockscout.com/api/v2/transactions/<64-hex-hash>` URL: claimants cannot inject arbitrary API hosts or query parameters. GenLayer validator **re-fetches all three sources** and independently computes a stable fingerprint.
 
 This is **not proof** that a source issuer is independent, accurate, or legally authorized to determine coverage. Blockscout is a single data provider with no SPV proof in this version. The LLM can still be wrong even with independent validators. The separate [SECURITY.md](SECURITY.md) lists production blockers.
 
