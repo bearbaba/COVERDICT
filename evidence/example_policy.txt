@@ -1,0 +1,19 @@
+SYNTHETIC EXAMPLE — NOT AN INSURANCE POLICY OR REAL COVERAGE.
+
+Purpose: demonstrate whether an issuer-defined claim can be accepted by
+independent consensus after checking transaction provenance and whether an
+incident narrative matches predefined terms.
+
+Covered: direct nonzero native ETH transfers by the claimant's own wallet into
+the exact designated deposit address, during the predefined incident window,
+only if a separate immutable issuer incident report explicitly confirms that
+such transfers are covered by the simulated reimbursement program.
+
+Excluded: transfers by other wallets, wrong destination, zero-value or failed
+transactions, transfers outside the incident window, indirect transfers,
+ERC20 transfers, alleged losses without on-chain confirmation, and all
+real-world monetary claims or compensation obligations.
+
+An Ethereum transaction can prove that ETH moved to a contract; it does NOT
+prove that the sender lost funds due to a protocol exploit. Eligibility in
+this example relates only to simulated demo-credit awards.

@@ -1,0 +1,11 @@
+SYNTHETIC EXAMPLE — NOT AN ACTUAL DEFI INCIDENT ATTESTATION.
+
+This text is for local adversarial testing only. It makes no representation
+that any contract was exploited, insured or affected by a real protocol bug.
+A real testnet case must cite independently traceable official incident
+communications and a matching wallet- and transaction-specific proof boundary.
+
+For a synthetic issuer-defined program, coverage may apply only when the
+issuer documents a designated contract and confirms that the particular
+incident is among the covered categories. A transaction alone is insufficient
+to establish a reimbursable financial loss.
