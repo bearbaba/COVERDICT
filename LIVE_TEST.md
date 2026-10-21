@@ -5,7 +5,7 @@
 ## Scope and contract versions
 
 - This checklist applies to the **unmerged** `fix/testnet-readiness` code, not to the previous version on `main`.
-- The contract has **not been deployed**. After a successful GenVM validation and Studionet deployment, write the *verified full contract address* and finalized deployment transaction hash here.
+- Studionet contract imported at `0x044DB5B1d148d30f8EdF591497d8726F66C22a16` ([Studio import](https://studio.genlayer.com/?import-contract=0x044DB5B1d148d30f8EdF591497d8726F66C22a16)); user-supplied Studio screenshot shows `FINALIZED` for transaction `0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045` ([deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045)). Verify deployed source parity before claiming definitive code equivalence. The Full Consensus claim flow remains **UNTESTED LIVE**.
 - Sepolia transaction evidence: `https://eth-sepolia.blockscout.com/api/v2/transactions/{tx_hash}`.
 - On-chain GenLayer execution: hosted Studionet / Full Consensus, not leader-only.
 - There is **no claims fund or promise of monetary payout**. Only fixed demo credits are minted after approval.
@@ -59,12 +59,19 @@ The MVP relies on a **single Blockscout API** and **issuer-authored report**. It
 
 | Checkpoint | Status | Explorer URL or screenshot |
 | --- | --- | --- |
-| GenVM lint | PENDING | No successful live GenVM check yet |
-| Deployed contract | PENDING | — |
-| Program created | PENDING | — |
+| GenVM lint | PASS in CI | [Verified workflow](https://github.com/bearbaba/COVERDICT/actions/runs/39638135874) |
+| Deployed contract | FINALIZED per Studio screenshot; source parity pending | [deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045) |
+| Program created | PENDING (read `get_program_count()` next) | — |
 | Incident report pinned | PENDING | — |
 | Sepolia receipt verified | PENDING | — |
 | Full Consensus APPROVED/DENIED | PENDING | — |
 | UNKNOWN / source mismatch | PENDING | — |
 | Claim award once | PENDING | — |
 | HTTPS frontend | PENDING | — |
+
+### Immediate next step after deployment
+
+1. In [Studio import](https://studio.genlayer.com/?import-contract=0x044DB5B1d148d30f8EdF591497d8726F66C22a16), call `get_program_count()` and `get_case_count()`. Log both accepted reads and ensure new instance has no old program/case state.
+2. Gather a **separate recipient Sepolia address controlled by the tester** and verify the claimant wallet can sign on both GenLayer Studionet and Ethereum Sepolia. Do not assume the COVERDICT contract address is the receipt destination.
+3. Before creating the program, commit a synthetic policy that explicitly identifies the test program, deposit address, complete time window and cover/exclusion semantics. Hash exact UTF-8 bytes and use a full 40-hex commit-pinned raw URL. Do not use examples as evidence of a genuine exploit.
+4. Only then create the future-dated program; do not submit an incident report before `incident_end`.
