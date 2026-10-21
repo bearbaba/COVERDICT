@@ -11,12 +11,12 @@ export type Program = {
 };
 export type CaseRecord = {
   id:number;program_id:number;claimant:string;tx_hash:string;
-  status:'SUBMITTED'|'APPROVED'|'DENIED'|'CLAIMED';
+  status:'SUBMITTED'|'APPROVED'|'DENIED'|'CLAIMED'|'CLOSED_UNVERIFIABLE';
   outcome:''|'ELIGIBLE'|'INELIGIBLE'|'UNVERIFIABLE';
   reason:string;evidence_digest:string;attempts:number;last_attempt_at:number;
   claimed:boolean;award_credits:number;
 };
-export type TxRecord = {hash:string;label:string;status:'pending'|'finalized'|'failed';at:number};
+export type TxRecord = {hash:string;label:string;status:'pending'|'finalized'|'failed'|'unverified';at:number};
 
 type Eip1193 = {
   request:(args:{method:string;params?:unknown[]})=>Promise<unknown>;
