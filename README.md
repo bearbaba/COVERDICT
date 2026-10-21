@@ -2,7 +2,7 @@
 
 **AI-consensus adjudication of narrowly defined DeFi incident claims — with auditable, wallet-bound demonstration awards.**
 
-> **STATUS: TESTNET PROTOTYPE / NOT DEPLOYED / NOT AUDITED.** No real insurance, escrow, real monetary compensation or token transfers. An on-chain transaction proves a transfer, **not** an economic loss. The demo award is a non-transferable, non-redeemable virtual number with no value. Do not deposit or risk funds using this contract.
+> **STATUS: STUDIONET DEPLOYED (STUDIO SCREENSHOT) / AI CONSENSUS NOT YET TESTED / NOT AUDITED.** No real insurance, escrow, real monetary compensation or token transfers. An on-chain transaction proves a transfer, **not** an economic loss. The demo award is a non-transferable, non-redeemable virtual number with no value. Do not deposit or risk funds using this contract.
 
 ## Why this exists
 
@@ -55,11 +55,19 @@ npm run build
 
 Tests use shimmed GenLayer globals and mocked web/LLM responses; they **do not** prove GenVM runtime support, network accessibility, security or independent validator correctness on a live network.
 
+## Studionet deployment evidence (2026-10-21)
+
+- Contract address: `0x044DB5B1d148d30f8EdF591497d8726F66C22a16` ([Studio import](https://studio.genlayer.com/?import-contract=0x044DB5B1d148d30f8EdF591497d8726F66C22a16)).
+- Deployment transaction: `0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045` ([deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045)).
+- User-supplied Studio screenshot displays **Normal (Full Consensus)**, `Contract deployed`, and `FINALIZED`. Deployment source parity and a confirmed successful `get_program_count()` read are **still pending**. **No claim adjudication has been proven live.**
+- This deployment corresponds to the `fix/testnet-readiness` variant with the `close_unverifiable_claim` method visible in Studio. The exact deployed source still needs independent comparison with the branch.
+- Use only Sepolia test-ETH as synthetic receipt data; no financial compensation is available.
+
 ## Web app / deployment
 
 Frontend is a responsive React + Vite English-first app with on-chain program discovery, wallet-specific claims, issuer controls, demo-credit claim and explorer-linked transaction history. It **does not** fabricate markets while no contract is deployed. After successful deployment, create `web/.env` with `VITE_COVERDICT_CONTRACT_ADDRESS=0x...`. The bundled frontend client currently targets **Studionet 61999**; change its network definition and validate chain IDs before moving to Bradbury. Vercel settings: root `web`, framework Vite, output `dist`.
 
-Recommended development route: **local GenVM lint & tests → Studionet independent consensus → Bradbury public testnet → steward-reviewed Projects submission → security, oracle, legal and real partner validation → eventual Mainnet deployment when available and justified.** Do not represent this source as successfully deployed until a finalized contract and transaction receipts are recorded.
+Recommended development route: **local GenVM lint & tests → Studionet independent consensus → Bradbury public testnet → steward-reviewed Projects submission → security, oracle, legal and real partner validation → eventual Mainnet deployment when available and justified.** Only the deployment receipt is evidenced so far; do not claim the web app, oracle read, verdict consensus, or demo-credit payout succeeds until independent transaction receipts are recorded.
 
 ## Repository
 
