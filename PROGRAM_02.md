@@ -1,6 +1,6 @@
 # COVERDICT Program #2 — Morning Sepolia Drill
 
-**Prepared, not yet created on-chain.** This program replaces the proposed *test schedule*, not Program #1. Program #1 keeps its immutable 14:00–15:00 ICT interval.
+**ON-CHAIN CREATED / READ VERIFIED BY USER, 2026-10-22.** Program #2 was created on GenLayer Studionet; the user supplied a read result confirming matching on-chain fields and the creation transaction hash `0x3742313c03a2ef541e961ef642874e5e34c5becd3501b5c2276f9c7e9429e46a`. The explorer receipt is not yet independently machine-verified. This program replaces the proposed *test schedule*, not Program #1. Program #1 keeps its immutable 14:00–15:00 ICT interval.
 
 ## Immutable policy (precommitted before event)
 
