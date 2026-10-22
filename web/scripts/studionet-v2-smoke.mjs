@@ -66,6 +66,31 @@ if(program.status==='OPEN_FOR_CLAIMS'){
 console.log('PASS V2 role-aware program 1:',program.status,'attestor',program.attestor,'submitted',program.submitted);
 console.log('PASS V2 precommitted issuer/policy/recipient/window match the FINALIZED program-create receipt');
 
+assert.equal(program.status,'AWAITING_INCIDENT_REPORT','V2 Program 1 must remain unchanged after expired attach_report rollback');
+assert.equal(program.report_url,'','Expired attach_report must not modify Program 1 report URL');
+assert.equal(program.report_sha256,'','Expired attach_report must not modify Program 1 report digest');
+assert.equal(program.report_attested,false,'Expired attach_report must not authorize attestations');
+console.log('PASS expired V2 Program 1 rollback: still awaiting report, no report or attestation');
+
+if(n>=2){
+ const replacement=await read(v2,'get_program',[2]);
+ assert.equal(replacement.id,2);
+ assert.equal(replacement.issuer.toLowerCase(),'0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb');
+ assert.equal(replacement.attestor.toLowerCase(),'0x60bfdf6315294c7856acdc0b80d7bd40217debff');
+ assert.equal(replacement.deposit_contract.toLowerCase(),'0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb');
+ assert.equal(replacement.incident_start,1792672200);
+ assert.equal(replacement.incident_end,1792672800);
+ assert.equal(replacement.claim_deadline,1792839600);
+ assert.equal(replacement.policy_sha256,'e45afdb4965286995263a86d9a2456745438f5747234f56a155b41e2c9eccf3a');
+ assert.equal(replacement.policy_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/8165ba339606315fb2d53111524ad7e0d0478435/evidence/v2_program_02_policy.txt');
+ assert.ok(['AWAITING_INCIDENT_REPORT','AWAITING_ATTESTATION','OPEN_FOR_CLAIMS'].includes(replacement.status));
+ assert.ok(replacement.submitted>=0&&replacement.submitted<=3);
+ assert.ok(replacement.approved>=0&&replacement.approved<=replacement.submitted);
+ assert.ok(replacement.claimed>=0&&replacement.claimed<=replacement.approved);
+ console.log('PASS V2 replacement Program #2 with pinned policy:',replacement.status,'claims',replacement.submitted);
+}
+
+
 const legacyCount=Number(await read(v1,'get_case_count'));
 assert.ok(legacyCount>=3,'Original V1 claim history lost');
 const states=[];
