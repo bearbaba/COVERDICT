@@ -1,0 +1,39 @@
+COVERDICT V2 PROGRAM #1 - POST-WINDOW SYNTHETIC INCIDENT REPORT
+Report version: 1
+Report type: TESTNET SIMULATION ONLY; NO ACTUAL DEFI INCIDENT OR LOSS.
+Program label: V2 attested Sepolia synthetic receipt drill #1
+Program ID: 1
+Synthetic incident class: SIMULATED_DEPOSIT_MISROUTE_DRILL
+Evidence network: Ethereum Sepolia (11155111)
+Designated recipient: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Issuer wallet: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Designated attestor wallet: 0x60bfdf6315294c7856acdc0b80d7bd40217debff
+Incident start inclusive: 2026-10-22T09:00:00Z (16:00 ICT)
+Incident end inclusive: 2026-10-22T09:10:00Z (16:10 ICT)
+Claim deadline exclusive: 2026-10-22T11:00:00Z (18:00 ICT)
+
+ISSUER'S SYNTHETIC INCIDENT DECLARATION
+
+The issuer declares this recipient, simulated incident class and incident
+interval as covered by the immutable Program #1 synthetic policy precommitted
+before the interval. This report describes a controlled TESTNET DEMONSTRATION
+only, not a real exploit, protocol failure, attack, loss or financial liability.
+
+For an ELIGIBLE synthetic claim, the claimant must independently demonstrate
+a real successful, positive-value native Sepolia test-ETH transfer from the
+same claimant-controlled wallet to the exact recipient above during the
+specified incident interval. The report alone cannot qualify a claim.
+
+A verified receipt showing a transfer outside the interval, incorrect sender
+or recipient, failed status or zero value establishes INELIGIBLE under this
+precommitted demo policy. A missing, inaccessible, unverifiable or inconsistent
+receipt remains UNVERIFIABLE, not a finding of fraud.
+
+The designated attestor must separately sign the exact immutable SHA256 of
+this report through COVERDICT V2 before any claim submissions are accepted.
+Such a distinct-wallet attestation endorses the reported DEMO PARAMETERS
+only; it does not establish independent real-world factual authority.
+
+COVERDICT issues only nonredeemable, nontransferable virtual demo credits.
+No real-money reimbursement, insurance payout or custody is provided.
+END OF SYNTHETIC INCIDENT REPORT
