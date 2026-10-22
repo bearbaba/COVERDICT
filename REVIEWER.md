@@ -37,7 +37,7 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 | Program #2 incident report | **OPEN_FOR_CLAIMS, pinned report** (user-provided on-chain read) | [Program #2 acceptance record](PROGRAM_02.md); report hash match, no write receipt supplied |
 | AI leader/validator consensus | **Claim #1 APPROVED / ELIGIBLE (state read supplied); resolve receipt and validator traces pending** | [Program #2 case evidence](PROGRAM_02.md) |
 | Program & case lifecycle | **Program #2 claim submitted, approved, and marked CLAIMED; user-provided state reads** | [Program #1](PROGRAM_01.md), [Program #2](PROGRAM_02.md); [Program #2 creation tx](https://explorer-studio.genlayer.com/tx/0x3742313c03a2ef541e961ef642874e5e34c5becd3501b5c2276f9c7e9429e46a) |
-| Wallet award claim on-chain | **`get_case(1)`=CLAIMED; `get_demo_balance(wallet)`=100; Program #2 submitted/approved/claimed=1/1/1**. Receipt + replay-negative pending | [Program #2 record](PROGRAM_02.md) |
+| Wallet award claim on-chain | **`get_case(1)`=CLAIMED; `get_demo_balance(wallet)`=100; Program #2 submitted/approved/claimed=1/1/1**. Successful award receipt pending; replay-negative PASS with 5 validator agrees and rollback | [Program #2 record](PROGRAM_02.md) |
 | HTTPS production preview | **Not deployed** | — |
 
 **Suggested category:** Dispute Resolution (not “AI & Agents” merely because an LLM is used). This is a full application effort; submit under Projects only after completing the real contract + frontend flow. The exact awards/points are decided by GenLayer stewards, not the repository.
@@ -49,3 +49,10 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 - Screenshot: Normal (Full Consensus), contract methods available, `FINALIZED` status and deployed log. A final receipt and source match should still be checked in Explorer/Studio before asserting all contract code is identical to the branch.
 - Immediate next check: `get_program_count()` and `get_case_count()` from the imported contract; expect both `0` for an unused instance. This is an **expected value, not a recorded read**.
 - Do not publish any fabricated program/case/claim result or present test-ETH transfer as evidence of real DeFi loss.
+
+### Replay protection — negative execution correctly rejected
+
+- [Transaction 0x94c2b63fc97456a6cae8c6a847d471102eb63cd95dd82d2cd58657a5ef611082](https://explorer-studio.genlayer.com/tx/0x94c2b63fc97456a6cae8c6a847d471102eb63cd95dd82d2cd58657a5ef611082): `claim_demo_award(1)` executed after an approved award had already been claimed.
+- Consensus reached **ACCEPTED** with five listed validator **Agree** results, while the execution ended in **ERROR / rollback**, `No unclaimed approved award`. This is the correct negative-test result, not a positive successful execution.
+- Earlier accepted reads: claim state `CLAIMED`, demo balance `100`, program counters `submitted=approved=claimed=1`.
+- **Still needed:** read balance after the failed replay, source-matched positive adjudication transaction + validator traces, a genuinely ineligible/unverifiable claim, HTTPS deployment and reviewable demo.
