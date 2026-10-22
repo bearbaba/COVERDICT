@@ -39,6 +39,18 @@ assert.equal(claim.claimed,true);
 assert.equal(claim.award_credits,100);
 console.log('PASS get_case(1):',claim.status,claim.outcome);
 
+const declined=await withTimeout(read('get_case',[2]),'case2');
+assert.equal(declined.program_id,2);
+assert.equal(declined.status,'DENIED');
+assert.equal(declined.outcome,'INELIGIBLE');
+assert.equal(declined.claimant.toLowerCase(),'0xd6b8a3a5eb329410d9504784812b8569afa8c2af');
+assert.equal(declined.tx_hash.toLowerCase(),'0x51a7fe56dca8f0bc9bc883d0d0e59113df8160db924fac5de375dbdab20e2151');
+assert.equal(declined.award_credits,0);
+assert.equal(declined.claimed,false);
+assert.equal(declined.attempts,1);
+assert.equal(declined.evidence_digest,'8e81c418b1a6667af55310885e59bae29020f1d5f77a2a00ed6437002f63ac2a');
+console.log('PASS get_case(2):',declined.status,declined.outcome,'credits',declined.award_credits);
+
 const credits=Number(await withTimeout(read('get_demo_balance',[claim.claimant]),'demo_balance'));
 assert.equal(credits,100);
 console.log('PASS get_demo_balance:',credits);
