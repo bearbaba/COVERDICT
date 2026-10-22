@@ -1,0 +1,43 @@
+COVERDICT V2 PROGRAM #2 - POST-WINDOW SYNTHETIC INCIDENT REPORT
+Report version: 1
+Report type: TESTNET SIMULATION ONLY; NOT A REAL DEFI INCIDENT OR LOSS.
+Program ID: 2
+Program label: V2 attested Sepolia synthetic receipt drill #2
+Synthetic incident class: SIMULATED_DEPOSIT_MISROUTE_DRILL
+Evidence network: Ethereum Sepolia (chain ID 11155111)
+GenLayer environment: Studionet (chain ID 61999)
+Designated Sepolia recipient: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Issuer wallet: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Designated attestor wallet: 0x60bfdf6315294c7856acdc0b80d7bd40217debff
+Incident start inclusive: 2026-10-22T12:30:00Z (19:30 ICT)
+Incident end inclusive: 2026-10-22T12:40:00Z (19:40 ICT)
+Claim deadline exclusive: 2026-10-24T11:00:00Z (18:00 ICT, October 24)
+Precommitted policy SHA256: e45afdb4965286995263a86d9a2456745438f5747234f56a155b41e2c9eccf3a
+
+ISSUER'S SYNTHETIC INCIDENT DECLARATION
+
+The issuer declares the designated recipient and the 19:30-19:40 ICT interval
+to be in scope for the SIMULATED_DEPOSIT_MISROUTE_DRILL defined by the immutable
+Program #2 policy. This statement defines an artificial test case only. It does
+not certify any actual exploit, unauthorized transfer, economic damage, or
+financial compensation obligation.
+
+A synthetic claim is ELIGIBLE only if the claimant supplies a genuine,
+independently verifiable, successful, positive-value native Sepolia test-ETH
+transfer from the SAME wallet address used to submit the GenLayer claim to the
+exact recipient above, with the transaction's BLOCK TIMESTAMP inside the
+precommitted window. A user-supplied screenshot or this report alone cannot
+establish these receipt facts.
+
+An authentic receipt showing the wrong sender, recipient, time, status, or a
+zero native transfer value is INELIGIBLE. Missing, inaccessible, conflicting,
+or unparseable proof is UNVERIFIABLE, not an automatic denial or approval.
+
+The designated attestor must separately acknowledge this report's exact SHA256
+on COVERDICT V2 after the incident interval. Attestation endorses these
+synthetic report bytes; it is not independent verification of real-world loss.
+The issuer and attestor are barred from claiming under this program.
+
+Awards are strictly nontransferable, nonredeemable virtual demo credits.
+No real-money payout, insurance, escrow, or custody is involved.
+END OF SYNTHETIC INCIDENT REPORT
