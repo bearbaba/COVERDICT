@@ -90,3 +90,23 @@ A nonexistent or unverifiable receipt remains UNVERIFIABLE, not DENIED,
 and receives zero demo credits. No real tokens or money are awarded.
 END OF SYNTHETIC INCIDENT REPORT
 ```
+
+## Official synthetic report — published after 16:10 ICT, Oct 22, 2026
+
+Issuer-authored report is committed and its exact bytes have been verified using SHA-256. This does not claim any real exploit, insurance coverage or loss.
+
+- Report commit: `f85784876f323f2c33a6d9c0b22b4efaa8923493`
+- [Immutable source](https://github.com/bearbaba/COVERDICT/blob/f85784876f323f2c33a6d9c0b22b4efaa8923493/evidence/v2_program_01_report.txt)
+- Raw URL: `https://raw.githubusercontent.com/bearbaba/COVERDICT/f85784876f323f2c33a6d9c0b22b4efaa8923493/evidence/v2_program_01_report.txt`
+- Exact source content: 2114 ASCII bytes (including final newline)
+- Verified SHA256: `074f369862b5188cc520678a6424fb1f19c0515ad0d6b222c886ed2a0478683f`
+
+**Necessary write sequence before the 18:00 ICT claim deadline:**
+
+1. Issuer wallet A calls `attach_report(1, report_url, report_sha256)`, then independently checks status `AWAITING_ATTESTATION`.
+2. Attestor wallet C `0x60bfdf6315294c7856acdc0b80d7bd40217debff` calls `attest_report(1, report_sha256)`, then checks `OPEN_FOR_CLAIMS`.
+3. Claimant wallet B `0xd6b8a3a5eb329410d9504784812b8569afa8c2af` calls `submit_claim(1, tx_hash)` before 18:00, capturing actual case ID. Resolve can happen later during review grace.
+
+**Early test receipt:** [Sepolia `0x9b9d33dfa1a9bcb3bd0a655290246020fdeed4a0df2d18aedc63e3aeb060d5ec`](https://sepolia.etherscan.io/tx/0x9b9d33dfa1a9bcb3bd0a655290246020fdeed4a0df2d18aedc63e3aeb060d5ec), user reported successful B->A native test-ETH transfer around 15:37 ICT, **before** the program's 16:00–16:10 interval. If the actual independently fetched Sepolia receipt matches, it is **INELIGIBLE** due to timestamp (even if sender, recipient and amount match), not ELIGIBLE. No amount of waiting changes a mined transaction timestamp. A separate genuine B->A receipt timestamped during 16:00–16:10 is needed for the positive outcome.
+
+**Evidence state:** Publishing the report is confirmed on GitHub; issuer `attach_report`, attestor `attest_report` and claimant `submit_claim` are not yet independently verified on-chain as of this documentation update. Do not assume those writes occurred until FINALIZED/SUCCESS and state reads prove it.
