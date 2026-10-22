@@ -1,0 +1,35 @@
+COVERDICT PROGRAM #3 - SYNTHETIC MISSING-RECEIPT DRILL
+Version: 1
+Environment: GenLayer Studionet (61999) with Ethereum Sepolia (11155111) evidence.
+Purpose: Test honest treatment of unavailable proof. NOT insurance or compensation.
+
+Program label: Sepolia missing-proof verification drill #3
+Incident class: SIMULATED_DEPOSIT_MISROUTE_DRILL
+Designated Sepolia recipient: 0xd6b8a3a5eb329410d9504784812b8569afa8c2af
+Incident start (inclusive): 2026-10-22T05:45:00Z (12:45 ICT)
+Incident end (inclusive): 2026-10-22T05:47:00Z (12:47 ICT)
+Claim deadline (exclusive): 2026-10-22T06:30:00Z (13:30 ICT)
+Maximum submitted claims: 3
+Award for an eligible claim: 100 nonredeemable virtual demo credits.
+
+An ELIGIBLE claim requires all of the following:
+1. An independently verifiable successful native Sepolia test-ETH transaction
+   sent by the GenLayer claimant's identical wallet address.
+2. A strictly positive ETH value and exact designated recipient above,
+   within the immutable incident interval above.
+3. An issuer-pinned SHA256 verified post-window synthetic incident report
+   explicitly matching the same program, recipient and simulated incident class.
+4. No explicit exclusion or contradictory evidence in pinned sources.
+
+INELIGIBLE means credible, complete evidence AFFIRMATIVELY disproves at least
+one condition. A verified failed or zero-value transfer, wrong destination,
+wrong sender, or out-of-window transaction qualifies as INELIGIBLE.
+
+UNVERIFIABLE means required source evidence is missing, inaccessible,
+malformed, inconsistent, or cannot be independently tied to a real transaction.
+HTTP 404 for a purported Sepolia receipt is missing evidence, NOT proof of
+fraud or receipt mismatch. Leave such claims unresolved without credits.
+
+This is an intentionally synthetic testnet exercise. The issuer does not
+attest an actual DeFi exploit, user loss, financial liability or payout.
+No real ETH or redeemable token is issued by COVERDICT.
