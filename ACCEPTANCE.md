@@ -18,7 +18,7 @@ The user provided the [original `resolve_claim(1)` Studio receipt](https://explo
 - Original user-provided post-resolution `get_case(3)`: `status=SUBMITTED`, `outcome=UNVERIFIABLE`, `attempts=1`, `evidence_digest=""`, `award_credits=0`, `claimed=false`. The [independent read-only RPC test](https://github.com/bearbaba/COVERDICT/actions/runs/39733970516) confirmed the persisted verdict and wallet C **0 credits**; Program #3 submitted/approved/claimed = **1/0/0**.
 - GenVM stderr showed a **nonfatal warning**: `Detected pickling storage class. Reading storage in nondet mode is not supported`. This needs reproduction in an isolated new contract; see [experimental draft PR #6](https://github.com/bearbaba/COVERDICT/pull/6). The existing deployed contract has not been replaced.
 - **Do not state that five validators independently agreed on a disputed AI narrative.** The user-provided summary shows five initial validators and Accepted consensus, but does not include their individual votes. This test validates fail-closed handling of missing receipt evidence, **not** the correctness of AI coverage decisions or proof of real DeFi loss.
-- **Still missing:** the original Case #3 `submit_claim` transaction hash, per-validator trace for this resolution, and original positive Case #1 adjudication transaction/validator trace. Nothing was transferred or awarded in this negative-evidence test.
+- **Still missing:** the original Case #3 `submit_claim` transaction hash, per-validator trace for this resolution, and individual positive Case #1 validator votes; the original Case #1 FINALIZED adjudication transaction is linked above. Nothing was transferred or awarded in this negative-evidence test.
 
 ## Latest on-chain acceptance — Case #3: UNVERIFIABLE (2026-10-22)
 
