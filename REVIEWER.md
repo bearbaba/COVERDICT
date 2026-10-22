@@ -1,3 +1,14 @@
+## Case #1 original positive adjudication — FINALIZED consensus (October 22, 2026)
+
+The user provided the [original `resolve_claim(1)` Studio receipt](https://explorer-studio.genlayer.com/tx/0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5): hash `0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5`, wallet A `0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb`, deployed contract `0x044DB5B1d148d30f8EdF591497d8726F66C22a16`, October 22, 2026 **09:39:05 ICT**, Normal mode.
+
+- **FINALIZED**, GenVM **Execution SUCCESS**, return `"APPROVED"`, **Consensus Accepted**, initial validators **5**, rotations **0**.
+- Equivalence Principle Output 0: `outcome="ELIGIBLE"`, `digest="1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7"`.
+- Output reason: verified successful, positive-value direct **Sepolia test-ETH** transfer from claimant to the exact recipient during **02:20–02:30 UTC**, and SHA256-pinned issuer-written synthetic policy/report explicitly covering that simulated incident class with no exclusions or conflicts.
+- Subsequent independent [live Studionet RPC smoke](https://github.com/bearbaba/COVERDICT/actions/runs/39733970516) confirms `get_case(1)=CLAIMED / ELIGIBLE` and wallet A balance **100 nonredeemable demo credits**. This is a synthetic demo award, not evidence of DeFi exploit loss or a real insurance payout.
+- **Known GenVM warning, nonfatal on this transaction:** `Detected pickling storage class. Reading storage in nondet mode is not supported`. A separate [draft PR #6](https://github.com/bearbaba/COVERDICT/pull/6) explores refactoring but is **not deployed**; investigate/test on a separately deployed new contract before merging to avoid source-parity confusion.
+- The user-supplied excerpt includes five **initial** validators, consensus Accepted, and one equivalence output. It **does not include individual validator votes/traces**, so do not claim all five independently voted Agree on this AI judgment. Its human-authored incident report is issuer-controlled; SHA256 protects the exact bytes, not their factual authority.
+
 ## Verified Case #3 resolution execution — October 22, 2026, 13:17:48 ICT
 
 **Case #3 has a user-supplied original adjudication transaction receipt:** [`resolve_claim(3)`, `0xa0c07abcc1742178c03b53342ea44a3c54d049f1864fc1f2b7e5a834cb9df4ab`](https://explorer-studio.genlayer.com/tx/0xa0c07abcc1742178c03b53342ea44a3c54d049f1864fc1f2b7e5a834cb9df4ab), from wallet C `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff` to the deployed COVERDICT contract.
@@ -57,7 +68,7 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 | Studionet deployment | FINALIZED per user's Studio screenshot; source parity pending | [deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045) · [Studio import](https://studio.genlayer.com/?import-contract=0x044DB5B1d148d30f8EdF591497d8726F66C22a16) |
 | Program #2 incident report | **OPEN_FOR_CLAIMS, pinned report** (user-provided on-chain read) | [Program #2 acceptance record](PROGRAM_02.md); report hash match, no write receipt supplied |
 | Negative Case #2 live | **PASS — DENIED/INELIGIBLE**, no credits, GenVM SUCCESS + consensus Accepted; initial validator count 5, individual votes not provided | [resolve tx](https://explorer-studio.genlayer.com/tx/0x08dc22aca05271cbf270b1362248d89b95f52b06cbb040aac56d69c9011ba50a) · [test record](NEGATIVE_STUDIO_TEST.md) |
-| AI leader/validator consensus | **Claim #1 APPROVED / ELIGIBLE (state read supplied); resolve receipt and validator traces pending** | [Program #2 case evidence](PROGRAM_02.md) |
+| Positive `resolve_claim(1)` consensus | **FINALIZED / SUCCESS / Accepted**, result `APPROVED`, Equivalence Principle outcome `ELIGIBLE`, matching evidence digest; five initial validators but individual vote traces not supplied | [Original GenLayer receipt](https://explorer-studio.genlayer.com/tx/0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5) · [Program #2 source and claim](PROGRAM_02.md) |
 | Program & case lifecycle | **Program #2 claim submitted, approved, and marked CLAIMED; user-provided state reads** | [Program #1](PROGRAM_01.md), [Program #2](PROGRAM_02.md); [Program #2 creation tx](https://explorer-studio.genlayer.com/tx/0x3742313c03a2ef541e961ef642874e5e34c5becd3501b5c2276f9c7e9429e46a) |
 | Wallet award claim on-chain | **`get_case(1)`=CLAIMED; `get_demo_balance(wallet)`=100; Program #2 submitted/approved/claimed=1/1/1**. Successful award receipt pending; replay-negative PASS with 5 validator agrees and rollback | [Program #2 record](PROGRAM_02.md) |
 | HTTPS testnet frontend | **Vercel Production READY**; anonymous browser/wallet E2E not yet checked | [Website](https://coverdict-testnet.vercel.app) · [deployment](https://vercel.com/khaiptk1998-8088s-projects/coverdict-testnet/3yPszcPpNKwcnYUPPdFCMwSV7irT) |
@@ -78,7 +89,7 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 - Consensus reached **ACCEPTED** with five listed validator **Agree** results, while the execution ended in **ERROR / rollback**, `No unclaimed approved award`. This is the correct negative-test result, not a positive successful execution.
 - **Post-rollback read confirmed by the user:** `get_demo_balance(claimant)` still returns `100` after the rejected replay. Replay protection and zero-change-on-revert are both PASS for this test case.
 - Earlier accepted reads: claim state `CLAIMED`, demo balance `100`, program counters `submitted=approved=claimed=1`.
-- **Still needed:** read balance after the failed replay, source-matched positive adjudication transaction + validator traces, a genuinely ineligible/unverifiable claim, HTTPS deployment and reviewable demo.
+- **Still needed:** read balance after the failed replay, positive adjudication individual validator votes/source-tracing (the SUCCESS transaction is now linked), a genuinely ineligible/unverifiable claim, HTTPS deployment and reviewable demo.
 
 
 ## Live INELIGIBLE claim #2 — 2026-10-22
@@ -89,7 +100,7 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 - **Reason:** Receipt does not match wallet, destination, time window, successful status or native ETH value.
 - **Equivalence Principle Output 0:** `outcome=INELIGIBLE`, identical digest and reason. This is a deterministic receipt-validation rejection (not a contested AI document-classification example).
 - **GenVM stderr warning:** `Detected pickling storage class. Reading storage in nondet mode is not supported`. The actual transaction executed successfully, but this warning warrants a separate developer inspection.
-- **Still pending:** submission tx hash for Case #2, full individual validator traces, wallet B balance before/after, denied-award rollback, original positive Case #1 resolve trace, and a live UNVERIFIABLE case. No real DeFi loss was proven.
+- **Still pending:** submission tx hash for Case #2, full individual validator traces, wallet B balance before/after, denied-award rollback, individual vote traces for the original Case #1 decision (the receipt is now linked above); live UNVERIFIABLE Case #3 is completed. No real DeFi loss was proven.
 
 ### Independent read-only chain re-verification (GitHub Actions)
 
