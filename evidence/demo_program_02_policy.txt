@@ -1,0 +1,19 @@
+COVERDICT PROGRAM #2 - SYNTHETIC SEPOLIA TEST ONLY
+This is not insurance and does not prove a real exploit or financial loss.
+
+Program: Sepolia synthetic deposit drill #2
+Network: Ethereum Sepolia (chain ID 11155111)
+Recipient: 0xD6b8A3A5eB329410D9504784812b8569afA8C2aF
+Incident start: 2026-10-22T02:20:00Z (inclusive)
+Incident end: 2026-10-22T02:30:00Z (inclusive)
+Claim deadline: 2026-10-22T05:00:00Z (exclusive)
+Award: 100 nonredeemable demo credits per approved claim; maximum 10 claims.
+
+ELIGIBLE only if a successful nonzero native Sepolia test-ETH transfer
+was sent directly by the claimant wallet to the exact recipient within
+the incident window, and a later immutable issuer report explicitly
+confirms this synthetic incident class and coverage for that recipient.
+
+INELIGIBLE if verified receipt or pinned report affirmatively excludes
+this transaction. UNVERIFIABLE if evidence is missing or contradictory.
+No real financial assets, monetary payouts or compensation are offered.
