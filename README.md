@@ -1,5 +1,8 @@
 # COVERDICT
 
+> **V2 reviewer web release candidate:** [Accepted V2 evidence and video plan](V2_REVIEWER_DEMO.md) · [V2 Program #2](V2_PROGRAM_02.md) · [Successful V2 AI Consensus transaction](https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7). The dedicated reviewer UI uses the V2 ABI, attestor sign-off and on-chain acceptance case only. Its production rollout must not be represented as live until the separate V2 public deployment is confirmed. The original V1 web contract address remains unchanged until release.
+
+
 **AI-consensus adjudication of narrowly defined DeFi incident claims — with auditable, wallet-bound demonstration awards.**
 
 > **STATUS: STUDIONET POSITIVE SYNTHETIC CLAIM APPROVED + AWARDED / NOT AUDITED / NOT MAINNET SAFE.** No real insurance, escrow, real monetary compensation or token transfers. An on-chain transaction proves a transfer, **not** an economic loss. The demo award is a non-transferable, non-redeemable virtual number with no value. Do not deposit or risk funds using this contract.
