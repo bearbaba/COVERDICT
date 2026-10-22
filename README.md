@@ -10,6 +10,12 @@ When a DeFi protocol experiences a vulnerability, reimbursement programs have tw
 
 COVERDICT is **not** a production insurance, loss oracle or decentralized guarantee. It **does not** independently prove economic loss. It is distinct from milestone acceptance projects because the consequence concerns an incident program and wallet-specific transaction eligibility; this distinction still requires individual positive-decision validator traces, deeper adversarial testing and an independently usable frontend for a strong Projects submission. The original [FINALIZED positive decision transaction](https://explorer-studio.genlayer.com/tx/0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5) is now available.
 
+## V2 experimental branch (isolated from V1)
+
+Development of [COVERDICT V2](V2_IMPLEMENTATION.md) has started with a **separate** `contracts/CoverdictV2.py` and dedicated `tests/test_coverdict_v2.py`. It isolates nondeterministic evaluator closures from contract storage, requires a different on-chain report attestor before accepting synthetic claims, forbids issuer/attestor self-claims and rejects cross-program reuse of one Sepolia receipt. All three verdicts and nonredeemable credits remain.
+
+**V2 has NOT been deployed, audited or validated in live GenVM yet.** The production/demo V1 website, Studionet address and historic programs remain unchanged. Do not point the V1 UI at V2 until its new ABI, address, wallet E2E and consensus are tested. A distinct wallet is not inherently an independent incident authority, and REST receipt lookup does not prove any actual loss.
+
 ## v0.2 testnet-hardening lifecycle
 
 1. **Issuer precommits a program** before the incident window: affected Sepolia testnet receiving address, future bounded incident window, claim cutoff, immutable GitHub commit-pinned policy and SHA256 digest, fixed demo award size, fixed maximum claims. The immutable policy may not be replaced.
