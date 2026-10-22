@@ -1,5 +1,16 @@
 # COVERDICT — Live UNVERIFIABLE Acceptance Plan
 
+## Latest on-chain acceptance — Case #3: UNVERIFIABLE (2026-10-22)
+
+**Live verdict observed from user-provided Studio state: PASS.** The user supplied a finalized state read of `get_case(3)`: `status=SUBMITTED`, `outcome=UNVERIFIABLE`, `attempts=1`, `last_attempt_at=1792649868`, `award_credits=0`, `claimed=false`, `evidence_digest=""`. The claimant is wallet C `0x60bfdf6315294c7856acdc0b80d7bd40217debff`, under Program #3, using the deliberately absent Sepolia hash `0x0000000000000000000000000000000000000000000000000000000000000001`. Reason: `One or more pinned evidence sources could not be independently verified.`
+
+The missing Sepolia receipt previously returned HTTP 404 in a [read-only Blockscout API test](https://github.com/bearbaba/COVERDICT/actions/runs/39724530282). Unknown proof was **not** converted to `DENIED` or `APPROVED`; the case remains retryable after the contract's 600-second cooldown and carries no authorized demo award.
+
+**Evidence boundary:** the original `submit_claim(3)` and `resolve_claim(3)` transaction hashes and individual validator traces have **not yet been provided**. A state read is not the same as a finalized execution receipt. [Independent read-only RPC acceptance](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513) now confirms wallet C's **post-resolution demo balance is still 0**, `get_case(3)=SUBMITTED / UNVERIFIABLE` with 0 authorized award, and Program #3 counters `submitted=1`, `approved=0`, `claimed=0`.
+
+Sections below preserve historical milestones and planned steps; use this latest status rather than any older statement saying Case #3 is pending.
+
+
 ## Status (October 22, 2026)
 
 **Verified precondition, NOT yet adjudicated on GenLayer:** [GitHub Actions](https://github.com/bearbaba/COVERDICT/actions/runs/39724254650) made a live, independent read-only request to Blockscout Sepolia API and returned **HTTP 404** for the syntactically valid 32-byte transaction hash below:
@@ -73,3 +84,7 @@ A separate experimental branch investigates a nondeterministic closure warning w
 See [NEGATIVE_STUDIO_TEST.md](NEGATIVE_STUDIO_TEST.md) and [ACCEPTANCE.md](ACCEPTANCE.md).
 
 **Program #3 precommitted and created (2026-10-22):** [FINALIZED, GenVM SUCCESS, consensus Accepted `create_program` transaction](https://explorer-studio.genlayer.com/tx/0x7686990d2f1cd1e8368d393c1f35406b2d73f8cb29f2d5fd5ed18ef074be2300) returned ID **3** at 12:20:28 ICT. User's `get_program(3)` matches commit-pinned policy SHA256 `48be0cec000526461ee631009b93023a5fe3fe3b29150bd4126c873a7eda2a54`, records issuer wallet A, 12:45–12:47 ICT incident, 13:30 ICT claim deadline, and zero submissions/awards. The report is NOT yet attached and the UNVERIFIABLE decision is NOT yet executed. Follow [PROGRAM_03.md](PROGRAM_03.md) after 12:47; wallet C is `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff` (reported initial credits 0).
+
+### Confirmed independent Case #3 RPC result
+
+[GitHub Actions #39733374513](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513) independently read the live Studionet contract after Case #3 resolved: program count 3, claim count 3; Program #3 submitted 1, approved 0; `get_case(3)=SUBMITTED / UNVERIFIABLE` with award 0; wallet C balance **0**; wallets A/B **100 / 0**. The job passed. This establishes persisted state and no demo-credit award, **not** the original resolution transaction receipt or individual validator votes (still pending).

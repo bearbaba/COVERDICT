@@ -1,5 +1,16 @@
 # COVERDICT Program #3 — Missing Proof Test
 
+## Latest on-chain acceptance — Case #3: UNVERIFIABLE (2026-10-22)
+
+**Live verdict observed from user-provided Studio state: PASS.** The user supplied a finalized state read of `get_case(3)`: `status=SUBMITTED`, `outcome=UNVERIFIABLE`, `attempts=1`, `last_attempt_at=1792649868`, `award_credits=0`, `claimed=false`, `evidence_digest=""`. The claimant is wallet C `0x60bfdf6315294c7856acdc0b80d7bd40217debff`, under Program #3, using the deliberately absent Sepolia hash `0x0000000000000000000000000000000000000000000000000000000000000001`. Reason: `One or more pinned evidence sources could not be independently verified.`
+
+The missing Sepolia receipt previously returned HTTP 404 in a [read-only Blockscout API test](https://github.com/bearbaba/COVERDICT/actions/runs/39724530282). Unknown proof was **not** converted to `DENIED` or `APPROVED`; the case remains retryable after the contract's 600-second cooldown and carries no authorized demo award.
+
+**Evidence boundary:** the original `submit_claim(3)` and `resolve_claim(3)` transaction hashes and individual validator traces have **not yet been provided**. A state read is not the same as a finalized execution receipt. [Independent read-only RPC acceptance](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513) now confirms wallet C's **post-resolution demo balance is still 0**, `get_case(3)=SUBMITTED / UNVERIFIABLE` with 0 authorized award, and Program #3 counters `submitted=1`, `approved=0`, `claimed=0`.
+
+Sections below preserve historical milestones and planned steps; use this latest status rather than any older statement saying Case #3 is pending.
+
+
 **ON-CHAIN CREATED AND READ VERIFIED — October 22, 2026.** User supplied `get_program(3)` and [FINALIZED, execution SUCCESS, consensus Accepted `create_program` receipt](https://explorer-studio.genlayer.com/tx/0x7686990d2f1cd1e8368d393c1f35406b2d73f8cb29f2d5fd5ed18ef074be2300). `Return Value=3`, issuer wallet A, chain Studionet 61999, initial validators 5, zero rotations, no stdout/stderr. Program #3 has `status=AWAITING_INCIDENT_REPORT`, `submitted=0`, `approved=0`, `claimed=0`; `report_url` and `report_sha256` are empty. This confirms the program creation, NOT report attachment, claim submission or GenLayer UNVERIFIABLE adjudication.
 
 ## Program definition
@@ -120,3 +131,7 @@ On October 22 2026 the independent GitHub Actions [read-only Studionet smoke #39
 **Report attachment independently VERIFIED on-chain.** Original `attach_report(3,...)` transaction hash and detailed validator votes have not been provided; do not invent them.
 
 **Next live test:** wallet C `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff` calls `submit_claim(3, "0x0000000000000000000000000000000000000000000000000000000000000001")` **before 13:30 ICT October 22**. Then read `get_case_count` or returned ID and call `resolve_claim(case_id)`; expectation is `UNVERIFIABLE`, not `DENIED` or `APPROVED`.
+
+### Confirmed independent Case #3 RPC result
+
+[GitHub Actions #39733374513](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513) independently read the live Studionet contract after Case #3 resolved: program count 3, claim count 3; Program #3 submitted 1, approved 0; `get_case(3)=SUBMITTED / UNVERIFIABLE` with award 0; wallet C balance **0**; wallets A/B **100 / 0**. The job passed. This establishes persisted state and no demo-credit award, **not** the original resolution transaction receipt or individual validator votes (still pending).
