@@ -2,13 +2,13 @@
 
 **AI-consensus adjudication of narrowly defined DeFi incident claims — with auditable, wallet-bound demonstration awards.**
 
-> **STATUS: STUDIONET DEPLOYED (STUDIO SCREENSHOT) / AI CONSENSUS NOT YET TESTED / NOT AUDITED.** No real insurance, escrow, real monetary compensation or token transfers. An on-chain transaction proves a transfer, **not** an economic loss. The demo award is a non-transferable, non-redeemable virtual number with no value. Do not deposit or risk funds using this contract.
+> **STATUS: STUDIONET POSITIVE SYNTHETIC CLAIM APPROVED + AWARDED / NOT AUDITED / NOT MAINNET SAFE.** No real insurance, escrow, real monetary compensation or token transfers. An on-chain transaction proves a transfer, **not** an economic loss. The demo award is a non-transferable, non-redeemable virtual number with no value. Do not deposit or risk funds using this contract.
 
 ## Why this exists
 
 When a DeFi protocol experiences a vulnerability, reimbursement programs have two separate questions: **what happened** (incident scope) and **which submitted wallet receipts fall within agreed terms**. COVERDICT is a narrowly scoped, programmable claims *adjudication* experiment. It combines deterministic transfer-receipt tests with an AI-verifiable issuer incident report and an immutable policy. An independently reproduced GenLayer consensus result changes a wallet's eligibility to claim a **demo-credit** award.
 
-COVERDICT is **not** a production insurance, loss oracle or decentralized guarantee. It **does not** independently prove economic loss. It is distinct from milestone acceptance projects because the consequence concerns an incident program and wallet-specific transaction eligibility; this distinction must be demonstrated with real GenLayer evidence before a Projects submission.
+COVERDICT is **not** a production insurance, loss oracle or decentralized guarantee. It **does not** independently prove economic loss. It is distinct from milestone acceptance projects because the consequence concerns an incident program and wallet-specific transaction eligibility; this distinction still requires genuine positive-decision validator traces, adversarial claim results and an independently usable frontend for a strong Projects submission.
 
 ## v0.2 testnet-hardening lifecycle
 
@@ -59,15 +59,15 @@ Tests use shimmed GenLayer globals and mocked web/LLM responses; they **do not**
 
 - Contract address: `0x044DB5B1d148d30f8EdF591497d8726F66C22a16` ([Studio import](https://studio.genlayer.com/?import-contract=0x044DB5B1d148d30f8EdF591497d8726F66C22a16)).
 - Deployment transaction: `0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045` ([deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045)).
-- User-supplied Studio screenshot displays **Normal (Full Consensus)**, `Contract deployed`, and `FINALIZED`. Deployment source parity and a confirmed successful `get_program_count()` read are **still pending**. **No claim adjudication has been proven live.**
+- User-supplied Studio screenshot displays **Normal (Full Consensus)**, `Contract deployed`, and `FINALIZED`. Deployment source parity and the original positive AI decision's transaction/validator traces are **still pending**. User-provided accepted contract reads now demonstrate a positive synthetic claim lifecycle (see [ACCEPTANCE.md](ACCEPTANCE.md)).
 - This deployment corresponds to the `fix/testnet-readiness` variant with the `close_unverifiable_claim` method visible in Studio. The exact deployed source still needs independent comparison with the branch.
 - Use only Sepolia test-ETH as synthetic receipt data; no financial compensation is available.
 
 ## Web app / deployment
 
-Frontend is a responsive React + Vite English-first app with on-chain program discovery, wallet-specific claims, issuer controls, demo-credit claim and explorer-linked transaction history. It **does not** fabricate markets while no contract is deployed. After successful deployment, create `web/.env` with `VITE_COVERDICT_CONTRACT_ADDRESS=0x...`. The bundled frontend client currently targets **Studionet 61999**; change its network definition and validate chain IDs before moving to Bradbury. Vercel settings: root `web`, framework Vite, output `dist`.
+Frontend is a responsive React + Vite English-first app with public read-only claim explorer, paginated wallet history, pinned evidence links and fingerprints, issuer controls, demo-credit claim and explorer-linked browser transaction history. It labels all programs as synthetic testnet simulations. It **does not** fabricate markets while no contract is deployed. For deployment, set the public build-time environment variable `VITE_COVERDICT_CONTRACT_ADDRESS=0x044DB5B1d148d30f8EdF591497d8726F66C22a16` (or use `web/.env` locally). Do not publish credentials. The bundled frontend client currently targets **Studionet 61999**; change its network definition and validate chain IDs before moving to Bradbury. Vercel settings: root `web`, framework Vite, output `dist`.
 
-Recommended development route: **local GenVM lint & tests → Studionet independent consensus → Bradbury public testnet → steward-reviewed Projects submission → security, oracle, legal and real partner validation → eventual Mainnet deployment when available and justified.** Only the deployment receipt is evidenced so far; do not claim the web app, oracle read, verdict consensus, or demo-credit payout succeeds until independent transaction receipts are recorded.
+Recommended development route: **local GenVM lint & tests → Studionet independent consensus → Bradbury public testnet → steward-reviewed Projects submission → security, oracle, legal and real partner validation → eventual Mainnet deployment when available and justified.** The user supplied accepted reads for one synthetic claim with `ELIGIBLE → APPROVED → CLAIMED`, virtual wallet balance `100`, and a separate expected rollback on duplicate claim. Original positive adjudication validator traces, genuinely ineligible/unverifiable scenarios and web HTTPS acceptance still require evidence.
 
 ## Repository
 
@@ -75,6 +75,8 @@ Recommended development route: **local GenVM lint & tests → Studionet independ
 - `tests/test_coverdict.py` — adversarial logic tests (local shim only).
 - `web/` — TypeScript + React wallet UI; deployment gated by environment.
 - `evidence/` — **synthetic reference templates**, not real incident proof.
+- `ACCEPTANCE.md` — observed Studionet proof matrix, links, limitations and remaining checks.
+- `ROADMAP.md` — go/no-go gates and Mainnet risk controls.
 - `REVIEWER.md` — on-chain reproduction and submission checklist.
 - `SECURITY.md` — trust limitations and mainnet release blockers.
 - `.github/workflows/ci.yml` — Python contract checks and web build.
