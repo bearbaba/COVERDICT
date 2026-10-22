@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - docs/positive-case1-finalized-receipt
       - fix/studionet-read-reliability
     paths:
       - 'web/scripts/studionet-smoke.mjs'
