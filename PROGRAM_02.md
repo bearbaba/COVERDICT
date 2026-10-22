@@ -76,12 +76,12 @@ The user supplied `get_case(1)` after calling `resolve_claim(1)` in GenLayer Stu
 - Evidence digest: `1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7`.
 - Verdict reason in on-chain read: "Verified receipt confirms successful nonzero direct test-ETH transfer by claimant to exact designated recipient 0xD6b8A3A5eB329410D9504784812b8569afA8C2aF within 2026-10-22T02:20:00Z-02:30:00Z window; policy and report explicitly cover this synthetic incident class with no exclusions or conflicts."
 - The `resolve_claim` transaction hash, consensus execution receipt and independent validator trace have **not yet been provided**. A state read supports the final case outcome but is not a substitute for that evidence. No real exploit loss was verified.
-- **End-to-end award step (user-provided state read):** `get_case(1)` now returns `status=CLAIMED`, `claimed=true`, `outcome=ELIGIBLE`, `attempts=1`, `award_credits=100`, with unchanged evidence digest. **Balance and program counters subsequently verified by user read:** balance=100 and submitted/approved/claimed=1/1/1. Still pending: award transaction hash and intentionally rejected second claim. Do not state these are completed until evidenced. No real assets.
+- **End-to-end award step (user-provided state read):** `get_case(1)` now returns `status=CLAIMED`, `claimed=true`, `outcome=ELIGIBLE`, `attempts=1`, `award_credits=100`, with unchanged evidence digest. **Balance and program counters subsequently verified by user read:** balance=100 and submitted/approved/claimed=1/1/1. **Second claim rejection is now verified** by the user-provided GenLayer transaction log: `claim_demo_award(1)` is `FINALIZED`, execution `ERROR`, consensus `ACCEPTED` and five listed validators agree on `[rollback] No unclaimed approved award`. The successful first award transaction hash is still pending. Do not state these are completed until evidenced. No real assets.
 
 
 ## Claim #1 reward settlement state (2026-10-22)
 
-The user provided a post-`claim_demo_award(1)` `get_case(1)` read showing `status=CLAIMED`, `claimed=true`, `award_credits=100`, `outcome=ELIGIBLE`, `attempts=1`, and the same evidence digest `1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7`. This proves that the saved case's claimability flag is consumed. **Now verified via user-provided accepted reads:** `get_demo_balance(0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb) = 100`; `get_program(2)` reports `submitted=1`, `approved=1`, `claimed=1`, while status remains `OPEN_FOR_CLAIMS` (correct, this is the program-level state). Still pending: claim transaction receipt and an intentionally rejected repeat award claim. Separate `resolve_claim` transaction receipt/validator traces are not yet supplied. Test-ETH transfer is **not** proof of a real DeFi exploit loss.
+The user provided a post-`claim_demo_award(1)` `get_case(1)` read showing `status=CLAIMED`, `claimed=true`, `award_credits=100`, `outcome=ELIGIBLE`, `attempts=1`, and the same evidence digest `1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7`. This proves that the saved case's claimability flag is consumed. **Now verified via user-provided accepted reads:** `get_demo_balance(0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb) = 100`; `get_program(2)` reports `submitted=1`, `approved=1`, `claimed=1`, while status remains `OPEN_FOR_CLAIMS` (correct, this is the program-level state). Still pending: successful first award transaction receipt (the **second, rejected** award transaction has a documented hash). Separate `resolve_claim` transaction receipt/validator traces are not yet supplied. Test-ETH transfer is **not** proof of a real DeFi exploit loss.
 
 ## Acceptance checkpoint — wallet credit and counters verified (2026-10-22)
 
@@ -89,4 +89,16 @@ The user provided a post-`claim_demo_award(1)` `get_case(1)` read showing `statu
 - **Read 2**: `get_program(2)` → `submitted=1`, `approved=1`, `claimed=1`, `award_credits=100`, `max_claims=10`, `status=OPEN_FOR_CLAIMS` and policy/report digests unchanged.
 - **Read 3** (previous): `get_case(1)` → `status=CLAIMED`, `claimed=true`, `outcome=ELIGIBLE`, `award_credits=100`, `attempts=1`, stable evidence digest.
 - This completes one **positive synthetic demo award** state transition on Studionet as observed through user-provided contract reads; the program can remain `OPEN_FOR_CLAIMS` while prior claims are `CLAIMED`.
-- **Remaining evidence for reviewer:** tx hashes for `submit_claim(2,...)`, `attach_report(2,...)`, `resolve_claim(1)` and `claim_demo_award(1)`; successful receipts and independent Full Consensus validator traces; negative cases including second-claim rejection and a genuinely ineligible or unverifiable receipt; HTTPS frontend. Never infer real-world exploit loss.
+- **Remaining evidence for reviewer:** tx hashes for `submit_claim(2,...)`, `attach_report(2,...)`, `resolve_claim(1)` and `claim_demo_award(1)`; successful receipts and independent Full Consensus validator traces; a genuinely ineligible or unverifiable receipt (second-claim rejection is documented); HTTPS frontend. Never infer real-world exploit loss.
+
+## Negative acceptance test — award replay rejected (2026-10-22)
+
+**Observed result: PASS for expected rejection**, not an unexpected execution failure.
+
+- Method and parameters: `claim_demo_award(1)` on GenLayer Studionet after Claim #1 had already become `CLAIMED`.
+- Transaction: [`0x94c2b63fc97456a6cae8c6a847d471102eb63cd95dd82d2cd58657a5ef611082`](https://explorer-studio.genlayer.com/tx/0x94c2b63fc97456a6cae8c6a847d471102eb63cd95dd82d2cd58657a5ef611082).
+- Consensus history: `PENDING → PROPOSING → COMMITTING → REVEALING → ACCEPTED`.
+- Execution: `FINALIZED`, `Result: ERROR`; explicit revert: `[rollback] No unclaimed approved award`.
+- Five validator rows were provided in the user's transaction log: Mistral, DeepSeek, GPT-5.4, Kimi, and GLM; every row indicated `Agree` with the rollback. This **does not prove** that five independent validators successfully reproduced the original positive AI adjudication, only consensus on this intentional error.
+- Prior confirmed reads showed `get_case(1).claimed = true` and `get_demo_balance(claimant) = 100`. **Read the balance again after this rejected replay** to prove it remains 100; do not call it independently verified post-replay yet.
+- The case and award are synthetic and cannot be redeemed for any cryptocurrency or compensation.
