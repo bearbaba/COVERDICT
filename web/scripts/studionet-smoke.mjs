@@ -51,6 +51,18 @@ assert.equal(declined.attempts,1);
 assert.equal(declined.evidence_digest,'8e81c418b1a6667af55310885e59bae29020f1d5f77a2a00ed6437002f63ac2a');
 console.log('PASS get_case(2):',declined.status,declined.outcome,'credits',declined.award_credits);
 
+const walletB='0xd6b8a3a5eb329410d9504784812b8569afa8c2af';
+const balanceB=Number(await withTimeout(read('get_demo_balance',[walletB]),'wallet_B_demo_balance'));
+assert.equal(balanceB,0,'Denied claimant wallet B must not have demo credits');
+console.log('PASS wallet B unchanged award ledger:',balanceB);
+
+const updatedProgram=await withTimeout(read('get_program',[2]),'program2_counters_after_denial');
+assert.ok(updatedProgram.submitted>=2,'A second claim must count as submitted');
+assert.equal(updatedProgram.approved,1,'Denied case must not increase approvals');
+assert.equal(updatedProgram.claimed,1,'Denied case must not increase claims of awards');
+console.log('PASS Program #2 submitted/approved/claimed:',updatedProgram.submitted,updatedProgram.approved,updatedProgram.claimed);
+
+
 const credits=Number(await withTimeout(read('get_demo_balance',[claim.claimant]),'demo_balance'));
 assert.equal(credits,100);
 console.log('PASS get_demo_balance:',credits);
