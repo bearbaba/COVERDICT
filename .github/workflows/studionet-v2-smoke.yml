@@ -1,0 +1,27 @@
+name: COVERDICT V2 deployed RPC acceptance
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - test/v2-deployment-acceptance
+    paths:
+      - 'web/scripts/studionet-v2-smoke.mjs'
+      - '.github/workflows/studionet-v2-smoke.yml'
+permissions:
+  contents: read
+jobs:
+  v2-onchain-read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install SDK dependencies
+        working-directory: web
+        run: npm install --no-audit --no-fund
+      - name: Validate deployed V2 version and preserved legacy V1
+        working-directory: web
+        run: node scripts/studionet-v2-smoke.mjs
