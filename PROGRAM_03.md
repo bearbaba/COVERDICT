@@ -88,3 +88,7 @@ END OF SYNTHETIC INCIDENT REPORT
 ```
 
 **This text is only a draft stored in documentation.** Publish `evidence/demo_program_03_report.txt` as a new immutable Git commit **after 12:47 ICT**, compute the exact SHA256 from that commit, then wallet A calls `attach_report(3, url, hash)` before 13:30 ICT. Do not attach or claim before the report exists.
+
+## Independent blockchain recheck
+
+Read-only GitHub Actions [Studionet RPC run #39727966321](https://github.com/bearbaba/COVERDICT/actions/runs/39727966321) completed SUCCESS on October 22, 2026 and observed `get_program_count=3`, `get_case_count=2`, `get_program(3)=AWAITING_INCIDENT_REPORT`, Program #3 submitted=0 and approved=0. The original Claim #1 remained CLAIMED/ELIGIBLE, Claim #2 remained DENIED/INELIGIBLE, and wallet A/B balances remained 100/0. This verification used the stable SDK without any wallet or signing; it does not imply that the post-incident report or UNVERIFIABLE case already exists.
