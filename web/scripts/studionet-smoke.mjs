@@ -22,7 +22,7 @@ assert.ok(count>=3,`Expected at least three programs, got ${count}`);
 console.log('PASS get_program_count:',count);
 
 const claims=Number(await withTimeout(read('get_case_count'),'case_count'));
-assert.ok(claims>=1,`Expected at least one claim, got ${claims}`);
+assert.ok(claims>=3,`Expected at least three accepted on-chain case records, got ${claims}`);
 console.log('PASS get_case_count:',claims);
 
 const program=await withTimeout(read('get_program',[2]),'program2');
@@ -58,6 +58,9 @@ if(program3.status==='OPEN_FOR_CLAIMS'){
 
 assert.equal(program3.approved,0);
 assert.equal(program3.claimed,0);
+assert.ok(program3.submitted>=1,'Missing-evidence claim should count as submitted');
+assert.equal(program3.approved,0,'UNVERIFIABLE must not increase approvals');
+assert.equal(program3.claimed,0,'UNVERIFIABLE must not issue demo credits');
 console.log('PASS get_program(3):',program3.status,'submitted',program3.submitted,'approved',program3.approved);
 
 
@@ -80,6 +83,24 @@ assert.equal(declined.claimed,false);
 assert.equal(declined.attempts,1);
 assert.equal(declined.evidence_digest,'8e81c418b1a6667af55310885e59bae29020f1d5f77a2a00ed6437002f63ac2a');
 console.log('PASS get_case(2):',declined.status,declined.outcome,'credits',declined.award_credits);
+
+const unverifiable=await withTimeout(read('get_case',[3]),'case3');
+assert.equal(unverifiable.id,3);
+assert.equal(unverifiable.program_id,3);
+assert.equal(unverifiable.claimant.toLowerCase(),'0x60bfdf6315294c7856acdc0b80d7bd40217debff');
+assert.equal(unverifiable.tx_hash.toLowerCase(),'0x0000000000000000000000000000000000000000000000000000000000000001');
+assert.equal(unverifiable.outcome,'UNVERIFIABLE');
+assert.ok(['SUBMITTED','CLOSED_UNVERIFIABLE'].includes(unverifiable.status));
+assert.ok(unverifiable.attempts>=1);
+assert.equal(unverifiable.award_credits,0);
+assert.equal(unverifiable.claimed,false);
+assert.equal(unverifiable.evidence_digest,'');
+console.log('PASS get_case(3):',unverifiable.status,unverifiable.outcome,'award',unverifiable.award_credits);
+
+const walletC='0x60bfdf6315294c7856acdc0b80d7bd40217debff';
+const balanceC=Number(await withTimeout(read('get_demo_balance',[walletC]),'wallet_C_demo_balance'));
+assert.equal(balanceC,0,'Unverifiable claimant must have zero demo credits');
+console.log('PASS wallet C retains zero credits:',balanceC);
 
 const walletB='0xd6b8a3a5eb329410d9504784812b8569afa8c2af';
 const balanceB=Number(await withTimeout(read('get_demo_balance',[walletB]),'wallet_B_demo_balance'));
