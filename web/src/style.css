@@ -18,3 +18,5 @@
 .field-note{max-width:810px;color:#a4cbd4;background:#0f2b35;border:1px solid #254b57;border-radius:9px;padding:14px 18px;line-height:1.65;font-size:12px}
 html{scroll-behavior:smooth}
 @media(max-width:700px){.trust-banner{flex-wrap:wrap}.trust-banner>a{margin-left:34px}.load-more{flex-direction:column;text-align:center}}
+
+.claim-scope{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.claim-scope>button:not(.btn){border:1px solid #294d59;background:#112734;border-radius:9px;color:#a6c5ce;padding:11px 14px;font-size:12px;font-weight:750}.claim-scope>button.active:not(.btn){background:#204a45;color:#b0ffe0;border-color:#58b292}
