@@ -64,3 +64,17 @@ User provided `get_case(1)` showing: `id=1`, `program_id=2`, `claimant=0x4c7cb73
 
 - `attach_report(2, url, digest)` requires the program issuer address `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb`, now at or after the window end 09:30 ICT. **Transaction and following `get_program(2)` read are still pending.**
 - Then `submit_claim(2, 0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a)` from claimant before noon, followed by a real Full Consensus `resolve_claim`.
+
+## AI adjudication — Claim #1 approved (user-reported state read)
+
+The user supplied `get_case(1)` after calling `resolve_claim(1)` in GenLayer Studio:
+
+- Case: `1`, program: `2`, claimant: `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb`.
+- Sepolia receipt: `0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a`.
+- On-chain state: `status=APPROVED`, `outcome=ELIGIBLE`, `attempts=1`, `claimed=false`, `award_credits=100`.
+- `last_attempt_at=1792636745` (2026-10-22 02:39:05 UTC; 09:39:05 ICT).
+- Evidence digest: `1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7`.
+- Verdict reason in on-chain read: "Verified receipt confirms successful nonzero direct test-ETH transfer by claimant to exact designated recipient 0xD6b8A3A5eB329410D9504784812b8569afA8C2aF within 2026-10-22T02:20:00Z-02:30:00Z window; policy and report explicitly cover this synthetic incident class with no exclusions or conflicts."
+- The `resolve_claim` transaction hash, consensus execution receipt and independent validator trace have **not yet been provided**. A state read supports the final case outcome but is not a substitute for that evidence. No real exploit loss was verified.
+- **Next required end-to-end step:** connect as claimant and call `claim_demo_award(1)`, verify `get_case(1)` becomes `CLAIMED`, and read `get_demo_balance(claimant)` (expected `100` on an otherwise empty wallet). Record the award transaction hash and verify a second claim fails. Never send real assets.
+
