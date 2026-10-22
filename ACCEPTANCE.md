@@ -1,3 +1,13 @@
+## Latest on-chain acceptance — Case #3: UNVERIFIABLE (2026-10-22)
+
+**Live verdict observed from user-provided Studio state: PASS.** The user supplied a finalized state read of `get_case(3)`: `status=SUBMITTED`, `outcome=UNVERIFIABLE`, `attempts=1`, `last_attempt_at=1792649868`, `award_credits=0`, `claimed=false`, `evidence_digest=""`. The claimant is wallet C `0x60bfdf6315294c7856acdc0b80d7bd40217debff`, under Program #3, using the deliberately absent Sepolia hash `0x0000000000000000000000000000000000000000000000000000000000000001`. Reason: `One or more pinned evidence sources could not be independently verified.`
+
+The missing Sepolia receipt previously returned HTTP 404 in a [read-only Blockscout API test](https://github.com/bearbaba/COVERDICT/actions/runs/39724530282). Unknown proof was **not** converted to `DENIED` or `APPROVED`; the case remains retryable after the contract's 600-second cooldown and carries no authorized demo award.
+
+**Evidence boundary:** the original `submit_claim(3)` and `resolve_claim(3)` transaction hashes and individual validator traces have **not yet been provided**. A state read is not the same as a finalized execution receipt. Wallet C's initial credit balance was 0 before this claim; independently checking the post-resolution balance is a separate acceptance gate.
+
+Sections below preserve historical milestones and planned steps; use this latest status rather than any older statement saying Case #3 is pending.
+
 # COVERDICT — Evidence-based acceptance status (2026-10-22)
 
 **Status: LIVE STUDIONET SYNTHETIC CLAIM FLOW DEMONSTRATED, NOT MAINNET SAFE.** This page deliberately separates user-provided on-chain state reads from independently inspected receipts. Credits have no value and cannot be redeemed.
