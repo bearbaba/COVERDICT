@@ -10,6 +10,14 @@ API: `https://eth-sepolia.blockscout.com/api/v2/transactions/0x00000000000000000
 
 This is intentional *missing evidence*. Do not claim it is a real transaction, a failed transfer or proof of fraud. As a synthetic test, the correct contract response to nonexistent/unparseable receipt evidence is `UNVERIFIABLE`, not `DENIED` and never `APPROVED`.
 
+## Current route — New Program #3 (create before 12:30 ICT)
+
+**Chosen after Program #2 claim deadline passed.** A new source-pinned synthetic policy was published at [Program #3 policy](https://github.com/bearbaba/COVERDICT/blob/64249db45a427d02f3b362553456f412866e6f12/evidence/demo_program_03_policy.txt), verified SHA256 `48be0cec000526461ee631009b93023a5fe3fe3b29150bd4126c873a7eda2a54`. Full parameters are in [PROGRAM_03.md](PROGRAM_03.md).
+
+Issuer wallet A must sign the new `create_program` on Studionet while the start time (12:45 ICT) is at least 900 seconds away. Expected event interval: 12:45–12:47 ICT; report can only be pinned after 12:47; claim deadline 13:30. New program ID is determined by on-chain read, not the label. Wallet C: `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff`, recorded initial credits 0 in user Studio read. After report attachment, C submits the previously verified missing hash (`0x000...0001`) to the **new program**, then the owner runs `resolve_claim`.
+
+**As of publishing this section, the new program had NOT been signed on-chain.** If the 12:30 creation cutoff passes, do not attempt this exact schedule. Generate a new schedule and recompute a frozen policy and digest instead.
+
 ## Path A — Program #2 immediately, only if still before 12:00 ICT on October 22
 
 Contract: [COVERDICT on Studionet 61999](https://studio.genlayer.com/?import-contract=0x044DB5B1d148d30f8EdF591497d8726F66C22a16).
