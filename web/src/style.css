@@ -36,3 +36,16 @@ html{scroll-behavior:smooth}
 @media(max-width:650px){.wallet-summary{align-items:stretch}.wallet-summary-balance{padding-top:10px;border-top:1px solid #315660;width:100%}}
 
 .case-info{display:block;flex-basis:100%;width:100%;color:#a3c7cf;line-height:1.6;font-size:12px;margin-top:8px}
+
+/* V2 reviewer acceptance: shown only when live on-chain state matches the completed case. */
+.verified-demo{border:1px solid #357864;background:linear-gradient(120deg,#12372f,#102c36 75%);border-radius:18px;padding:27px 30px;margin:-25px 0 40px;box-shadow:0 12px 36px #00000020}
+.verified-demo-heading,.verified-links{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.verified-kicker{display:inline-flex;align-items:center;gap:8px;letter-spacing:.13em;font-size:10px;font-weight:800;color:#9ff0ce}
+.verified-demo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:22px 0}
+.verified-demo-grid>div{display:grid;gap:8px;min-width:0}
+.verified-demo-grid span{font-size:10px;letter-spacing:.13em;color:#a9ced1;font-weight:750}
+.verified-demo-grid strong{font-size:24px;color:#eafff8;letter-spacing:-.04em}
+.verified-demo p{color:#bbd5d5;line-height:1.65;font-size:12px;margin-bottom:17px;max-width:840px}
+.verified-links{justify-content:flex-start}
+.verified-links .btn{padding:10px 13px;font-size:11px}
+@media(max-width:650px){.verified-demo{padding:20px;margin:0 0 30px}.verified-demo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.verified-demo-grid strong{font-size:20px}}
