@@ -62,11 +62,11 @@ The MVP relies on a **single Blockscout API** and **issuer-authored report**. It
 | GenVM lint | PASS in CI | [Verified workflow](https://github.com/bearbaba/COVERDICT/actions/runs/39638135874) |
 | Deployed contract | FINALIZED per Studio screenshot; source parity pending | [deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045) |
 | Program created | **Program #1 accepted read; create tx hash pending** | User-supplied `get_program(1)` output: awaiting report, pool empty, hashes/times match [specification](PROGRAM_01.md) |
-| Incident report pinned | PENDING | — |
-| Sepolia receipt verified | PENDING | — |
+| Incident report pinned | **Program #2 OPEN_FOR_CLAIMS; report committed SHA256 and read back** | [Program #2](PROGRAM_02.md) |
+| Sepolia receipt verified | **Testnet Etherscan SUCCESS provided; GenLayer returned ELIGIBLE, validator traces pending** | [Program #2](PROGRAM_02.md) |
 | Full Consensus APPROVED/DENIED | **Claim #1 APPROVED / ELIGIBLE via get_case(1) read; resolve tx and validator traces pending** | [Program #2](PROGRAM_02.md) |
 | UNKNOWN / source mismatch | PENDING | — |
-| Claim award once | PENDING | — |
+| Claim award once | **`get_case(1)` shows CLAIMED/claimed=true; demo balance and replay negative test pending** | [Program #2](PROGRAM_02.md) |
 | HTTPS frontend | PENDING | — |
 
 ### Immediate next step after deployment
