@@ -59,3 +59,7 @@ On 2026-10-22 GitHub Actions [stable Studionet RPC smoke](https://github.com/bea
 - `get_program(2)`: **submitted=2, approved=1, claimed=1**. The rejected case increased submissions without increasing approvals or awards.
 
 This confirms the persisted negative decision and zero award independent of the user's screenshots. It does not prove the source incident is authentic, and individual validator votes for the negative adjudication were not supplied.
+
+## Case #2: award rejection finalized
+
+The user supplied transaction [0xb7eb2f6d...a1ce1](https://explorer-studio.genlayer.com/tx/0xb7eb2f6d36b2f185092a4cae788897e8e16ddef97fa83d7490649e40675a1ce1) after calling `claim_demo_award(2)` from wallet B. Status FINALIZED; execution ERROR with `[rollback] No unclaimed approved award`; consensus ACCEPTED, with five validator rows agreeing (GPT-5.4, MiniMax, Claude Sonnet 4.6, GLM, Qwen). This is an expected negative-test PASS. A post-revert read of wallet B credits is still pending; before the transaction wallet B had 0 credits. This rollback does not attest to the original AI verdict.
