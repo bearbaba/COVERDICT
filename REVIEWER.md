@@ -54,5 +54,6 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 
 - [Transaction 0x94c2b63fc97456a6cae8c6a847d471102eb63cd95dd82d2cd58657a5ef611082](https://explorer-studio.genlayer.com/tx/0x94c2b63fc97456a6cae8c6a847d471102eb63cd95dd82d2cd58657a5ef611082): `claim_demo_award(1)` executed after an approved award had already been claimed.
 - Consensus reached **ACCEPTED** with five listed validator **Agree** results, while the execution ended in **ERROR / rollback**, `No unclaimed approved award`. This is the correct negative-test result, not a positive successful execution.
+- **Post-rollback read confirmed by the user:** `get_demo_balance(claimant)` still returns `100` after the rejected replay. Replay protection and zero-change-on-revert are both PASS for this test case.
 - Earlier accepted reads: claim state `CLAIMED`, demo balance `100`, program counters `submitted=approved=claimed=1`.
 - **Still needed:** read balance after the failed replay, source-matched positive adjudication transaction + validator traces, a genuinely ineligible/unverifiable claim, HTTPS deployment and reviewable demo.
