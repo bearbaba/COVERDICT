@@ -1,0 +1,22 @@
+name: Sepolia missing-proof acceptance probe
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - test/unverifiable-and-nondet-safety
+    paths:
+      - 'scripts/check_sepolia_missing_receipt.py'
+      - '.github/workflows/missing-sepolia-receipt.yml'
+permissions:
+  contents: read
+jobs:
+  probe-missing-receipt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify deterministic missing Sepolia transaction receipt (read-only)
+        run: python scripts/check_sepolia_missing_receipt.py
