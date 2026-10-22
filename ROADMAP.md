@@ -61,3 +61,15 @@ If coverage programs cannot obtain independent factual sources that can justify 
 ## What COVERDICT is not
 
 It is not insurance, an investment, token yield, custody, escrow, a financial promise, an automated compensation fund, a cross-chain bridge or a detector that can identify hacks from any arbitrary URL.
+
+### COVERDICT V2 — implementation started, deployment NOT verified
+
+- [x] Separate V2 contract source and test harness, without modifying V1 on-chain records ([design and release gates](V2_IMPLEMENTATION.md)).
+- [x] Module-level nondeterministic evaluator with callback capture regression test.
+- [x] Distinct issuer/attestor on-chain roles, pinned report sign-off, and blocked self-claims.
+- [x] Cross-program Sepolia receipt-hash replay protection in V2 code.
+- [ ] Run a new V2 Studionet contract in Normal/Full Consensus, collect deployment and source-parity proof; **no V2 address exists yet**.
+- [ ] Verify nondeterministic-storage warning is absent in live V2 evaluation and collect individual validator traces.
+- [ ] Introduce authenticated independent incident publisher and receipt finality/independent sources. Wallet address separation alone is insufficient.
+- [ ] Produce and test a real document-disagreement benchmark with semantic edge cases and an appeal mechanism.
+- [ ] V2-aware frontend with distinct ABI and explicit deployed contract selection; test real wallets in browsers.
