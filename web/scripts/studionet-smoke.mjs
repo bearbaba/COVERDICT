@@ -1,43 +1,45 @@
+import assert from 'node:assert/strict';
 import {createClient} from 'genlayer-js';
 import {studionet} from 'genlayer-js/chains';
 import {TransactionHashVariant} from 'genlayer-js/types';
 
+// Public, read-only acceptance checks against the deployed stable Studionet
+// contract. No wallet, signing key or sensitive user data is required.
 const address='0x044DB5B1d148d30f8EdF591497d8726F66C22a16';
-const caller='0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb'; // public demo claimant
 const client=createClient({chain:studionet});
-const accountClient=createClient({chain:studionet,account:caller});
-let lastRequest;
-const realFetch=globalThis.fetch;
-globalThis.fetch=(url,opts={})=>{
- if(opts?.body) {try{const p=JSON.parse(opts.body);if(p.method==='gen_call'){lastRequest=p.params?.[0];}}catch{}}
- return realFetch(url,opts);
-};
-const timeout=p=>Promise.race([p,new Promise((_,reject)=>setTimeout(()=>reject(new Error('read timeout')),13000))]);
-const describe=x=>JSON.stringify(x,(_,v)=>typeof v==='bigint'?v.toString():v).slice(0,320);
-const tasks=[
- ['final count',()=>client.readContract({address,functionName:'get_program_count',args:[],transactionHashVariant:TransactionHashVariant.LATEST_FINAL})],
- ['with public caller count',()=>accountClient.readContract({address,functionName:'get_program_count',args:[],transactionHashVariant:TransactionHashVariant.LATEST_FINAL})],
- ['with public caller case',()=>accountClient.readContract({address,functionName:'get_case',args:[1],transactionHashVariant:TransactionHashVariant.LATEST_FINAL})],
-];
-console.log('Target:',studionet.id,studionet.rpcUrls?.default?.http?.[0],address);
-for(const [name,fn] of tasks){
- try{console.log('PASS',name,describe(await timeout(Promise.resolve().then(fn))));}
- catch(error){console.log('FAIL',name,JSON.stringify({message:error?.shortMessage||error?.message,details:error?.details,cause:error?.cause?.message,code:error?.code}).slice(0,600));}
-}
-console.log('Last gen_call shape:',JSON.stringify({...lastRequest,data:String(lastRequest?.data).slice(0,70)}).slice(0,620));
-if(lastRequest){
- const base={...lastRequest,from:caller};delete base.transaction_hash_variant;
- const rpc=[
-  ['gen_call plus sender no variant','gen_call',{...base}],
-  ['gen_call sender status finalized','gen_call',{...base,status:'finalized'}],
-  ['sim_call plus sender','sim_call',{...base}],
-  ['sim_call plain status','sim_call',{...base,status:'finalized'}],
- ];
- for(const [label,method,params] of rpc){
-  try{
-   const v=await timeout(accountClient.request({method,params:[params]}));
-   console.log('PASS',label,describe(v));
-  }catch(error){console.log('FAIL',label,JSON.stringify({message:error?.shortMessage||error?.message,details:error?.details,cause:error?.cause?.message,code:error?.code}).slice(0,600));}
- }
-}
-console.log('RPC smoke completed, all calls were read-only.');
+const read=async(fn,args=[])=>client.readContract({
+ address,functionName:fn,args,transactionHashVariant:TransactionHashVariant.LATEST_FINAL,
+});
+const withTimeout=(promise,label)=>Promise.race([
+ promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label} timed out`)),18000)),
+]);
+
+assert.equal(studionet.id,61999,'Do not use the Studio-dev network with this contract');
+assert.equal(studionet.rpcUrls.default.http[0],'https://studio.genlayer.com/api');
+
+const count=Number(await withTimeout(read('get_program_count'),'program_count'));
+assert.ok(count>=2,`Expected at least two programs, got ${count}`);
+console.log('PASS get_program_count:',count);
+
+const claims=Number(await withTimeout(read('get_case_count'),'case_count'));
+assert.ok(claims>=1,`Expected at least one claim, got ${claims}`);
+console.log('PASS get_case_count:',claims);
+
+const program=await withTimeout(read('get_program',[2]),'program2');
+assert.equal(program.id,2);
+assert.equal(program.award_credits,100);
+assert.equal(program.policy_sha256,'3aecb23e16be10a42f929442ee928850c653a170da3d8aace136e38b579183bc');
+console.log('PASS get_program(2):',program.status,program.submitted,program.approved,program.claimed);
+
+const claim=await withTimeout(read('get_case',[1]),'case1');
+assert.equal(claim.program_id,2);
+assert.equal(claim.status,'CLAIMED');
+assert.equal(claim.outcome,'ELIGIBLE');
+assert.equal(claim.claimed,true);
+assert.equal(claim.award_credits,100);
+console.log('PASS get_case(1):',claim.status,claim.outcome);
+
+const credits=Number(await withTimeout(read('get_demo_balance',[claim.claimant]),'demo_balance'));
+assert.equal(credits,100);
+console.log('PASS get_demo_balance:',credits);
+console.log('ALL LIVE STUDIONET READ CHECKS PASSED');
