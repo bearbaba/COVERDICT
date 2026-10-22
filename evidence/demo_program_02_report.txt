@@ -1,0 +1,25 @@
+COVERDICT PROGRAM #2 - ISSUER SYNTHETIC INCIDENT REPORT
+Report type: TESTNET SIMULATION, NOT A REAL DEFI EXPLOIT ATTESTATION.
+
+Program: Sepolia synthetic deposit drill #2
+Covered synthetic incident class: SIMULATED_DEPOSIT_MISROUTE_DRILL
+Network: Ethereum Sepolia (chain ID 11155111)
+Designated recipient: 0xD6b8A3A5eB329410D9504784812b8569afA8C2aF
+Incident window: 2026-10-22T02:20:00Z to 2026-10-22T02:30:00Z
+Claim deadline: 2026-10-22T05:00:00Z
+
+The issuer confirms that the designated Sepolia recipient and the stated
+incident window constitute the synthetic incident covered by Program #2.
+For this DEMO ONLY, a successful direct native test-ETH transfer sent by the
+claimant wallet to the designated recipient during the stated incident
+window is included in the simulated coverage policy, subject to independent
+verification of the transaction receipt, sender, recipient, success, amount,
+timestamp, and matching pinned policy. No real loss needs to be inferred.
+
+A claimant submitted this transaction for later independent receipt checking:
+0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a
+
+The issuer does NOT attest that any protocol was exploited or that the above
+transaction caused actual economic damage. The transaction's eligibility
+must be independently determined by the contract and GenLayer consensus.
+No insurance, reimbursements, redeemable tokens or real asset payments exist.

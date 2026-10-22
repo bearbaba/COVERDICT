@@ -196,6 +196,47 @@ def test_missing_evidence_is_not_rejection(context):
     with pytest.raises(UserError): c.resolve_claim(1)
 
 
+def test_response_transaction_hash_must_match_request(context):
+    m,c,gl,_,receipt = context
+    # An API response for a different transaction must not be classified as
+    # an ineligible claimant or be passed on to the LLM for approval.
+    gl.nondet.web.data[m.BLOCKSCOUT + TX] = json.dumps(receipt(tx=TX2))
+    c.submit_claim(1,TX)
+    assert c.resolve_claim(1) == 'SUBMITTED'
+    assert c.get_case(1)['outcome'] == 'UNVERIFIABLE'
+    assert c.get_case(1)['evidence_digest'] == ''
+
+
+def test_unverifiable_grace_cannot_close_early(context):
+    m,c,gl,clock,_=context
+    c.submit_claim(1,TX)
+    clock.return_value = DEADLINE + m.CLAIM_REVIEW_GRACE - 1
+    with pytest.raises(UserError, match='grace period'):
+        c.close_unverifiable_claim(1)
+
+
+def test_unverifiable_grace_closes_without_award(context):
+    m,c,gl,clock,_=context
+    c.submit_claim(1,TX)
+    clock.return_value = DEADLINE + m.CLAIM_REVIEW_GRACE
+    assert c.close_unverifiable_claim(1) == 'CLOSED_UNVERIFIABLE'
+    assert c.get_case(1)['outcome'] == 'UNVERIFIABLE'
+    assert c.get_case(1)['award_credits'] == 0
+    assert c.get_demo_balance(USER) == 0
+    with pytest.raises(UserError): c.resolve_claim(1)
+    with pytest.raises(UserError): c.claim_demo_award(1)
+    with pytest.raises(UserError): c.close_unverifiable_claim(1)
+
+
+def test_expired_review_cannot_late_approve(context):
+    m,c,gl,clock,_=context
+    c.submit_claim(1,TX)
+    clock.return_value = DEADLINE + m.CLAIM_REVIEW_GRACE
+    with pytest.raises(UserError, match='grace period has ended'):
+        c.resolve_claim(1)
+    assert c.get_case(1)['status'] == 'SUBMITTED'
+
+
 def test_hash_mismatch_is_unverifiable(context):
     m,c,gl,_,_ = context
     gl.nondet.web.data[POLICY_URL]='MUTATED POLICY CONTENT'

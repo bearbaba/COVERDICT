@@ -16,8 +16,9 @@ MAX_PROGRAM_SPAN = 30 * 86400
 MAX_CLAIMS = 20
 MAX_DOCUMENT = 20000
 RETRY_SECONDS = 600
+CLAIM_REVIEW_GRACE = 7 * 86400  # after claim deadline, unresolved claims can be closed
 REPO_RAW = 'https://raw.githubusercontent.com/bearbaba/COVERDICT/'
-BLOCKSCOUT = 'https://eth.blockscout.com/api/v2/transactions/'
+BLOCKSCOUT = 'https://eth-sepolia.blockscout.com/api/v2/transactions/'
 
 
 def _now():
@@ -60,10 +61,15 @@ def _read_timestamp(value):
     return int(dt.timestamp())
 
 
-def _parse_receipt(payload, claimant, contract, start, end):
-    """Verifies a directly sent native ETH transaction, NEVER actual economic loss."""
+def _parse_receipt(payload, expected_hash, claimant, contract, start, end):
+    """Verifies a Sepolia test-ETH receipt, NEVER actual economic loss."""
     if not isinstance(payload, dict):
         raise ValueError('Missing transaction')
+    # The JSON must identify the same transaction as the immutable requested URL.
+    # Mismatches are an invalid source, never affirmative ineligibility.
+    received_hash = payload.get('hash')
+    if not _tx_hash(received_hash) or received_hash.lower() != expected_hash.lower():
+        raise ValueError('Receipt hash does not match the submitted transaction')
     sender = payload.get('from')
     destination = payload.get('to')
     if not isinstance(sender, dict) or not isinstance(destination, dict):
@@ -198,7 +204,7 @@ class Coverdict(gl.Contract):
             raw_tx = _decode(gl.nondet.web.get(url).body, 12000)
             data = json.loads(raw_tx)
             matched, normalized = _parse_receipt(
-                data, case['claimant'], program['deposit_contract'],
+                data, case['tx_hash'], case['claimant'], program['deposit_contract'],
                 program['incident_start'], program['incident_end'])
             # Identity and transfer parameters are verified deterministically.
             evidence = json.dumps([program['policy_sha256'], program['report_sha256'], normalized],
@@ -217,7 +223,7 @@ PROGRAM LABEL: {program['label']}
 DEPOSIT CONTRACT: {program['deposit_contract']}
 POLICY (SHA256 verified): <untrusted_policy>{policy}</untrusted_policy>
 INCIDENT REPORT (SHA256 verified): <untrusted_report>{report}</untrusted_report>
-RECEIPT VERIFIED: native ETH transfer sent by claimant to the designated contract,
+RECEIPT VERIFIED: Sepolia test-ETH transfer sent by claimant to the designated contract,
 successful, nonzero, within locked time window.
 
 ELIGIBLE: policy and report explicitly establish a covered incident at that
@@ -242,6 +248,8 @@ Answer exactly JSON {{"outcome":"ELIGIBLE|INELIGIBLE|UNVERIFIABLE","reason":"10-
         if case['attempts'] and _now() < case['last_attempt_at'] + RETRY_SECONDS:
             raise gl.vm.UserError('Wait before retrying an unresolved claim')
         program = self._program(case['program_id'])
+        if _now() >= program['claim_deadline'] + CLAIM_REVIEW_GRACE:
+            raise gl.vm.UserError('Review grace period has ended; close the unresolved claim')
         policy = dict(program)
         claim = dict(case)
 
@@ -280,6 +288,26 @@ Answer exactly JSON {{"outcome":"ELIGIBLE|INELIGIBLE|UNVERIFIABLE","reason":"10-
         elif verdict['outcome'] == 'INELIGIBLE':
             case['status'] = 'DENIED'
         # UNVERIFIABLE: remains SUBMITTED and can be retried.
+        self._save_case(case)
+        return case['status']
+
+    @gl.public.write
+    def close_unverifiable_claim(self, case_id: int) -> str:
+        """Finish an unresolved claim after a disclosed grace period.
+
+        This is NOT a denial of the user's loss or insurance eligibility. It
+        only closes an inconclusive DEMO claim; no credits are minted.
+        """
+        case = self._case(case_id)
+        if case['status'] != 'SUBMITTED':
+            raise gl.vm.UserError('Only unresolved submitted claims can be closed')
+        program = self._program(case['program_id'])
+        if _now() < program['claim_deadline'] + CLAIM_REVIEW_GRACE:
+            raise gl.vm.UserError('Unverifiable-claim grace period has not elapsed')
+        case['status'] = 'CLOSED_UNVERIFIABLE'
+        case['outcome'] = 'UNVERIFIABLE'
+        case['reason'] = 'Review grace expired without a conclusive verdict; no demo award was issued.'
+        case['award_credits'] = 0
         self._save_case(case)
         return case['status']
 
