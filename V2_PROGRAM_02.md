@@ -1,5 +1,16 @@
 # COVERDICT V2 Program #2 — actual 19:30–19:40 ICT signed program
 
+## Post-window synthetic report — GitHub-pinned 2026-10-22 after 19:40 ICT
+
+- **Report created, NOT YET ON-CHAIN ATTACHED or attested.** Do not confuse a GitHub commit with an executed `attach_report` or `attest_report` transaction.
+- Immutable report commit: `8b3df9673258fefc40b0a04ed387ce54091cb041`.
+- [Pinned report](https://github.com/bearbaba/COVERDICT/blob/8b3df9673258fefc40b0a04ed387ce54091cb041/evidence/v2_program_02_report.txt).
+- Raw report URL: `https://raw.githubusercontent.com/bearbaba/COVERDICT/8b3df9673258fefc40b0a04ed387ce54091cb041/evidence/v2_program_02_report.txt`.
+- Exact 2,377-byte ASCII/UTF-8 file (trailing LF) SHA256: `fc6b84e341cdd365658fef4c0abe42b4e0e42c605e6e24cbe51c055fce477170`. The local Git blob SHA-1 matches the blob returned after GitHub creation.
+- Next issuer wallet A write: `attach_report(2, report_url, report_sha256)` -> expected `AWAITING_ATTESTATION`. Only after its FINALIZED + GenVM SUCCESS and state read may wallet C (precommitted attestor) call `attest_report(2, report_sha256)` -> `OPEN_FOR_CLAIMS`.
+- Submitted claimant receipt candidate: `0x7e24af7f845356332d300471cdbb70584ddea7568538e638aa438daec93ead9f` on Sepolia; wallet B to wallet A, success according to user Etherscan excerpt. Block timestamp and the exact native value returned by Blockscout remain unverified from this environment. These receipt facts must be independently evaluated by GenLayer consensus; the issuer-authored synthetic report does not certify receipt validity, actual loss, or any compensation right.
+
+
 **Status:** `create_program(…)` was signed at **October 22, 2026, 18:25:19 ICT**, and returned program ID **2**, `FINALIZED`, GenVM `SUCCESS`, Consensus `Accepted`, Normal mode, zero rotations, five initial validators. Independent live read-only RPC verification is tracked by `web/scripts/studionet-v2-smoke.mjs`.
 
 **CRITICAL: Program #2 is NOT the subsequently requested 18:45–18:55 configuration.** Although an updated draft policy for 18:45 was committed to GitHub, the actual on-chain transaction used the **earlier, commit-pinned 19:30–19:40 configuration**. The on-chain precommit is immutable, cannot be changed, and prevails over any documentation or conversational intention. **Do not use a Sepolia transfer made during 18:45–18:55 as positive proof in Program #2.**
