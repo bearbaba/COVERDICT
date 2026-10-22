@@ -34,7 +34,7 @@
 
 ## Still needed before a strong GenLayer Projects submission
 
-1. Save the **original successful** `resolve_claim(1)` transaction hash and leader/validator trace proving the AI decision, not only the negative replay trace.
+1. Save the **original successful** `resolve_claim(1)` transaction hash and leader/validator trace proving the AI decision, not only the negative replay trace. For the separate inconclusive branch, a syntactically valid missing Sepolia hash returned HTTP 404 in [CI](https://github.com/bearbaba/COVERDICT/actions/runs/39724530282), but the actual GenLayer UNVERIFIABLE verdict is **not yet executed**; see [Studio plan](UNVERIFIABLE_STUDIO_TEST.md).
 2. Save `attach_report(2)`, `submit_claim(2,...)`, and `claim_demo_award(1)` transaction receipts. Inspect execution SUCCESS and FINALIZED status, not merely ACCEPTED consensus.
 3. Run at least one **real negative test**: wrong sender/destination/time leads to INELIGIBLE if independently verifiable; missing or conflicting source remains UNVERIFIABLE. No claimed demo credits should be minted. A real negative Sepolia receipt has now been checked [in CI](https://github.com/bearbaba/COVERDICT/actions/runs/39721696547); [Studio test instructions](NEGATIVE_STUDIO_TEST.md) are prepared, **GenLayer Case #2 DENIED / INELIGIBLE is now confirmed live, with execution SUCCESS, consensus Accepted and an independently verified zero-credit result**.
 4. Deploy and inspect an HTTPS app with live chain reads, public claim browsing, signed wallet flows, source links and receipt history. Verify two different wallets and a clean browser.
