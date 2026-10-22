@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - fix/v2-program2-actual-1930-precommit
     paths:
       - 'web/scripts/studionet-v2-smoke.mjs'
       - '.github/workflows/studionet-v2-smoke.yml'
