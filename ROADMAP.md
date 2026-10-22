@@ -70,6 +70,8 @@ It is not insurance, an investment, token yield, custody, escrow, a financial pr
 - [x] Cross-program Sepolia receipt-hash replay protection in V2 code.
 - [x] New V2 Studionet contract deployed: `0x844BE9205a755900B7a6E40596DeDbdC69825e63`, version and zero initial counts independently RPC-verified ([proof](https://github.com/bearbaba/COVERDICT/actions/runs/39743045149)); legacy V1 histories unchanged.
 - [ ] Collect full V2 deployment receipt and independently establish source parity to commit `ce40f017...`; runtime write paths and validator traces remain unverified.
+- [x] V2 `create_program` signed on Studionet, [FINALIZED/SUCCESS tx](https://explorer-studio.genlayer.com/tx/0x1b6717cb38257cd8d761ffe27d91cfc3fa53f5021a5b37b81313ecb894949636), return Program #1, independently verified via [read-only RPC](https://github.com/bearbaba/COVERDICT/actions/runs/39745600960) with issuer, attestor and immutable policy SHA256.
+- [ ] V2 issuer report attachment -> attestor signed confirmation -> claimant write -> AI consensus and nonfatal warning check; incident window 16:00–16:10 ICT Oct 22.
 - [ ] Verify nondeterministic-storage warning is absent in live V2 evaluation and collect individual validator traces.
 - [ ] Introduce authenticated independent incident publisher and receipt finality/independent sources. Wallet address separation alone is insufficient.
 - [ ] Produce and test a real document-disagreement benchmark with semantic edge cases and an appeal mechanism.

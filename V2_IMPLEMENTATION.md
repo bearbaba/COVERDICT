@@ -10,7 +10,8 @@
 - **Independent evidence:** [GitHub Actions read-only V2 + V1 check #39743045149](https://github.com/bearbaba/COVERDICT/actions/runs/39743045149) **SUCCESS**; confirms legacy V1 Case #1 `CLAIMED/ELIGIBLE`, #2 `DENIED/INELIGIBLE`, #3 `SUBMITTED/UNVERIFIABLE` remain intact on `0x044DB5B1d148d30f8EdF591497d8726F66C22a16`.
 - **Visual report:** User supplied Studio screenshot in Normal (Full Consensus) showing a deployed instance with `get_contract_version` and `attest_report` ABI. The full deploy transaction hash, specific constructor receipt and exact independently compared onchain source file are not yet recorded; source parity cannot be fully claimed from the version string.
 - The original V2 source first appeared on `main` at merge commit `ce40f017cd93a3aa469ac578d82468611e19d885` (file `contracts/CoverdictV2.py`). Preserve source comparison and deployment receipt before upgrading.
-- **Not yet verified:** `create_program`, issuer report attachment, attestor authorization, real GenVM nondet `resolve_claim` warning elimination and validator votes.
+- **Program creation VERIFIED:** issuer A submitted [`create_program` FINALIZED/SUCCESS on V2](https://explorer-studio.genlayer.com/tx/0x1b6717cb38257cd8d761ffe27d91cfc3fa53f5021a5b37b81313ecb894949636) on Oct 22 2026, return `1`; [independent RPC #39745600960](https://github.com/bearbaba/COVERDICT/actions/runs/39745600960) confirmed `get_program(1)` issuer, precommitted policy, attestor, receipt parameters and original V1 safety. See [V2_PROGRAM_01.md](V2_PROGRAM_01.md).
+- **Not yet verified:** issuer report attachment, attestor authorization, V2 claim submission/credits, real GenVM nondet `resolve_claim` warning elimination and individual validator votes.
 
 ## V2 goals already implemented in code
 
@@ -65,7 +66,7 @@ The legacy frontend `web/` is intentionally bound to the **V1** contract address
 
 - Gate 1 — **CI:** `genvm-lint check contracts/CoverdictV2.py`, py_compile, shim regression suite + V1 suite, web build. Source and unit tests must be green.
 - Gate 2 — **New Studionet instance, not V1:** **PARTIALLY PASS**, new contract address and exact version independently verified. Still collect original full deployment hash, receipt and source parity to immutable Git commit.
-- Gate 3 — `get_contract_version()` **PASS**; next test issuer A create -> issuer A attach after window -> attestor D separate sign -> claimant C submit -> resolve -> read case/credits. Test invalid attestor, premature submit and unauthorized award.
+- Gate 3 — `get_contract_version()` **PASS**; issuer A `create_program` **PASS**; next test issuer A attach -> issuer A attach after window -> attestor D separate sign -> claimant C submit -> resolve -> read case/credits. Test invalid attestor, premature submit and unauthorized award.
 - Gate 4 — Run one case each for ELIGIBLE, INELIGIBLE, UNVERIFIABLE on **V2**, capturing original leader and individual validator traces. Check nonfatal `Detected pickling storage class` warning disappears; if it persists, P0 remains open. Do not reuse historical V1 results as V2 test proof.
 - Gate 5 — Re-read V1 original contract and all 3 cases to prove this independent experiment did not disturb the old MVP. Do not map V1 demo credits to V2 without an explicitly designed migration.
 - Gate 6 — Implement a V2-aware UI with clear deployment/version/environment labels; verify wallet A, D, C on two real browsers before declaring V2 public.

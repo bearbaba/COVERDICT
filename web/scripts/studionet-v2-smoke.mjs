@@ -23,13 +23,41 @@ const n=Number(await read(v2,'get_program_count'));
 const c=Number(await read(v2,'get_case_count'));
 assert.ok(Number.isSafeInteger(n)&&n>=0&&Number.isSafeInteger(c)&&c>=0);
 console.log('PASS V2 independent state: programs',n,'claims',c);
-if(n>0){
-  const program=await read(v2,'get_program',[1]);
-  assert.equal(program.id,1);
-  assert.ok(typeof program.attestor==='string'&&/^0x[0-9a-f]{40}$/i.test(program.attestor));
-  assert.ok(typeof program.report_attested==='boolean');
-  console.log('PASS V2 role-aware program 1:',program.status,program.attestor);
+assert.ok(n>=1,'V2 program #1 was finalized but is missing');
+const program=await read(v2,'get_program',[1]);
+assert.equal(program.id,1);
+assert.equal(program.issuer.toLowerCase(),'0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb');
+assert.equal(program.attestor.toLowerCase(),'0x60bfdf6315294c7856acdc0b80d7bd40217debff');
+assert.equal(program.deposit_contract.toLowerCase(),'0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb');
+assert.equal(program.label,'V2 attested Sepolia synthetic receipt drill #1');
+assert.equal(program.incident_start,1792659600);
+assert.equal(program.incident_end,1792660200);
+assert.equal(program.claim_deadline,1792666800);
+assert.equal(program.award_credits,100);
+assert.equal(program.max_claims,3);
+assert.equal(program.policy_sha256,'5150f0cb08b88218dd9fa1e375782b741cc5aaca8f1a96dd0f799f2633bb653c');
+assert.equal(program.policy_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/c2f792197f12d0ab939bf83a0e3179f31f85088d/evidence/v2_program_01_policy.txt');
+assert.ok(['AWAITING_INCIDENT_REPORT','AWAITING_ATTESTATION','OPEN_FOR_CLAIMS'].includes(program.status));
+assert.ok(program.submitted>=0&&program.submitted<=program.max_claims,'Submitted claims out of bounds');
+assert.ok(program.approved>=0&&program.approved<=program.submitted,'Approved claims out of bounds');
+assert.ok(program.claimed>=0&&program.claimed<=program.approved,'Claimed awards out of bounds');
+if(program.status==='AWAITING_INCIDENT_REPORT'){
+  assert.equal(program.report_attested,false);
+  assert.equal(program.attested_at,0);
+  assert.equal(program.report_url,'');
+  assert.equal(program.report_sha256,'');
 }
+if(program.status==='AWAITING_ATTESTATION'){
+  assert.equal(program.report_attested,false);
+  assert.ok(program.report_url&&program.report_sha256,'Unattested report requires pinned fields');
+}
+if(program.status==='OPEN_FOR_CLAIMS'){
+  assert.equal(program.report_attested,true);
+  assert.ok(program.attested_at>=program.incident_end);
+  assert.ok(program.report_url&&program.report_sha256,'Attested report requires pinned fields');
+}
+console.log('PASS V2 role-aware program 1:',program.status,'attestor',program.attestor,'submitted',program.submitted);
+console.log('PASS V2 precommitted issuer/policy/recipient/window match the FINALIZED program-create receipt');
 
 const legacyCount=Number(await read(v1,'get_case_count'));
 assert.ok(legacyCount>=3,'Original V1 claim history lost');
