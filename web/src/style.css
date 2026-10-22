@@ -25,3 +25,12 @@ html{scroll-behavior:smooth}
 .data-status{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:15px 18px;border:1px solid #28535f;border-radius:12px;color:#b1d5da;background:#102632;font-size:13px;margin-bottom:20px}
 .compact-error{padding:12px 15px;margin-bottom:16px;font-size:12px}
 @media(max-width:650px){.data-status{align-items:stretch;flex-direction:column}}
+
+/* Community dashboard and wallet-specific views remain visually separate. */
+.wallet-summary{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;padding:18px 22px;border:1px solid #30565c;border-radius:13px;background:#102832;margin-bottom:22px}
+.wallet-summary-identity{display:flex;align-items:center;gap:13px;color:#a0e6d0}
+.wallet-summary-identity>div,.wallet-summary-balance{display:grid;gap:5px}
+.wallet-summary span{font-size:10px;letter-spacing:.1em;font-weight:800;color:#96b8c2}
+.wallet-summary-identity strong{font-size:14px;color:#ebf9f7}
+.wallet-summary-balance strong{font-size:26px;color:#94f4cd;letter-spacing:-.035em}
+@media(max-width:650px){.wallet-summary{align-items:stretch}.wallet-summary-balance{padding-top:10px;border-top:1px solid #315660;width:100%}}
