@@ -1,0 +1,26 @@
+name: Studionet RPC smoke test
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix/studionet-read-reliability
+    paths:
+      - 'web/scripts/studionet-smoke.mjs'
+      - '.github/workflows/studionet-rpc-smoke.yml'
+permissions:
+  contents: read
+jobs:
+  public-read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install web deps
+        working-directory: web
+        run: npm install --no-audit --no-fund
+      - name: Read deployed contract through current SDK
+        working-directory: web
+        run: node scripts/studionet-smoke.mjs
