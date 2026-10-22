@@ -1,3 +1,9 @@
+## V2 Program #2 — live positive synthetic claim accepted (2026-10-22)
+
+A *separate experimental V2* instance `0x844BE9205a755900B7a6E40596DeDbdC69825e63` completed the issuer-policy → issuer synthetic report → designated attestor hash sign-off → claimant receipt submission → AI consensus `ELIGIBLE/APPROVED` → `CLAIMED` sequence. [Original resolution transaction](https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7) reported FINALIZED, GenVM SUCCESS, Consensus Accepted, five initial validators, one rotation, empty stderr, digest `ea9d415a876825515f1ce08d3c39b1f841345a16ce4a7e6ab7151693b68a4ba7`. User's post-award contract reads: `get_case(1)=CLAIMED/ELIGIBLE/claimed:true`; `get_demo_balance(B)=100` nonredeemable credits; `get_program(2)` submitted/approved/claimed = 1/1/1. See [V2_PROGRAM_02.md](V2_PROGRAM_02.md).
+
+**Evidence gaps:** successful award *write* receipt hash not yet supplied, individual validator votes not supplied, no V2 live negative/UNVERIFIABLE or replay acceptance, source parity and public V2 frontend not verified. This is not insurance, proof of loss, money or mainnet production readiness. Original V1 remains distinct.
+
 ## Case #1 original positive adjudication — FINALIZED consensus (October 22, 2026)
 
 The user provided the [original `resolve_claim(1)` Studio receipt](https://explorer-studio.genlayer.com/tx/0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5): hash `0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5`, wallet A `0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb`, deployed contract `0x044DB5B1d148d30f8EdF591497d8726F66C22a16`, October 22, 2026 **09:39:05 ICT**, Normal mode.
