@@ -66,7 +66,7 @@ The MVP relies on a **single Blockscout API** and **issuer-authored report**. It
 | Sepolia receipt verified | **Testnet Etherscan SUCCESS provided; GenLayer returned ELIGIBLE, validator traces pending** | [Program #2](PROGRAM_02.md) |
 | Full Consensus APPROVED/DENIED | **Claim #1 APPROVED / ELIGIBLE via get_case(1) read; resolve tx and validator traces pending** | [Program #2](PROGRAM_02.md) |
 | UNKNOWN / source mismatch | PENDING | — |
-| Claim award once | **`get_case(1)` shows CLAIMED/claimed=true; demo balance and replay negative test pending** | [Program #2](PROGRAM_02.md) |
+| Claim award once | **`get_case(1)`=CLAIMED; `get_demo_balance`=100 and program 1/1/1 confirmed from user-provided accepted reads**. Replay negative test and receipt pending | [Program #2](PROGRAM_02.md) |
 | HTTPS frontend | PENDING | — |
 
 ### Immediate next step after deployment
