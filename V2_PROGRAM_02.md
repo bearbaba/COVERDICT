@@ -1,5 +1,38 @@
 # COVERDICT V2 Program #2 — replacement for expired Program #1
 
+> **TIME CHANGE (Oct 22, 2026): User selected 18:45–18:55 ICT. The previously prepared 19:30–19:40 policy `evidence/v2_program_02_policy.txt` is OBSOLETE for planned Program #2 and MUST NOT be used for a new 18:45 program.** The obsolete policy is preserved for audit; the signed program data and on-chain commitments cannot be edited. As of this update, Program #2 creation has not been verified. A successful FINALIZED + GenVM SUCCESS `create_program` transaction and `get_program(2)` must be checked.
+
+## ACTIVE REPLACEMENT PARAMETERS — 18:45–18:55 ICT
+
+- **Precommit the start before 18:30 ICT on Oct 22, 2026**, allowing time for finality; GenLayer requires at least 900 seconds of lead time. If missed, don't sign this configuration.
+- Immutable policy: [`v2_program_02_policy_1845.txt`](https://github.com/bearbaba/COVERDICT/blob/2648fbaa069670b2339db9e084b62ed933655793/evidence/v2_program_02_policy_1845.txt)
+- Pinned commit: `2648fbaa069670b2339db9e084b62ed933655793`
+- Verified SHA256, exact 2529 ASCII bytes: `8450c4a2746b93370dec52c712f0954365fc4b97398eac920c743b41590b29f6`
+- Contract: GenLayer Studionet **61999**, V2 `0x844BE9205a755900B7a6E40596DeDbdC69825e63`
+- Issuer A: `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb`
+- Attestor C: `0x60bfdf6315294c7856acdc0b80d7bd40217debff`
+- Candidate claimant B: `0xd6b8a3a5eb329410d9504784812b8569afa8c2af`
+
+| create_program argument (exact order) | Value |
+|---|---|
+| label | `V2 attested Sepolia synthetic receipt drill #2` |
+| deposit_contract | `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb` |
+| incident_start | `1792669500` (18:45 ICT, Oct 22) |
+| incident_end | `1792670100` (18:55 ICT, Oct 22) |
+| claim_deadline | `1792839600` (18:00 ICT, Oct 24) |
+| policy_url | `https://raw.githubusercontent.com/bearbaba/COVERDICT/2648fbaa069670b2339db9e084b62ed933655793/evidence/v2_program_02_policy_1845.txt` |
+| policy_sha256 | `8450c4a2746b93370dec52c712f0954365fc4b97398eac920c743b41590b29f6` |
+| award_credits | `100` |
+| max_claims | `3` |
+| attestor | `0x60bfdf6315294c7856acdc0b80d7bd40217debff` |
+
+**Sequence:** issuer A `create_program` now; between 18:45–18:55 send **new** Sepolia test-ETH B→A if seeking ELIGIBLE; only after 18:55 create/pin **new report matching 18:45–18:55**; issuer A `attach_report` then C `attest_report`; B `submit_claim` before Oct 24 18:00. The original Program #1 expired and cannot be reused. Do not commit a misleading post-window incident report ahead of the window.
+
+---
+
+## Historical superseded proposal — 19:30–19:40 (DO NOT USE)
+
+
 **State: precommitted policy exists on GitHub; on-chain creation has NOT been signed or confirmed.** Experimental GenLayer Studionet only. No real financial payout, insurance or proof of actual exploit loss.
 
 ## Why Program #1 cannot be rescued
