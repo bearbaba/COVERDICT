@@ -54,7 +54,7 @@ console.log('PASS get_case(2):',declined.status,declined.outcome,'credits',decli
 const walletB='0xd6b8a3a5eb329410d9504784812b8569afa8c2af';
 const balanceB=Number(await withTimeout(read('get_demo_balance',[walletB]),'wallet_B_demo_balance'));
 assert.equal(balanceB,0,'Denied claimant wallet B must not have demo credits');
-console.log('PASS wallet B unchanged award ledger:',balanceB);
+console.log('PASS wallet B demo balance after denied award retry:',balanceB);
 
 const updatedProgram=await withTimeout(read('get_program',[2]),'program2_counters_after_denial');
 assert.ok(updatedProgram.submitted>=2,'A second claim must count as submitted');
