@@ -103,3 +103,14 @@ The user provided a post-`claim_demo_award(1)` `get_case(1)` read showing `statu
 - Five validator rows were provided in the user's transaction log: Mistral, DeepSeek, GPT-5.4, Kimi, and GLM; every row indicated `Agree` with the rollback. This **does not prove** that five independent validators successfully reproduced the original positive AI adjudication, only consensus on this intentional error.
 - Prior confirmed reads showed `get_case(1).claimed = true` and `get_demo_balance(claimant) = 100`. **Read the balance again after this rejected replay** to prove it remains 100; do not call it independently verified post-replay yet.
 - The case and award are synthetic and cannot be redeemed for any cryptocurrency or compensation.
+
+
+## Live INELIGIBLE claim #2 — 2026-10-22
+
+- **User-supplied Studio on-chain state, before resolution:** `get_case(2)` returned `SUBMITTED`, `attempts=0`, claimant `0xd6b8a3a5eb329410d9504784812b8569afa8c2af`, Program `2` and Sepolia hash `0x51a7fe56dca8f0bc9bc883d0d0e59113df8160db924fac5de375dbdab20e2151`.
+- **Live resolution transaction:** [`0x08dc22aca05271cbf270b1362248d89b95f52b06cbb040aac56d69c9011ba50a`](https://explorer-studio.genlayer.com/tx/0x08dc22aca05271cbf270b1362248d89b95f52b06cbb040aac56d69c9011ba50a). Explorer reported `FINALIZED`, `GenVM Execution SUCCESS`, return `"DENIED"`, `Normal` execution mode, consensus `Accepted`, zero rotations, **5 initial validators**. Individual validator vote details were not supplied.
+- **After resolution:** `get_case(2)` returned `status=DENIED`, `outcome=INELIGIBLE`, `attempts=1`, `claimed=false`, `award_credits=0`, `last_attempt_at=1792643151`, `evidence_digest=8e81c418b1a6667af55310885e59bae29020f1d5f77a2a00ed6437002f63ac2a`.
+- **Reason:** Receipt does not match wallet, destination, time window, successful status or native ETH value.
+- **Equivalence Principle Output 0:** `outcome=INELIGIBLE`, identical digest and reason. This is a deterministic receipt-validation rejection (not a contested AI document-classification example).
+- **GenVM stderr warning:** `Detected pickling storage class. Reading storage in nondet mode is not supported`. The actual transaction executed successfully, but this warning warrants a separate developer inspection.
+- **Still pending:** submission tx hash for Case #2, full individual validator traces, wallet B balance before/after, denied-award rollback, original positive Case #1 resolve trace, and a live UNVERIFIABLE case. No real DeFi loss was proven.
