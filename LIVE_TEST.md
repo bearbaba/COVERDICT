@@ -61,7 +61,7 @@ The MVP relies on a **single Blockscout API** and **issuer-authored report**. It
 | --- | --- | --- |
 | GenVM lint | PASS in CI | [Verified workflow](https://github.com/bearbaba/COVERDICT/actions/runs/39638135874) |
 | Deployed contract | FINALIZED per Studio screenshot; source parity pending | [deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045) |
-| Program created | PENDING (read `get_program_count()` next) | — |
+| Program created | **Program #1 accepted read; create tx hash pending** | User-supplied `get_program(1)` output: awaiting report, pool empty, hashes/times match [specification](PROGRAM_01.md) |
 | Incident report pinned | PENDING | — |
 | Sepolia receipt verified | PENDING | — |
 | Full Consensus APPROVED/DENIED | PENDING | — |
