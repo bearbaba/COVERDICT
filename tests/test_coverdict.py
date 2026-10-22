@@ -49,6 +49,12 @@ class FakeVM:
     Return = Return
     def __init__(self): self.disagree = False
     def run_nondet_unsafe(self, leader, validator):
+        # Catch a subtle GenVM issue: contract self captures TreeMap storage
+        # via cloudpickle and triggers warnings in nondeterministic mode.
+        for fn in (leader, validator):
+            assert 'self' not in fn.__code__.co_freevars
+            for cell in fn.__closure__ or ():
+                assert not isinstance(cell.cell_contents, Contract), 'Nondet closure captured contract storage'
         decision = leader()
         if self.disagree or not validator(Return(decision)):
             raise UserError('Validators disagreed')
@@ -409,3 +415,13 @@ def test_unverifiable_missing_receipt_keeps_state_and_balance(context):
     assert c.get_program(1)['approved']==0
     with pytest.raises(UserError,match='No unclaimed approved award'):
         c.claim_demo_award(case_id)
+
+
+def test_nondet_assessor_is_module_pure(context):
+    """The assessor receives frozen source snapshots; no instance method captures storage."""
+    module,contract,gl,_,_=context
+    assert callable(module._assess)
+    assert not hasattr(contract,'_assess')
+    c=contract.submit_claim(1,TX)
+    assert contract.resolve_claim(c)=='APPROVED'
+    assert contract.get_case(c)['status']=='APPROVED'
