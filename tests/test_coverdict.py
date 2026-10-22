@@ -390,3 +390,22 @@ def test_unverifiable_recovers_after_600_seconds_without_duplicate_credit(contex
     assert c.get_demo_balance(USER) == 100
     with pytest.raises(UserError, match='No unclaimed approved award'):
         c.claim_demo_award(case_id)
+
+
+def test_unverifiable_missing_receipt_keeps_state_and_balance(context):
+    """A syntactically valid but absent Sepolia tx must never authorize demo credits."""
+    m,c,gl,_,_=context
+    no_receipt='0x'+'0'*63+'1'
+    assert len(no_receipt)==66
+    assert m.BLOCKSCOUT + no_receipt not in gl.nondet.web.data
+    case_id=c.submit_claim(1,no_receipt)
+    assert c.resolve_claim(case_id)=='SUBMITTED'
+    state=c.get_case(case_id)
+    assert state['outcome']=='UNVERIFIABLE'
+    assert state['evidence_digest']==''
+    assert state['attempts']==1
+    assert state['claimed'] is False and state['award_credits']==0
+    assert c.get_demo_balance(USER)==0
+    assert c.get_program(1)['approved']==0
+    with pytest.raises(UserError,match='No unclaimed approved award'):
+        c.claim_demo_award(case_id)

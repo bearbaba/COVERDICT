@@ -34,3 +34,5 @@ html{scroll-behavior:smooth}
 .wallet-summary-identity strong{font-size:14px;color:#ebf9f7}
 .wallet-summary-balance strong{font-size:26px;color:#94f4cd;letter-spacing:-.035em}
 @media(max-width:650px){.wallet-summary{align-items:stretch}.wallet-summary-balance{padding-top:10px;border-top:1px solid #315660;width:100%}}
+
+.case-info{display:block;flex-basis:100%;width:100%;color:#a3c7cf;line-height:1.6;font-size:12px;margin-top:8px}
