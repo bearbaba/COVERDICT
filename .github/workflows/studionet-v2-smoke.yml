@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - test/v2-program1-live-acceptance
     paths:
       - 'web/scripts/studionet-v2-smoke.mjs'
       - '.github/workflows/studionet-v2-smoke.yml'
