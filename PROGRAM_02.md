@@ -65,6 +65,17 @@ User provided `get_case(1)` showing: `id=1`, `program_id=2`, `claimant=0x4c7cb73
 - `attach_report(2, url, digest)` requires the program issuer address `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb`, now at or after the window end 09:30 ICT. **Transaction and following `get_program(2)` read are still pending.**
 - Then `submit_claim(2, 0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a)` from claimant before noon, followed by a real Full Consensus `resolve_claim`.
 
+## Case #1 original positive adjudication — FINALIZED consensus (October 22, 2026)
+
+The user provided the [original `resolve_claim(1)` Studio receipt](https://explorer-studio.genlayer.com/tx/0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5): hash `0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5`, wallet A `0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb`, deployed contract `0x044DB5B1d148d30f8EdF591497d8726F66C22a16`, October 22, 2026 **09:39:05 ICT**, Normal mode.
+
+- **FINALIZED**, GenVM **Execution SUCCESS**, return `"APPROVED"`, **Consensus Accepted**, initial validators **5**, rotations **0**.
+- Equivalence Principle Output 0: `outcome="ELIGIBLE"`, `digest="1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7"`.
+- Output reason: verified successful, positive-value direct **Sepolia test-ETH** transfer from claimant to the exact recipient during **02:20–02:30 UTC**, and SHA256-pinned issuer-written synthetic policy/report explicitly covering that simulated incident class with no exclusions or conflicts.
+- Subsequent independent [live Studionet RPC smoke](https://github.com/bearbaba/COVERDICT/actions/runs/39733970516) confirms `get_case(1)=CLAIMED / ELIGIBLE` and wallet A balance **100 nonredeemable demo credits**. This is a synthetic demo award, not evidence of DeFi exploit loss or a real insurance payout.
+- **Known GenVM warning, nonfatal on this transaction:** `Detected pickling storage class. Reading storage in nondet mode is not supported`. A separate [draft PR #6](https://github.com/bearbaba/COVERDICT/pull/6) explores refactoring but is **not deployed**; investigate/test on a separately deployed new contract before merging to avoid source-parity confusion.
+- The user-supplied excerpt includes five **initial** validators, consensus Accepted, and one equivalence output. It **does not include individual validator votes/traces**, so do not claim all five independently voted Agree on this AI judgment. Its human-authored incident report is issuer-controlled; SHA256 protects the exact bytes, not their factual authority.
+
 ## AI adjudication — Claim #1 approved (user-reported state read)
 
 The user supplied `get_case(1)` after calling `resolve_claim(1)` in GenLayer Studio:
@@ -75,22 +86,22 @@ The user supplied `get_case(1)` after calling `resolve_claim(1)` in GenLayer Stu
 - `last_attempt_at=1792636745` (2026-10-22 02:39:05 UTC; 09:39:05 ICT).
 - Evidence digest: `1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7`.
 - Verdict reason in on-chain read: "Verified receipt confirms successful nonzero direct test-ETH transfer by claimant to exact designated recipient 0xD6b8A3A5eB329410D9504784812b8569afA8C2aF within 2026-10-22T02:20:00Z-02:30:00Z window; policy and report explicitly cover this synthetic incident class with no exclusions or conflicts."
-- The `resolve_claim` transaction hash, consensus execution receipt and independent validator trace have **not yet been provided**. A state read supports the final case outcome but is not a substitute for that evidence. No real exploit loss was verified.
+- The original `resolve_claim(1)` FINALIZED/SUCCESS consensus transaction receipt is now linked in the newest adjudication section. **Individual validator vote traces remain unavailable.** No real exploit loss was verified.
 - **End-to-end award step (user-provided state read):** `get_case(1)` now returns `status=CLAIMED`, `claimed=true`, `outcome=ELIGIBLE`, `attempts=1`, `award_credits=100`, with unchanged evidence digest. **Balance and program counters subsequently verified by user read:** balance=100 and submitted/approved/claimed=1/1/1. **Second claim rejection is now verified** by the user-provided GenLayer transaction log: `claim_demo_award(1)` is `FINALIZED`, execution `ERROR`, consensus `ACCEPTED` and five listed validators agree on `[rollback] No unclaimed approved award`. The successful first award transaction hash is still pending. Do not state these are completed until evidenced. No real assets.
 
 
 ## Claim #1 reward settlement state (2026-10-22)
 
-The user provided a post-`claim_demo_award(1)` `get_case(1)` read showing `status=CLAIMED`, `claimed=true`, `award_credits=100`, `outcome=ELIGIBLE`, `attempts=1`, and the same evidence digest `1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7`. This proves that the saved case's claimability flag is consumed. **Now verified via user-provided accepted reads:** `get_demo_balance(0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb) = 100`; `get_program(2)` reports `submitted=1`, `approved=1`, `claimed=1`, while status remains `OPEN_FOR_CLAIMS` (correct, this is the program-level state). Still pending: successful first award transaction receipt (the **second, rejected** award transaction has a documented hash). Separate `resolve_claim` transaction receipt/validator traces are not yet supplied. Test-ETH transfer is **not** proof of a real DeFi exploit loss.
+The user provided a post-`claim_demo_award(1)` `get_case(1)` read showing `status=CLAIMED`, `claimed=true`, `award_credits=100`, `outcome=ELIGIBLE`, `attempts=1`, and the same evidence digest `1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7`. This proves that the saved case's claimability flag is consumed. **Now verified via user-provided accepted reads:** `get_demo_balance(0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb) = 100`; `get_program(2)` reports `submitted=1`, `approved=1`, `claimed=1`, while status remains `OPEN_FOR_CLAIMS` (correct, this is the program-level state). Still pending: successful first award transaction receipt (the **second, rejected** award transaction has a documented hash). The original `resolve_claim(1)` receipt is now available; individual validator votes remain unavailable. Test-ETH transfer is **not** proof of a real DeFi exploit loss.
 
 ## Acceptance checkpoint — wallet credit and counters verified (2026-10-22)
 
 - **Read 1**: `get_demo_balance(0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb)` → **Response Accepted: `100`**.
 - **Read 2**: `get_program(2)` → `submitted=1`, `approved=1`, `claimed=1`, `award_credits=100`, `max_claims=10`, `status=OPEN_FOR_CLAIMS` and policy/report digests unchanged.
-- **Post-replay balance read:** User called `get_demo_balance(0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb)` again after the 5-validator agreed rollback of `claim_demo_award(1)` and reported `100`. This proves the invalid duplicate call did **not** raise the stored demo credit balance to 200, according to the subsequent on-chain read. Successful positive adjudication consensus traces remain to be collected.
+- **Post-replay balance read:** User called `get_demo_balance(0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb)` again after the 5-validator agreed rollback of `claim_demo_award(1)` and reported `100`. This proves the invalid duplicate call did **not** raise the stored demo credit balance to 200, according to the subsequent on-chain read. Original positive adjudication receipt is recorded; individual validator traces remain to be collected.
 - **Read 3** (previous): `get_case(1)` → `status=CLAIMED`, `claimed=true`, `outcome=ELIGIBLE`, `award_credits=100`, `attempts=1`, stable evidence digest.
 - This completes one **positive synthetic demo award** state transition on Studionet as observed through user-provided contract reads; the program can remain `OPEN_FOR_CLAIMS` while prior claims are `CLAIMED`.
-- **Remaining evidence for reviewer:** tx hashes for `submit_claim(2,...)`, `attach_report(2,...)`, `resolve_claim(1)` and `claim_demo_award(1)`; successful receipts and independent Full Consensus validator traces; a genuinely ineligible or unverifiable receipt (second-claim rejection is documented); HTTPS frontend. Never infer real-world exploit loss.
+- **Remaining evidence for reviewer:** tx hashes for `submit_claim(2,...)`, `attach_report(2,...)`, `claim_demo_award(1)`; successful receipts and independent Full Consensus validator traces; a genuinely ineligible or unverifiable receipt (second-claim rejection is documented); HTTPS frontend. Never infer real-world exploit loss.
 
 ## Negative acceptance test — award replay rejected (2026-10-22)
 
@@ -113,7 +124,7 @@ The user provided a post-`claim_demo_award(1)` `get_case(1)` read showing `statu
 - **Reason:** Receipt does not match wallet, destination, time window, successful status or native ETH value.
 - **Equivalence Principle Output 0:** `outcome=INELIGIBLE`, identical digest and reason. This is a deterministic receipt-validation rejection (not a contested AI document-classification example).
 - **GenVM stderr warning:** `Detected pickling storage class. Reading storage in nondet mode is not supported`. The actual transaction executed successfully, but this warning warrants a separate developer inspection.
-- **Still pending:** submission tx hash for Case #2, full individual validator traces, wallet B balance before/after, denied-award rollback, original positive Case #1 resolve trace, and a live UNVERIFIABLE case. No real DeFi loss was proven.
+- **Still pending:** submission tx hash for Case #2, full individual validator traces, wallet B balance before/after, denied-award rollback, individual votes for the positive Case #1 resolution and full source-integrity traces (the live UNVERIFIABLE Case #3 is documented). No real DeFi loss was proven.
 
 ### Independent read-only chain re-verification (GitHub Actions)
 
