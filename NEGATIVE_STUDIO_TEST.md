@@ -47,3 +47,15 @@ Use a *syntactically valid* but nonexistent Sepolia hash on a separate program a
 - **Equivalence Principle Output 0:** `outcome=INELIGIBLE`, identical digest and reason. This is a deterministic receipt-validation rejection (not a contested AI document-classification example).
 - **GenVM stderr warning:** `Detected pickling storage class. Reading storage in nondet mode is not supported`. The actual transaction executed successfully, but this warning warrants a separate developer inspection.
 - **Still pending:** submission tx hash for Case #2, full individual validator traces, wallet B balance before/after, denied-award rollback, original positive Case #1 resolve trace, and a live UNVERIFIABLE case. No real DeFi loss was proven.
+
+### Independent read-only chain re-verification (GitHub Actions)
+
+On 2026-10-22 GitHub Actions [stable Studionet RPC smoke](https://github.com/bearbaba/COVERDICT/actions/runs/39722933135) independently queried the unchanged contract through GenLayerJS 1.1.8 with **no wallet or signing**. The job completed **SUCCESS** and logged:
+
+- `get_program_count=2`, `get_case_count=2`.
+- `get_case(1)=CLAIMED / ELIGIBLE`; wallet A credits **100**.
+- `get_case(2)=DENIED / INELIGIBLE`, credits authorized **0**, `claimed=false`, matching the exact Sepolia hash and evidence digest.
+- Wallet B's demo-credit ledger **0**.
+- `get_program(2)`: **submitted=2, approved=1, claimed=1**. The rejected case increased submissions without increasing approvals or awards.
+
+This confirms the persisted negative decision and zero award independent of the user's screenshots. It does not prove the source incident is authentic, and individual validator votes for the negative adjudication were not supplied.
