@@ -1,6 +1,6 @@
 # Studio Negative Acceptance — Program #2 (2026-10-22)
 
-**Not yet executed on-chain.** This is a repeatable, wallet-signed acceptance plan for a deliberately *ineligible* Sepolia receipt. The original contract and already-claimed Case #1 remain unchanged.
+**LIVE NEGATIVE CASE #2 EXECUTED:** the claimant submitted the candidate and Studionet finalized an accepted-consensus `DENIED / INELIGIBLE` result. The checklist remains useful for reproducibility and open balance checks. The original contract and already-claimed Case #1 remain unchanged.
 
 ## Public independently checked source
 
@@ -35,15 +35,15 @@ A failure to reach consensus, source API outage or verdict `UNVERIFIABLE` is **n
 
 Use a *syntactically valid* but nonexistent Sepolia hash on a separate program and/or a different wallet to exercise Blockscout 404, malformed API fields, or immutable source digest mismatch. Do not use a malformed `tx_hash` (would fail `submit_claim` before adjudication). Expected contract state after `resolve_claim`: `SUBMITTED` with `outcome=UNVERIFIABLE`, `evidence_digest=''`, `award_credits=0`; it remains retryable after 600 seconds, and may be closed 7 days after claim deadline with `CLOSED_UNVERIFIABLE`. Avoid treating missing proof as fraud.
 
-## Evidence capture template
-
-- Claimant wallet (GenLayer): **pending**
-- Submission tx, FINALIZED + SUCCESS: **pending**
-- Case ID / submission `get_case`: **pending**
-- AI resolve tx, FINALIZED + SUCCESS: **pending**
-- Consensus validators and vote trace: **pending**
-- Final `get_case`, digest, no award: **pending**
-- Wallet balance before / after: **pending**
-- Negative award claim rollback tx: **pending**
-
 **No actual economic loss or insurance benefits are established by this test.** See [ACCEPTANCE.md](ACCEPTANCE.md) and [ROADMAP.md](ROADMAP.md).
+
+
+## Live INELIGIBLE claim #2 — 2026-10-22
+
+- **User-supplied Studio on-chain state, before resolution:** `get_case(2)` returned `SUBMITTED`, `attempts=0`, claimant `0xd6b8a3a5eb329410d9504784812b8569afa8c2af`, Program `2` and Sepolia hash `0x51a7fe56dca8f0bc9bc883d0d0e59113df8160db924fac5de375dbdab20e2151`.
+- **Live resolution transaction:** [`0x08dc22aca05271cbf270b1362248d89b95f52b06cbb040aac56d69c9011ba50a`](https://explorer-studio.genlayer.com/tx/0x08dc22aca05271cbf270b1362248d89b95f52b06cbb040aac56d69c9011ba50a). Explorer reported `FINALIZED`, `GenVM Execution SUCCESS`, return `"DENIED"`, `Normal` execution mode, consensus `Accepted`, zero rotations, **5 initial validators**. Individual validator vote details were not supplied.
+- **After resolution:** `get_case(2)` returned `status=DENIED`, `outcome=INELIGIBLE`, `attempts=1`, `claimed=false`, `award_credits=0`, `last_attempt_at=1792643151`, `evidence_digest=8e81c418b1a6667af55310885e59bae29020f1d5f77a2a00ed6437002f63ac2a`.
+- **Reason:** Receipt does not match wallet, destination, time window, successful status or native ETH value.
+- **Equivalence Principle Output 0:** `outcome=INELIGIBLE`, identical digest and reason. This is a deterministic receipt-validation rejection (not a contested AI document-classification example).
+- **GenVM stderr warning:** `Detected pickling storage class. Reading storage in nondet mode is not supported`. The actual transaction executed successfully, but this warning warrants a separate developer inspection.
+- **Still pending:** submission tx hash for Case #2, full individual validator traces, wallet B balance before/after, denied-award rollback, original positive Case #1 resolve trace, and a live UNVERIFIABLE case. No real DeFi loss was proven.
