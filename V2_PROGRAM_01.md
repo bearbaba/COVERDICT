@@ -22,6 +22,7 @@
 - [`create_program` FINALIZED/SUCCESS, consensus Accepted](https://explorer-studio.genlayer.com/tx/0x1b6717cb38257cd8d761ffe27d91cfc3fa53f5021a5b37b81313ecb894949636) — full hash `0x1b6717cb38257cd8d761ffe27d91cfc3fa53f5021a5b37b81313ecb894949636`.
 - Origin: issuer wallet A `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb`; destination: **V2** `0x844BE9205a755900B7a6E40596DeDbdC69825e63`; mode Normal, zero rotations, 5 initial validators, `Execution SUCCESS`, `Return Value=1`.
 - User-provided post-create state: `get_program(1).status=AWAITING_INCIDENT_REPORT`, `submitted/approved/claimed=0/0/0`, `report_attested=false`, `attested_at=0`, empty report URL/digest; locked 16:00–16:10 incident and 18:00 submission deadline.
+- **Independent verification:** [Studionet RPC smoke #39745600960](https://github.com/bearbaba/COVERDICT/actions/runs/39745600960) PASS. Reads version, exactly 1 program / 0 cases, exact issuer, attestor, deposit address, commit-pinned policy digest and time window, stage `AWAITING_INCIDENT_REPORT`, while original V1 case outcomes remain unchanged.
 - All recorded policy and attestor fields exactly match the precommitted file above; this is only proof of **program creation**, not report authenticity, an attestor endorsement or actual V2 AI adjudication.
 - Individual validator votes and full deploy receipt/source parity have not been supplied. The original testnet source remains unaudited.
 
@@ -59,7 +60,7 @@
 6. Claimant **B** calls `submit_claim(actual_id, Sepolia_tx_hash)` by 18:00 ICT. Call `resolve_claim(actual_case_id)` with an actual returned case ID. If eligible, B can call `claim_demo_award(actual_case_id)` exactly once for 100 demo credits. If evidence unavailable, must stay `UNVERIFIABLE` with zero credits.
 7. Capture **each** FINALIZED/SUCCESS receipt, leader/validator traces, warnings and read-back states. The first V2 `resolve_claim` must be examined specifically to see if the nondet storage pickling warning truly disappeared. No claim of solved runtime issue until then.
 
-**IMPORTANT:** A program remains a hypothetical test until on-chain creation, attestation and consensus have actually succeeded. Never migrate V1 claims/credits to V2 by assumption.
+**IMPORTANT:** Program creation has now succeeded and been independently verified. Report attachment, attestation, claim submission, AI resolution and credits remain UNTESTED in V2 until on-chain FINALIZED execution and separate state read. Never migrate V1 claims/credits to V2 by assumption.
 
 ## Synthetic report text — DRAFT ONLY (not an issuer-attested evidence file)
 
