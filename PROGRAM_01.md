@@ -1,6 +1,6 @@
 # COVERDICT Program #1 — synthetic Sepolia acceptance case
 
-> **Prepared, NOT yet created on-chain.** The only verified on-chain state so far is the deployer's Studio read of `get_program_count() = 0` and `get_case_count() = 0`, both reported Accepted. The developer must not describe Program #1 as created before a successful transaction and follow-up state read.
+> **Created and read back on Studionet** (user-provided `get_program(1)` result). Immutable incident window **2026-10-22 14:00–15:00 ICT**; report remains unattached, no claim yet. The creation transaction hash was not supplied. This can serve as the fallback missing-evidence test after 15:00, see [UNVERIFIABLE_STUDIO_TEST.md](UNVERIFIABLE_STUDIO_TEST.md).
 
 ## Purpose
 
