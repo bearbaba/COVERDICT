@@ -23,7 +23,8 @@ COVERDICT is proposed as an **integration-ready claim adjudication module**, NOT
 - [x] Source control CI lint + shim tests + web build on test branch (must continue passing after all updates).
 - [ ] Successful AI decision transaction receipt and independent validator trace.
 - [x] Separate live `INELIGIBLE / DENIED` Case #2 with reason, receipt digest, zero award ([resolve receipt](https://explorer-studio.genlayer.com/tx/0x08dc22aca05271cbf270b1362248d89b95f52b06cbb040aac56d69c9011ba50a)).
-- [ ] Live `UNVERIFIABLE` case with no award; complete positive/negative validator traces and source-fault recovery demonstration.
+- [x] Live Case #3 `UNVERIFIABLE / SUBMITTED` with empty digest and zero **authorized** award (user-provided Studio case read; [Program #3 record](PROGRAM_03.md)).
+- [ ] Independent post-resolution wallet C balance read, `resolve_claim(3)` transaction receipt/validator traces, source-fault recovery and positive-decision original trace.
 - [ ] HTTPS deployed, public-read-only claim explorer and wallet flows validated on two actual browsers/wallets.
 - [ ] Source parity between tested repository code and deployed Studionet contract.
 - [ ] End-to-end narrated video with no fake screenshots or implied monetary insurance.
