@@ -83,9 +83,15 @@ function App(){
    setProgramTotal(pCount);setCaseTotal(cCount);
    setLoaded(true);setDataError(false);
    if(wallet){
-    try{setCredits(Number(await read<number>('get_demo_balance',[wallet])));}
-    catch(e){console.error('Credit read failed',e);setCredits(null);}
-   }else setCredits(null);
+    try{
+     const balance=Number(await read<number>('get_demo_balance',[wallet]));
+     // A delayed read from a previous wallet must not overwrite this wallet's UI.
+     if(currentWallet.current.toLowerCase()===wallet.toLowerCase())setCredits(balance);
+    }catch(e){
+     console.error('Credit read failed',e);
+     if(currentWallet.current.toLowerCase()===wallet.toLowerCase())setCredits(null);
+    }
+   }else if(!currentWallet.current)setCredits(null);
   }catch(e){console.error('Studionet contract read failed',e);setDataError(true)}
   finally{setLoading(false)}
  },[account,programLimit,caseLimit]);
