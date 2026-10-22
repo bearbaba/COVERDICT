@@ -18,7 +18,7 @@ assert.equal(studionet.id,61999,'Do not use the Studio-dev network with this con
 assert.equal(studionet.rpcUrls.default.http[0],'https://studio.genlayer.com/api');
 
 const count=Number(await withTimeout(read('get_program_count'),'program_count'));
-assert.ok(count>=2,`Expected at least two programs, got ${count}`);
+assert.ok(count>=3,`Expected at least three programs, got ${count}`);
 console.log('PASS get_program_count:',count);
 
 const claims=Number(await withTimeout(read('get_case_count'),'case_count'));
@@ -30,6 +30,25 @@ assert.equal(program.id,2);
 assert.equal(program.award_credits,100);
 assert.equal(program.policy_sha256,'3aecb23e16be10a42f929442ee928850c653a170da3d8aace136e38b579183bc');
 console.log('PASS get_program(2):',program.status,program.submitted,program.approved,program.claimed);
+
+const program3=await withTimeout(read('get_program',[3]),'program3');
+assert.equal(program3.id,3);
+assert.equal(program3.issuer.toLowerCase(),'0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb');
+assert.equal(program3.label,'Sepolia missing-proof verification drill #3');
+assert.equal(program3.incident_start,1792647900);
+assert.equal(program3.incident_end,1792648020);
+assert.equal(program3.claim_deadline,1792650600);
+assert.equal(program3.award_credits,100);
+assert.equal(program3.max_claims,3);
+assert.equal(program3.policy_sha256,'48be0cec000526461ee631009b93023a5fe3fe3b29150bd4126c873a7eda2a54');
+assert.equal(program3.policy_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/64249db45a427d02f3b362553456f412866e6f12/evidence/demo_program_03_policy.txt');
+// Reporting is expected only after the incident interval. Once attached,
+// do not falsely expect status AWAITING_INCIDENT_REPORT forever.
+assert.ok(['AWAITING_INCIDENT_REPORT','OPEN_FOR_CLAIMS'].includes(program3.status));
+assert.equal(program3.approved,0);
+assert.equal(program3.claimed,0);
+console.log('PASS get_program(3):',program3.status,'submitted',program3.submitted,'approved',program3.approved);
+
 
 const claim=await withTimeout(read('get_case',[1]),'case1');
 assert.equal(claim.program_id,2);
