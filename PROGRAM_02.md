@@ -41,6 +41,10 @@ max_claims = 10
 
 **Unknowns:** on-chain Program #2 creation, Blockscout GenVM accessibility, LLM verdict, reward claim and website have **not** been verified yet.
 
+## Claim #1 submitted — on-chain state read (2026-10-22 09:38 ICT)
+
+User provided `get_case(1)` showing: `id=1`, `program_id=2`, `claimant=0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb`, `tx_hash=0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a`, `status=SUBMITTED`, `attempts=0`, `claimed=false`, `award_credits=0`, `outcome=""`, `reason=""`, `evidence_digest=""`. Submission TX hash has not yet been provided. **No AI adjudication has occurred.** Next action on Studionet: `resolve_claim(1)` in Normal / Full Consensus; after FINALIZED+SUCCESS, call `get_case(1)` and preserve leader and validator traces.
+
 ## Sepolia evidence received (user-provided Etherscan transaction summary)
 
 - Receipt hash: `0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a` ([Etherscan Sepolia transaction](https://sepolia.etherscan.io/tx/0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a)).
