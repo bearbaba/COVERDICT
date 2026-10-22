@@ -45,6 +45,17 @@ assert.equal(program3.policy_url,'https://raw.githubusercontent.com/bearbaba/COV
 // Reporting is expected only after the incident interval. Once attached,
 // do not falsely expect status AWAITING_INCIDENT_REPORT forever.
 assert.ok(['AWAITING_INCIDENT_REPORT','OPEN_FOR_CLAIMS'].includes(program3.status));
+
+if(program3.status==='OPEN_FOR_CLAIMS'){
+ assert.equal(program3.report_sha256,'8799473f94f80b3a171621ec069f6d7741d5e2d07e4036380aebcb00ac66f9da');
+ assert.equal(program3.report_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/4b6737cab3b7ecec5f642d14779aeb575c024127/evidence/demo_program_03_report.txt');
+ console.log('PASS get_program(3): attached report matches immutable post-window commit and digest');
+}else{
+ assert.equal(program3.report_sha256,'');
+ assert.equal(program3.report_url,'');
+ console.log('PASS get_program(3): report not yet attached');
+}
+
 assert.equal(program3.approved,0);
 assert.equal(program3.claimed,0);
 console.log('PASS get_program(3):',program3.status,'submitted',program3.submitted,'approved',program3.approved);
