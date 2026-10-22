@@ -78,16 +78,34 @@ if(n>=2){
  assert.equal(replacement.issuer.toLowerCase(),'0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb');
  assert.equal(replacement.attestor.toLowerCase(),'0x60bfdf6315294c7856acdc0b80d7bd40217debff');
  assert.equal(replacement.deposit_contract.toLowerCase(),'0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb');
- assert.equal(replacement.incident_start,1792669500);
- assert.equal(replacement.incident_end,1792670100);
+ assert.equal(replacement.incident_start,1792672200);
+ assert.equal(replacement.incident_end,1792672800);
  assert.equal(replacement.claim_deadline,1792839600);
- assert.equal(replacement.policy_sha256,'8450c4a2746b93370dec52c712f0954365fc4b97398eac920c743b41590b29f6');
- assert.equal(replacement.policy_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/2648fbaa069670b2339db9e084b62ed933655793/evidence/v2_program_02_policy_1845.txt');
+ assert.equal(replacement.policy_sha256,'e45afdb4965286995263a86d9a2456745438f5747234f56a155b41e2c9eccf3a');
+ assert.equal(replacement.policy_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/8165ba339606315fb2d53111524ad7e0d0478435/evidence/v2_program_02_policy.txt');
+ assert.equal(replacement.label,'V2 attested Sepolia synthetic receipt drill #2');
+ assert.equal(replacement.award_credits,100);
+ assert.equal(replacement.max_claims,3);
  assert.ok(['AWAITING_INCIDENT_REPORT','AWAITING_ATTESTATION','OPEN_FOR_CLAIMS'].includes(replacement.status));
+ if(replacement.status==='AWAITING_INCIDENT_REPORT'){
+   assert.equal(replacement.report_attested,false);
+   assert.equal(replacement.attested_at,0);
+   assert.equal(replacement.report_url,'');
+   assert.equal(replacement.report_sha256,'');
+ }
+ if(replacement.status==='AWAITING_ATTESTATION'){
+   assert.equal(replacement.report_attested,false);
+   assert.ok(replacement.report_url&&replacement.report_sha256);
+ }
+ if(replacement.status==='OPEN_FOR_CLAIMS'){
+   assert.equal(replacement.report_attested,true);
+   assert.ok(replacement.attested_at>=replacement.incident_end);
+   assert.ok(replacement.report_url&&replacement.report_sha256);
+ }
  assert.ok(replacement.submitted>=0&&replacement.submitted<=3);
  assert.ok(replacement.approved>=0&&replacement.approved<=replacement.submitted);
  assert.ok(replacement.claimed>=0&&replacement.claimed<=replacement.approved);
- console.log('PASS V2 replacement Program #2 with pinned policy:',replacement.status,'claims',replacement.submitted);
+ console.log('PASS V2 Program #2 FINALIZED with ACTUAL 19:30-19:40 ICT window, pinned policy:',replacement.status,'submitted',replacement.submitted);
 }
 
 

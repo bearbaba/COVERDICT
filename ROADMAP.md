@@ -62,7 +62,7 @@ If coverage programs cannot obtain independent factual sources that can justify 
 
 It is not insurance, an investment, token yield, custody, escrow, a financial promise, an automated compensation fund, a cross-chain bridge or a detector that can identify hacks from any arbitrary URL.
 
-### COVERDICT V2 — implementation started, deployment NOT verified
+### COVERDICT V2 — live program acceptance in progress
 
 - [x] Separate V2 contract source and test harness, without modifying V1 on-chain records ([design and release gates](V2_IMPLEMENTATION.md)).
 - [x] Module-level nondeterministic evaluator with callback capture regression test.
@@ -76,3 +76,6 @@ It is not insurance, an investment, token yield, custody, escrow, a financial pr
 - [ ] Introduce authenticated independent incident publisher and receipt finality/independent sources. Wallet address separation alone is insufficient.
 - [ ] Produce and test a real document-disagreement benchmark with semantic edge cases and an appeal mechanism.
 - [ ] V2-aware frontend with distinct ABI and explicit deployed contract selection; test real wallets in browsers.
+
+- [x] V2 Program #2 issuer A signed [FINALIZED / GenVM SUCCESS creation tx](https://explorer-studio.genlayer.com/tx/0x0f8ff8869ee0f392887ee4734ebaacfb8a6a99a3a49e7278099359d3c2e0af41) at 18:25:19 Oct 22. **Actual** precommitted window is **19:30–19:40 ICT**, immutable source SHA256 `e45afdb4965286995263a86d9a2456745438f5747234f56a155b41e2c9eccf3a`, claim deadline Oct 24 18:00. Later 18:45 draft policy was never signed; see [V2 Program 2 record](V2_PROGRAM_02.md).
+- [ ] After 19:40 ICT Oct 22, issuer pin post-window synthetic report, attach on-chain, then attestor sign SHA256 before Oct 24 claim deadline. No V2 report/attestation/resolve SUCCESS claimed yet.

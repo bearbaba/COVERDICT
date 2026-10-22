@@ -101,3 +101,7 @@ Recommended development route: **local GenVM lint & tests → Studionet independ
 - [Equivalence Principle](https://docs.genlayer.com/developers/intelligent-contracts/equivalence-principle)
 - [Network Configuration](https://docs.genlayer.com/developers/intelligent-contracts/deploying/network-configuration)
 - [Deploying Intelligent Contracts](https://docs.genlayer.com/developers/intelligent-contracts/deploying)
+
+### Current V2 Program #2 (original signed parameters)
+
+Issuer A has created [V2 Program #2 on Studionet](https://explorer-studio.genlayer.com/tx/0x0f8ff8869ee0f392887ee4734ebaacfb8a6a99a3a49e7278099359d3c2e0af41), **FINALIZED, GenVM SUCCESS**, return ID 2. Actual on-chain synthetic incident window: **Oct 22, 19:30–19:40 ICT**, **not** the later unsigned 18:45 policy draft. Report attachment, attestor signature, claims and V2 AI consensus are still pending. Details: [V2_PROGRAM_02.md](V2_PROGRAM_02.md). Claim submission deadline: **Oct 24, 18:00 ICT**. This is a virtual-credit demo, not actual insurance.
