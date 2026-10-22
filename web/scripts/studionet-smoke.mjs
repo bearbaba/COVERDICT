@@ -70,6 +70,9 @@ assert.equal(claim.status,'CLAIMED');
 assert.equal(claim.outcome,'ELIGIBLE');
 assert.equal(claim.claimed,true);
 assert.equal(claim.award_credits,100);
+assert.equal(claim.evidence_digest,'1425cb02fcf2e538a897b3ae4138a15b3542ddddad2e6f83761b121a31dab3a7','Case 1 receipt digest must match original finalized ELIGIBLE resolution');
+assert.equal(claim.attempts,1);
+
 console.log('PASS get_case(1):',claim.status,claim.outcome);
 
 const declined=await withTimeout(read('get_case',[2]),'case2');
