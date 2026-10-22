@@ -45,3 +45,5 @@
 Current scope is only issuer-defined, self-authored simulated policy/report plus one Sepolia Blockscout endpoint. SHA256 pins the documents' bytes but does not prove their truth; 5 agreeing validators on rollback do not validate the original positive AI reasoning. A future production product requires independent incident authorities, loss accounting, objective asset ownership proofs, fraud/duplicate protections across chains, appeals, bounded payouts, legal review and contract audit.
 
 Do not claim **Mainnet readiness**, sell any coverage, call the award insurance, or use real ETH in demonstrations. Read [SECURITY.md](SECURITY.md) and [ROADMAP.md](ROADMAP.md).
+
+- Case #2 denied-award retry: [GenLayer transaction](https://explorer-studio.genlayer.com/tx/0xb7eb2f6d36b2f185092a4cae788897e8e16ddef97fa83d7490649e40675a1ce1) FINALIZED, expected ERROR rollback, consensus ACCEPTED with five agreeing validators. See [negative acceptance](NEGATIVE_STUDIO_TEST.md). Wallet B post-retry balance to be checked independently.
