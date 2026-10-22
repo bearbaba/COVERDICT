@@ -256,3 +256,31 @@ def test_report_attestation_does_not_claim_to_verify_real_loss(v2):
     # A signature indicates agreement with a pinned document, not factual truth.
     assert c.get_program(1)["attestor"] == ATTESTOR
     assert c.get_demo_balance(ATTESTOR) == 0
+
+
+def test_attestor_must_not_be_deposit_recipient(v2):
+    m, c, gl, clock, _ = v2
+    with pytest.raises(UserError, match="Separate report attestor required"):
+        c.create_program("Self-endorsed recipient program", DEPOSIT,
+                         START, END, DEADLINE, POLICY_URL, POLICY_SHA,
+                         100, 1, DEPOSIT)
+
+
+def test_cross_program_same_transaction_cannot_earn_second_demo_award(v2):
+    m, c, gl, clock, _ = v2
+    # A second program is created while its future incident window is valid.
+    assert c.create_program("Second attested incident demo", DEPOSIT,
+                            START, END, DEADLINE, POLICY_URL, POLICY_SHA,
+                            100, 10, ATTESTOR) == 2
+    clock.return_value = END + 1
+    for program_id in (1, 2):
+        gl.message.sender_address.as_hex = ISSUER
+        c.attach_report(program_id, REPORT_URL, REPORT_SHA)
+        gl.message.sender_address.as_hex = ATTESTOR
+        c.attest_report(program_id, REPORT_SHA)
+    gl.message.sender_address.as_hex = CLAIMANT
+    assert c.submit_claim(1, TX) == 1
+    gl.message.sender_address.as_hex = OTHER
+    with pytest.raises(UserError, match="Duplicate wallet or transaction"):
+        c.submit_claim(2, TX)
+    assert c.get_program(2)["submitted"] == 0
