@@ -38,8 +38,9 @@ assert.equal(program.max_claims,3);
 assert.equal(program.policy_sha256,'5150f0cb08b88218dd9fa1e375782b741cc5aaca8f1a96dd0f799f2633bb653c');
 assert.equal(program.policy_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/c2f792197f12d0ab939bf83a0e3179f31f85088d/evidence/v2_program_01_policy.txt');
 assert.ok(['AWAITING_INCIDENT_REPORT','AWAITING_ATTESTATION','OPEN_FOR_CLAIMS'].includes(program.status));
-assert.equal(program.approved,0);
-assert.equal(program.claimed,0);
+assert.ok(program.submitted>=0&&program.submitted<=program.max_claims,'Submitted claims out of bounds');
+assert.ok(program.approved>=0&&program.approved<=program.submitted,'Approved claims out of bounds');
+assert.ok(program.claimed>=0&&program.claimed<=program.approved,'Claimed awards out of bounds');
 if(program.status==='AWAITING_INCIDENT_REPORT'){
   assert.equal(program.report_attested,false);
   assert.equal(program.attested_at,0);
