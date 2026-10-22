@@ -83,6 +83,7 @@ Recommended development route: **local GenVM lint & tests → Studionet independ
 - `web/` — TypeScript + React wallet UI; deployment gated by environment.
 - `evidence/` — **synthetic reference templates**, not real incident proof.
 - `ACCEPTANCE.md` — observed Studionet proof matrix, links, limitations and remaining checks.
+- `NEGATIVE_STUDIO_TEST.md` — live verified Sepolia wrong-receipt candidate and reproducible DENIED/UNVERIFIABLE Studio acceptance checklist.
 - `ROADMAP.md` — go/no-go gates and Mainnet risk controls.
 - `REVIEWER.md` — on-chain reproduction and submission checklist.
 - `SECURITY.md` — trust limitations and mainnet release blockers.

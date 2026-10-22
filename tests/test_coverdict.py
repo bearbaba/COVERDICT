@@ -288,3 +288,105 @@ def test_receipt_parser_missing_fields_unverifiable(context):
     c.submit_claim(1,TX)
     assert c.resolve_claim(1)=='SUBMITTED'
     assert c.get_case(1)['outcome']=='UNVERIFIABLE'
+
+
+@pytest.mark.parametrize('receipt_override', [
+    {'sender': OTHER},
+    {'to': OTHER},
+    {'timestamp': START - 1},
+    {'timestamp': END + 1},
+    {'value': '0'},
+    {'status': 'error'},
+])
+def test_ineligible_receipt_never_mints_awards_or_reaches_llm(context, receipt_override):
+    """Wrong wallet/destination/time/value/status is deterministically INELIGIBLE."""
+    m, c, gl, _, receipt = context
+    gl.nondet.web.data[m.BLOCKSCOUT + TX] = json.dumps(receipt(**receipt_override))
+    # The LLM must never adjudicate a receipt already failing objective checks.
+    def unexpected_prompt(*_args, **_kwargs):
+        raise AssertionError('LLM must not run on deterministically mismatched receipt')
+    gl.nondet.exec_prompt = unexpected_prompt
+
+    case_id = c.submit_claim(1, TX)
+    assert c.resolve_claim(case_id) == 'DENIED'
+    case = c.get_case(case_id)
+    program = c.get_program(1)
+    assert case['outcome'] == 'INELIGIBLE'
+    assert case['claimed'] is False
+    assert case['award_credits'] == 0
+    assert len(case['evidence_digest']) == 64
+    assert program['submitted'] == 1
+    assert program['approved'] == 0
+    assert program['claimed'] == 0
+    assert c.get_demo_balance(USER) == 0
+    with pytest.raises(UserError, match='No unclaimed approved award'):
+        c.claim_demo_award(case_id)
+
+
+@pytest.mark.parametrize('source_fault', [
+    'policy_missing',
+    'report_missing',
+    'policy_content_changed',
+    'report_content_changed',
+    'receipt_missing',
+    'receipt_invalid_json',
+    'receipt_hash_wrong',
+    'receipt_missing_timestamp',
+    'receipt_wrong_type',
+])
+def test_unverifiable_source_cannot_be_awarded_or_denied(context, source_fault):
+    """Unavailable/inconsistent evidence != proven fraud. Never award or deny silently."""
+    m, c, gl, _, receipt = context
+    data = gl.nondet.web.data
+    if source_fault == 'policy_missing':
+        del data[POLICY_URL]
+    elif source_fault == 'report_missing':
+        del data[REPORT_URL]
+    elif source_fault == 'policy_content_changed':
+        data[POLICY_URL] = 'Altered policy'
+    elif source_fault == 'report_content_changed':
+        data[REPORT_URL] = 'Altered report'
+    elif source_fault == 'receipt_missing':
+        del data[m.BLOCKSCOUT + TX]
+    elif source_fault == 'receipt_invalid_json':
+        data[m.BLOCKSCOUT + TX] = 'not json'
+    elif source_fault == 'receipt_hash_wrong':
+        data[m.BLOCKSCOUT + TX] = json.dumps(receipt(tx=TX2))
+    elif source_fault == 'receipt_missing_timestamp':
+        payload = receipt()
+        del payload['timestamp']
+        data[m.BLOCKSCOUT + TX] = json.dumps(payload)
+    elif source_fault == 'receipt_wrong_type':
+        data[m.BLOCKSCOUT + TX] = json.dumps({'hash': TX, 'status': 'ok', 'from': 'invalid'})
+
+    case_id = c.submit_claim(1, TX)
+    assert c.resolve_claim(case_id) == 'SUBMITTED'
+    case = c.get_case(case_id)
+    assert case['outcome'] == 'UNVERIFIABLE'
+    assert case['status'] == 'SUBMITTED'
+    assert case['evidence_digest'] == ''
+    assert case['award_credits'] == 0
+    assert c.get_program(1)['approved'] == 0
+    assert c.get_demo_balance(USER) == 0
+    with pytest.raises(UserError, match='No unclaimed approved award'):
+        c.claim_demo_award(case_id)
+
+
+def test_unverifiable_recovers_after_600_seconds_without_duplicate_credit(context):
+    m, c, gl, clock, receipt = context
+    del gl.nondet.web.data[m.BLOCKSCOUT + TX]
+    case_id = c.submit_claim(1, TX)
+    assert c.resolve_claim(case_id) == 'SUBMITTED'
+    assert c.get_case(case_id)['attempts'] == 1
+    with pytest.raises(UserError, match='Wait before retrying'):
+        c.resolve_claim(case_id)
+
+    gl.nondet.web.data[m.BLOCKSCOUT + TX] = json.dumps(receipt())
+    clock.return_value = END + 1 + m.RETRY_SECONDS
+    assert c.resolve_claim(case_id) == 'APPROVED'
+    assert c.get_case(case_id)['attempts'] == 2
+    assert c.get_program(1)['approved'] == 1
+    assert c.claim_demo_award(case_id) == 100
+    assert c.get_demo_balance(USER) == 100
+    with pytest.raises(UserError, match='No unclaimed approved award'):
+        c.claim_demo_award(case_id)
