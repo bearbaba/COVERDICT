@@ -28,7 +28,7 @@ def get(path: str) -> object:
         headers={"User-Agent": "Coverdict-ReadOnly-Acceptance/1.0", "Accept": "application/json"},
     )
     with urllib.request.urlopen(req, timeout=18) as response:
-        return json.loads(response.read(120_000).decode("utf-8"))
+        return json.loads(response.read(2_500_000).decode("utf-8"))
 
 def iso_ts(value: str) -> int:
     dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -65,7 +65,9 @@ def main():
     for endpoint in urls:
         try:
             body = get(endpoint)
-            items = body.get("items", []) if isinstance(body, dict) else []
+            items = (body.get("items") or body.get("transactions") or body.get("recent_transactions") or []) if isinstance(body, dict) else (body if isinstance(body, list) else [])
+            if isinstance(body, dict):
+                print(f"Response fields at {endpoint}: {list(body)[:8]}", flush=True)
             for item in items:
                 if isinstance(item, dict) and HEX64.fullmatch(str(item.get("hash", ""))):
                     hashes.append(item["hash"])
