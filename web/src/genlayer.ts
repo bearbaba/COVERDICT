@@ -46,8 +46,16 @@ export async function connectWallet():Promise<string>{
 export async function write(fn:string,args:(string|number)[],account:string,onHash:(hash:string)=>void):Promise<string>{
   assertReady();
   if(!window.ethereum||!/^0x[a-fA-F0-9]{40}$/.test(account))throw new Error('Connect your wallet.');
+  // EIP-1193 wallets may switch accounts after UI state was populated.
+  // Refuse to submit using a stale claimant/issuer identity.
+  const activeBefore=await window.ethereum.request({method:'eth_accounts'}) as string[];
+  if(!Array.isArray(activeBefore)||activeBefore[0]?.toLowerCase()!==account.toLowerCase())
+    throw new Error('Wallet account changed. Reconnect before signing this transaction.');
   const client=createClient({chain:studionet,account:account as `0x${string}`,provider:window.ethereum});
   await client.connect('studionet');
+  const activeAfter=await window.ethereum.request({method:'eth_accounts'}) as string[];
+  if(!Array.isArray(activeAfter)||activeAfter[0]?.toLowerCase()!==account.toLowerCase())
+    throw new Error('Wallet account changed while connecting. Reconnect and verify the address.');
   const payload={address,functionName:fn,args};
   const fee=await client.estimateTransactionFeesForWrite(payload);
   const hash=await client.writeContract({...payload,fees:{distribution:fee.distribution,feeValue:fee.feeValue}});
