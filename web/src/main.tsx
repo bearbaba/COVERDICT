@@ -79,10 +79,19 @@ function App(){
  };
  const myCases=cases.filter(c=>account&&c.claimant.toLowerCase()===account.toLowerCase());
  const shown=useMemo(()=>programs.filter(p=>p.label.toLowerCase().includes(search.toLowerCase())||String(p.id)===search),[programs,search]);
- const sendClaim=(event:React.FormEvent)=>{event.preventDefault();if(!selectedProgram)return;void act('Submit incident claim','submit_claim',[selectedProgram.id,claimTx.trim()],()=>setClaimTx(''))};
+ const sendClaim=(event:React.FormEvent)=>{
+  event.preventDefault();
+  if(!selectedProgram)return;
+  if(!isClaimWindowOpen(selectedProgram)){setError('The claim submission deadline has passed.');return}
+  if(!/^0x[0-9a-fA-F]{64}$/.test(claimTx.trim())){setError('Enter a valid 32-byte Sepolia transaction hash.');return}
+  void act('Submit incident claim','submit_claim',[selectedProgram.id,claimTx.trim()],()=>setClaimTx(''));
+ };
  const sendProgram=(event:React.FormEvent)=>{
   event.preventDefault();const start=toUtc(create.start),end=toUtc(create.end),deadline=toUtc(create.deadline);
   if([start,end,deadline].some(x=>!Number.isSafeInteger(x))){setError('Invalid local date or time.');return}
+  if(!/^0x[0-9a-fA-F]{40}$/.test(create.contract.trim())||!/^https:\/\/raw\.githubusercontent\.com\/bearbaba\/COVERDICT\/[0-9a-f]{40}\/evidence\/[a-zA-Z0-9_/-]+\.txt$/.test(create.url.trim())||!/^([0-9a-f]{64})$/.test(create.sha.trim())){
+   setError('Use a valid Sepolia recipient, a SHA256-pinned policy URL in this repository, and a lowercase 64-character SHA256 digest.');return;
+  }
   if(start<Math.floor(Date.now()/1000)+16*60||!(start<end&&end<deadline)||deadline>Date.now()/1000+30*86400){
    setError('Choose a future incident start at least 16 minutes from now, with start < end < deadline, all within 30 days.');return;
   }
