@@ -55,5 +55,8 @@ max_claims = 10
 - Immutable raw URL: `https://raw.githubusercontent.com/bearbaba/COVERDICT/ccd7c2c7123c755c8839ef6957e918c4e25877b3/evidence/demo_program_02_report.txt`
 - SHA256 of 1,418 exact UTF-8 bytes with trailing LF: `6bf4d0b0ff74a2d2dbc9dec8ed4e97c3ac072962e960f68da412af9807815261`
 - The report is **issuer-authored synthetic drill content**, not independent proof of a real DeFi hack or actual loss. The report must not be treated as an objective receipt; the contract checks the Sepolia Blockscout receipt independently.
+- **User-reported on-chain verification:** `get_program(2)` now returns `status=OPEN_FOR_CLAIMS`, `report_url=https://raw.githubusercontent.com/bearbaba/COVERDICT/ccd7c2c7123c755c8839ef6957e918c4e25877b3/evidence/demo_program_02_report.txt`, `report_sha256=6bf4d0b0ff74a2d2dbc9dec8ed4e97c3ac072962e960f68da412af9807815261`, `submitted=0`, `approved=0`, `claimed=0`. A hash for the `attach_report` write was **not provided**.
+- **Next on-chain action (before 12:00 ICT 2026-10-22):** Claimant `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb` calls `submit_claim(2, "0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a")`; then verify `get_case(1)` is `SUBMITTED`. Do not assert case #1 until actual submitted and read back.
+
 - `attach_report(2, url, digest)` requires the program issuer address `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb`, now at or after the window end 09:30 ICT. **Transaction and following `get_program(2)` read are still pending.**
 - Then `submit_claim(2, 0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a)` from claimant before noon, followed by a real Full Consensus `resolve_claim`.
