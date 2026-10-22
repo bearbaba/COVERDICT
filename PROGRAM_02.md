@@ -48,3 +48,12 @@ max_claims = 10
 - Independent Blockscout API fetch was **unavailable from the review environment**; precise UTC timestamp and the exact `status/hash/value` fields used by the GenLayer contract are still unverified. Therefore do **not** claim validator or receipt success yet.
 - SHA256 of the exact precommitted 992-byte policy was recomputed locally and matches the program state (`3aecb23e16be10a42f929442ee928850c653a170da3d8aace136e38b579183bc`).
 - Next action: after **09:30 ICT / 02:30 UTC**, pin and attach a clearly labeled **synthetic** incident report from the issuer, before the program deadline at **12:00 ICT**. No evidence of actual financial damage is asserted.
+
+## Synthetic incident report pinned after the window (2026-10-22)
+
+- Report Git commit: `ccd7c2c7123c755c8839ef6957e918c4e25877b3`
+- Immutable raw URL: `https://raw.githubusercontent.com/bearbaba/COVERDICT/ccd7c2c7123c755c8839ef6957e918c4e25877b3/evidence/demo_program_02_report.txt`
+- SHA256 of 1,418 exact UTF-8 bytes with trailing LF: `6bf4d0b0ff74a2d2dbc9dec8ed4e97c3ac072962e960f68da412af9807815261`
+- The report is **issuer-authored synthetic drill content**, not independent proof of a real DeFi hack or actual loss. The report must not be treated as an objective receipt; the contract checks the Sepolia Blockscout receipt independently.
+- `attach_report(2, url, digest)` requires the program issuer address `0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb`, now at or after the window end 09:30 ICT. **Transaction and following `get_program(2)` read are still pending.**
+- Then `submit_claim(2, 0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a)` from claimant before noon, followed by a real Full Consensus `resolve_claim`.
