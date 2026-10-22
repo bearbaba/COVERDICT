@@ -106,3 +106,17 @@ The synthetic incident window ended at 12:47 ICT. The report was committed to Gi
 **Still pending on-chain:** only the issuer wallet A can sign `attach_report(3, raw_url, sha256)`. Confirm FINALIZED/SUCCESS and then `get_program(3).status=OPEN_FOR_CLAIMS` with pinned report fields. Do not assume the report is already attached simply because it exists on GitHub.
 
 **Next user-controlled write:** wallet C `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff` calls `submit_claim(3, "0x0000000000000000000000000000000000000000000000000000000000000001")` before 13:30 ICT. This is a nonexistent receipt verified by Blockscout HTTP 404, so the correct expected consensus result is UNVERIFIABLE. Read actual returned case ID rather than assume #3.
+
+
+## Live report attachment confirmed through GenLayer Studionet RPC
+
+On October 22 2026 the independent GitHub Actions [read-only Studionet smoke #39730640013](https://github.com/bearbaba/COVERDICT/actions/runs/39730640013) successfully read:
+
+- `get_program(3).status=OPEN_FOR_CLAIMS`.
+- `get_program(3).report_sha256=8799473f94f80b3a171621ec069f6d7741d5e2d07e4036380aebcb00ac66f9da`.
+- `get_program(3).report_url=https://raw.githubusercontent.com/bearbaba/COVERDICT/4b6737cab3b7ecec5f642d14779aeb575c024127/evidence/demo_program_03_report.txt`.
+- Submitted 0, approved 0 at time of this read, and prior cases unchanged.
+
+**Report attachment independently VERIFIED on-chain.** Original `attach_report(3,...)` transaction hash and detailed validator votes have not been provided; do not invent them.
+
+**Next live test:** wallet C `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff` calls `submit_claim(3, "0x0000000000000000000000000000000000000000000000000000000000000001")` **before 13:30 ICT October 22**. Then read `get_case_count` or returned ID and call `resolve_claim(case_id)`; expectation is `UNVERIFIABLE`, not `DENIED` or `APPROVED`.
