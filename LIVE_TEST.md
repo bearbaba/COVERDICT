@@ -64,7 +64,7 @@ The MVP relies on a **single Blockscout API** and **issuer-authored report**. It
 | Program created | **Program #1 accepted read; create tx hash pending** | User-supplied `get_program(1)` output: awaiting report, pool empty, hashes/times match [specification](PROGRAM_01.md) |
 | Incident report pinned | PENDING | — |
 | Sepolia receipt verified | PENDING | — |
-| Full Consensus APPROVED/DENIED | PENDING | — |
+| Full Consensus APPROVED/DENIED | **Claim #1 APPROVED / ELIGIBLE via get_case(1) read; resolve tx and validator traces pending** | [Program #2](PROGRAM_02.md) |
 | UNKNOWN / source mismatch | PENDING | — |
 | Claim award once | PENDING | — |
 | HTTPS frontend | PENDING | — |
