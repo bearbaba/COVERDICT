@@ -1,12 +1,23 @@
 # COVERDICT Program #3 — Missing Proof Test
 
+## Verified Case #3 resolution execution — October 22, 2026, 13:17:48 ICT
+
+**Case #3 has a user-supplied original adjudication transaction receipt:** [`resolve_claim(3)`, `0xa0c07abcc1742178c03b53342ea44a3c54d049f1864fc1f2b7e5a834cb9df4ab`](https://explorer-studio.genlayer.com/tx/0xa0c07abcc1742178c03b53342ea44a3c54d049f1864fc1f2b7e5a834cb9df4ab), from wallet C `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff` to the deployed COVERDICT contract.
+
+- **FINALIZED**; GenVM **Execution SUCCESS**, Return Value `"SUBMITTED"`; **Consensus Accepted**, Normal mode, zero rotations, **five initial validators**.
+- Equivalence Principle Output 0: `{"digest":"","outcome":"UNVERIFIABLE","reason":"One or more pinned evidence sources could not be independently verified."}`.
+- Original user-provided post-resolution `get_case(3)`: `status=SUBMITTED`, `outcome=UNVERIFIABLE`, `attempts=1`, `evidence_digest=""`, `award_credits=0`, `claimed=false`. The [independent read-only RPC test](https://github.com/bearbaba/COVERDICT/actions/runs/39733970516) confirmed the persisted verdict and wallet C **0 credits**; Program #3 submitted/approved/claimed = **1/0/0**.
+- GenVM stderr showed a **nonfatal warning**: `Detected pickling storage class. Reading storage in nondet mode is not supported`. This needs reproduction in an isolated new contract; see [experimental draft PR #6](https://github.com/bearbaba/COVERDICT/pull/6). The existing deployed contract has not been replaced.
+- **Do not state that five validators independently agreed on a disputed AI narrative.** The user-provided summary shows five initial validators and Accepted consensus, but does not include their individual votes. This test validates fail-closed handling of missing receipt evidence, **not** the correctness of AI coverage decisions or proof of real DeFi loss.
+- **Still missing:** the original Case #3 `submit_claim` transaction hash, per-validator trace for this resolution, and original positive Case #1 adjudication transaction/validator trace. Nothing was transferred or awarded in this negative-evidence test.
+
 ## Latest on-chain acceptance — Case #3: UNVERIFIABLE (2026-10-22)
 
 **Live verdict observed from user-provided Studio state: PASS.** The user supplied a finalized state read of `get_case(3)`: `status=SUBMITTED`, `outcome=UNVERIFIABLE`, `attempts=1`, `last_attempt_at=1792649868`, `award_credits=0`, `claimed=false`, `evidence_digest=""`. The claimant is wallet C `0x60bfdf6315294c7856acdc0b80d7bd40217debff`, under Program #3, using the deliberately absent Sepolia hash `0x0000000000000000000000000000000000000000000000000000000000000001`. Reason: `One or more pinned evidence sources could not be independently verified.`
 
 The missing Sepolia receipt previously returned HTTP 404 in a [read-only Blockscout API test](https://github.com/bearbaba/COVERDICT/actions/runs/39724530282). Unknown proof was **not** converted to `DENIED` or `APPROVED`; the case remains retryable after the contract's 600-second cooldown and carries no authorized demo award.
 
-**Evidence boundary:** the original `submit_claim(3)` and `resolve_claim(3)` transaction hashes and individual validator traces have **not yet been provided**. A state read is not the same as a finalized execution receipt. [Independent read-only RPC acceptance](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513) now confirms wallet C's **post-resolution demo balance is still 0**, `get_case(3)=SUBMITTED / UNVERIFIABLE` with 0 authorized award, and Program #3 counters `submitted=1`, `approved=0`, `claimed=0`.
+**Evidence boundary:** the original `submit_claim(3)` transaction hash and individual validator votes have **not yet been provided**; the `resolve_claim(3)` FINALIZED/SUCCESS receipt is now linked in the verified execution section. A state read is not the same as a finalized execution receipt. [Independent read-only RPC acceptance](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513) now confirms wallet C's **post-resolution demo balance is still 0**, `get_case(3)=SUBMITTED / UNVERIFIABLE` with 0 authorized award, and Program #3 counters `submitted=1`, `approved=0`, `claimed=0`.
 
 Sections below preserve historical milestones and planned steps; use this latest status rather than any older statement saying Case #3 is pending.
 
@@ -134,4 +145,4 @@ On October 22 2026 the independent GitHub Actions [read-only Studionet smoke #39
 
 ### Confirmed independent Case #3 RPC result
 
-[GitHub Actions #39733374513](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513) independently read the live Studionet contract after Case #3 resolved: program count 3, claim count 3; Program #3 submitted 1, approved 0; `get_case(3)=SUBMITTED / UNVERIFIABLE` with award 0; wallet C balance **0**; wallets A/B **100 / 0**. The job passed. This establishes persisted state and no demo-credit award, **not** the original resolution transaction receipt or individual validator votes (still pending).
+[GitHub Actions #39733374513](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513) independently read the live Studionet contract after Case #3 resolved: program count 3, claim count 3; Program #3 submitted 1, approved 0; `get_case(3)=SUBMITTED / UNVERIFIABLE` with award 0; wallet C balance **0**; wallets A/B **100 / 0**. The job passed. This establishes persisted state and no demo-credit award. The original resolution transaction receipt is now linked above; individual validator votes are still pending.
