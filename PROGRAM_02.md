@@ -87,6 +87,7 @@ The user provided a post-`claim_demo_award(1)` `get_case(1)` read showing `statu
 
 - **Read 1**: `get_demo_balance(0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb)` → **Response Accepted: `100`**.
 - **Read 2**: `get_program(2)` → `submitted=1`, `approved=1`, `claimed=1`, `award_credits=100`, `max_claims=10`, `status=OPEN_FOR_CLAIMS` and policy/report digests unchanged.
+- **Post-replay balance read:** User called `get_demo_balance(0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb)` again after the 5-validator agreed rollback of `claim_demo_award(1)` and reported `100`. This proves the invalid duplicate call did **not** raise the stored demo credit balance to 200, according to the subsequent on-chain read. Successful positive adjudication consensus traces remain to be collected.
 - **Read 3** (previous): `get_case(1)` → `status=CLAIMED`, `claimed=true`, `outcome=ELIGIBLE`, `award_credits=100`, `attempts=1`, stable evidence digest.
 - This completes one **positive synthetic demo award** state transition on Studionet as observed through user-provided contract reads; the program can remain `OPEN_FOR_CLAIMS` while prior claims are `CLAIMED`.
 - **Remaining evidence for reviewer:** tx hashes for `submit_claim(2,...)`, `attach_report(2,...)`, `resolve_claim(1)` and `claim_demo_award(1)`; successful receipts and independent Full Consensus validator traces; a genuinely ineligible or unverifiable receipt (second-claim rejection is documented); HTTPS frontend. Never infer real-world exploit loss.
