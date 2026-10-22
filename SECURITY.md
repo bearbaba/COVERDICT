@@ -19,3 +19,7 @@
 Mainnet with asset custody should remain blocked until: independent security audit; demonstrated Ethereum receipt authentication or proof verification; identity/anti-sybil and replay resistance; binding coverage underwriting and funding partner; objective loss accounting with no double compensation; multi-source incident attestation; adversarial LLM tests; legal and regulatory review; bounded appeal/grace windows; and a documented economics/solvency model.
 
 Do not report vulnerabilities with exploitable transaction details in public issues. Use GitHub private security reporting if available. Never commit signing keys or API tokens.
+
+## V2 isolated branch warning (2026-10-22)
+
+The [separate V2 prototype](V2_IMPLEMENTATION.md) adds an attestor wallet, cross-program anti-replay, issuer/attestor claim restrictions and a module-level nondeterministic evaluator. V2 is **not deployed** to Studionet, and local shims / `genvm-lint` cannot establish live consensus safety or removal of the existing GenVM nondeterministic-storage warning. Two distinct signing wallets can still be controlled by one person, and an attestation acknowledges a SHA256-pinned document without proving its factual accuracy. The V1 contract and V1 web app remain unchanged. No V2 real-world protection, insurance or Mainnet capabilities exist.
