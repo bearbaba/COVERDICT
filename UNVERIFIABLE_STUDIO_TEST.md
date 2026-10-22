@@ -47,6 +47,7 @@ Program #1 **already exists** (the first `get_program(1)` read previously showed
 | Proof | Expected | Actual |
 |---|---|---|
 | Missing Blockscout receipt | HTTP 404 | PASS, [CI log](https://github.com/bearbaba/COVERDICT/actions/runs/39724254650) |
+| Wallet C initial demo balance | `get_demo_balance(0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff) = 0` | User-reported Studio read, October 22 (not independently fetched) |
 | GenLayer submit transaction | FINALIZED + execution SUCCESS | Pending signature |
 | `get_case(new_id)` before resolve | SUBMITTED / 0 attempts | Pending |
 | `resolve_claim(new_id)` | Consensus Accepted + execution SUCCESS | Pending |
