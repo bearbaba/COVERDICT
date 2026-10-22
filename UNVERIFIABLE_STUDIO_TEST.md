@@ -71,3 +71,5 @@ The deployed `_assess` currently wraps source fetch, SHA256 verification, JSON d
 A separate experimental branch investigates a nondeterministic closure warning without silently modifying this deployed contract. `UNVERIFIABLE` results must not be marketed as false-claim detection, and SHA256 does not authenticate an issuer's claims.
 
 See [NEGATIVE_STUDIO_TEST.md](NEGATIVE_STUDIO_TEST.md) and [ACCEPTANCE.md](ACCEPTANCE.md).
+
+**Program #3 precommitted and created (2026-10-22):** [FINALIZED, GenVM SUCCESS, consensus Accepted `create_program` transaction](https://explorer-studio.genlayer.com/tx/0x7686990d2f1cd1e8368d393c1f35406b2d73f8cb29f2d5fd5ed18ef074be2300) returned ID **3** at 12:20:28 ICT. User's `get_program(3)` matches commit-pinned policy SHA256 `48be0cec000526461ee631009b93023a5fe3fe3b29150bd4126c873a7eda2a54`, records issuer wallet A, 12:45–12:47 ICT incident, 13:30 ICT claim deadline, and zero submissions/awards. The report is NOT yet attached and the UNVERIFIABLE decision is NOT yet executed. Follow [PROGRAM_03.md](PROGRAM_03.md) after 12:47; wallet C is `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff` (reported initial credits 0).
