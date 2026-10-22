@@ -63,6 +63,13 @@ Tests use shimmed GenLayer globals and mocked web/LLM responses; they **do not**
 - This deployment corresponds to the `fix/testnet-readiness` variant with the `close_unverifiable_claim` method visible in Studio. The exact deployed source still needs independent comparison with the branch.
 - Use only Sepolia test-ETH as synthetic receipt data; no financial compensation is available.
 
+## Public Testnet website
+
+- **Canonical domain:** [https://coverdict-testnet.vercel.app](https://coverdict-testnet.vercel.app) (Vercel Vite Production deployment **READY**, Git-connected to `main`).
+- **Deployment dashboard:** [Vercel deployment](https://vercel.com/khaiptk1998-8088s-projects/coverdict-testnet/3yPszcPpNKwcnYUPPdFCMwSV7irT).
+- Build-time address: `VITE_COVERDICT_CONTRACT_ADDRESS=0x044DB5B1d148d30f8EdF591497d8726F66C22a16`, GenLayer Studionet. Authentication/password protection disabled for public demo.
+- **Browser acceptance still pending**: GitHub/Vercel confirm successful build, but independent anonymous browser access, wallet connection and write flows have not been confirmed in this environment. The site offers only nonredeemable test credits; do not submit real funds or claim any insurance coverage.
+
 ## Web app / deployment
 
 Frontend is a responsive React + Vite English-first app with public read-only claim explorer, paginated wallet history, pinned evidence links and fingerprints, issuer controls, demo-credit claim and explorer-linked browser transaction history. It labels all programs as synthetic testnet simulations. It **does not** fabricate markets while no contract is deployed. For deployment, set the public build-time environment variable `VITE_COVERDICT_CONTRACT_ADDRESS=0x044DB5B1d148d30f8EdF591497d8726F66C22a16` (or use `web/.env` locally). Do not publish credentials. The bundled frontend client currently targets **Studionet 61999**; change its network definition and validate chain IDs before moving to Bradbury. Vercel settings: root `web`, framework Vite, output `dist`.
