@@ -35,7 +35,7 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 | GenVM lint | PASS in GitHub Actions | [CI run](https://github.com/bearbaba/COVERDICT/actions/runs/39638135874) |
 | Studionet deployment | FINALIZED per user's Studio screenshot; source parity pending | [deployment receipt](https://explorer-studio.genlayer.com/tx/0xf2d167a4c30bac322dcfeb2145cc157380a015fe043cfecbd82a150498afe045) · [Studio import](https://studio.genlayer.com/?import-contract=0x044DB5B1d148d30f8EdF591497d8726F66C22a16) |
 | AI leader/validator consensus | **Not tested live** | — |
-| Program & case lifecycle | Shimmed local test only | `tests/test_coverdict.py` |
+| Program & case lifecycle | **Program #1 created and read on Studionet; claims untested** | User-provided `get_program(1)` JSON; see [Program #1](PROGRAM_01.md) |
 | Wallet award claim on-chain | **Not tested live** | — |
 | HTTPS production preview | **Not deployed** | — |
 
