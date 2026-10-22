@@ -1,6 +1,6 @@
 # COVERDICT V2 — isolated experimental contract (Phase A)
 
-**State: V2 DEPLOYED TO GENLAYER STUDIONET, READ-ONLY RPC VERIFIED; WRITE METHODS/AI CONSENSUS NOT YET ACCEPTANCE-TESTED. NOT AUDITED. NOT MAINNET-READY.** The reviewed V1 contract at `0x044DB5B1d148d30f8EdF591497d8726F66C22a16` and its original three claims remain untouched. [Original V1 acceptance](ACCEPTANCE.md).
+**State: V2 DEPLOYED TO GENLAYER STUDIONET; ONE SYNTHETIC POSITIVE CLAIM COMPLETED WITH FULL CONSENSUS AND 100 NONREDEEMABLE DEMO CREDITS, based on Studio transaction receipt and user-provided on-chain reads. NOT AUDITED. NOT MAINNET-READY.** The reviewed V1 contract at `0x044DB5B1d148d30f8EdF591497d8726F66C22a16` and its original three claims remain untouched. [Original V1 acceptance](ACCEPTANCE.md).
 
 ## V2 deployed instance — independent RPC acceptance (2026-10-22)
 
@@ -11,7 +11,7 @@
 - **Visual report:** User supplied Studio screenshot in Normal (Full Consensus) showing a deployed instance with `get_contract_version` and `attest_report` ABI. The full deploy transaction hash, specific constructor receipt and exact independently compared onchain source file are not yet recorded; source parity cannot be fully claimed from the version string.
 - The original V2 source first appeared on `main` at merge commit `ce40f017cd93a3aa469ac578d82468611e19d885` (file `contracts/CoverdictV2.py`). Preserve source comparison and deployment receipt before upgrading.
 - **Program creation VERIFIED:** issuer A submitted [`create_program` FINALIZED/SUCCESS on V2](https://explorer-studio.genlayer.com/tx/0x1b6717cb38257cd8d761ffe27d91cfc3fa53f5021a5b37b81313ecb894949636) on Oct 22 2026, return `1`; [independent RPC #39745600960](https://github.com/bearbaba/COVERDICT/actions/runs/39745600960) confirmed `get_program(1)` issuer, precommitted policy, attestor, receipt parameters and original V1 safety. See [V2_PROGRAM_01.md](V2_PROGRAM_01.md).
-- **Not yet verified:** issuer report attachment, attestor authorization, V2 claim submission/credits, real GenVM nondet `resolve_claim` warning elimination and individual validator votes.
+- **V2 Program #2 POSITIVE end-to-end PASS:** issuer report attached, designated attestor signed, claimant B submitted a Sepolia receipt, [Full Consensus `resolve_claim(1)`](https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7) FINALIZED/GenVM SUCCESS returned `APPROVED` and `ELIGIBLE`, with empty stderr. Subsequent user-provided `get_case(1)=CLAIMED`, `get_demo_balance(B)=100`, `get_program(2)` counters 1/1/1. [Full evidence log](V2_PROGRAM_02.md). **Still missing:** original award write receipt and individual validator votes/traces; negative and UNVERIFIABLE live V2 cases, adversarial tests, and source parity.
 
 ## V2 goals already implemented in code
 
@@ -86,4 +86,4 @@ The legacy frontend `web/` is intentionally bound to the **V1** contract address
 
 **C — Meaningful adjudication:** test ambiguous incident coverage with multiple contradictory inputs and validator disagreement, record individually inspectable leader/validator reasoning, build an appeals/corrections flow before considering any redeemable value.
 
-This V2 now has a genuine on-chain **deployment/version-read** acceptance. Code and CI still do **not** prove V2 claim/adjudication writes or removal of the GenVM warning; those remain pending.
+V2 has now demonstrated a **live positive claim/adjudication and post-award state** on Studionet (see [V2 Program #2](V2_PROGRAM_02.md)). This single successful run with empty stderr does **not** establish general nondeterministic-runtime correctness, security, independent validator vote agreement, or mainnet readiness; live V2 negative/unverifiable branches remain untested.
