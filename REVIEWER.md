@@ -18,7 +18,7 @@ The user provided the [original `resolve_claim(1)` Studio receipt](https://explo
 - Original user-provided post-resolution `get_case(3)`: `status=SUBMITTED`, `outcome=UNVERIFIABLE`, `attempts=1`, `evidence_digest=""`, `award_credits=0`, `claimed=false`. The [independent read-only RPC test](https://github.com/bearbaba/COVERDICT/actions/runs/39733970516) confirmed the persisted verdict and wallet C **0 credits**; Program #3 submitted/approved/claimed = **1/0/0**.
 - GenVM stderr showed a **nonfatal warning**: `Detected pickling storage class. Reading storage in nondet mode is not supported`. This needs reproduction in an isolated new contract; see [experimental draft PR #6](https://github.com/bearbaba/COVERDICT/pull/6). The existing deployed contract has not been replaced.
 - **Do not state that five validators independently agreed on a disputed AI narrative.** The user-provided summary shows five initial validators and Accepted consensus, but does not include their individual votes. This test validates fail-closed handling of missing receipt evidence, **not** the correctness of AI coverage decisions or proof of real DeFi loss.
-- **Still missing:** the original Case #3 `submit_claim` transaction hash, per-validator trace for this resolution, and original positive Case #1 adjudication transaction/validator trace. Nothing was transferred or awarded in this negative-evidence test.
+- **Still missing:** the original Case #3 `submit_claim` transaction hash, per-validator trace for this resolution, and individual positive Case #1 validator votes; the original Case #1 FINALIZED adjudication transaction is linked at the top. Nothing was transferred or awarded in this negative-evidence test.
 
 ## Latest on-chain acceptance — Case #3: UNVERIFIABLE (2026-10-22)
 
@@ -89,7 +89,7 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 - Consensus reached **ACCEPTED** with five listed validator **Agree** results, while the execution ended in **ERROR / rollback**, `No unclaimed approved award`. This is the correct negative-test result, not a positive successful execution.
 - **Post-rollback read confirmed by the user:** `get_demo_balance(claimant)` still returns `100` after the rejected replay. Replay protection and zero-change-on-revert are both PASS for this test case.
 - Earlier accepted reads: claim state `CLAIMED`, demo balance `100`, program counters `submitted=approved=claimed=1`.
-- **Still needed:** read balance after the failed replay, positive adjudication individual validator votes/source-tracing (the SUCCESS transaction is now linked), a genuinely ineligible/unverifiable claim, HTTPS deployment and reviewable demo.
+- **Still needed:** read balance after the failed replay, positive adjudication individual validator votes/source-tracing (the SUCCESS transaction is now linked), independent source authority, validator votes, independently verified browser E2E and reviewable production URL.
 
 
 ## Live INELIGIBLE claim #2 — 2026-10-22
@@ -100,7 +100,7 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 - **Reason:** Receipt does not match wallet, destination, time window, successful status or native ETH value.
 - **Equivalence Principle Output 0:** `outcome=INELIGIBLE`, identical digest and reason. This is a deterministic receipt-validation rejection (not a contested AI document-classification example).
 - **GenVM stderr warning:** `Detected pickling storage class. Reading storage in nondet mode is not supported`. The actual transaction executed successfully, but this warning warrants a separate developer inspection.
-- **Still pending:** submission tx hash for Case #2, full individual validator traces, wallet B balance before/after, denied-award rollback, individual vote traces for the original Case #1 decision (the receipt is now linked above); live UNVERIFIABLE Case #3 is completed. No real DeFi loss was proven.
+- **Still pending:** submission transaction hashes and individual validator traces for Cases #1–#3, plus independent browser E2E; wallet B post-rollback balance and all three cases are already verified via Studionet RPC. No real DeFi loss was proven.
 
 ### Independent read-only chain re-verification (GitHub Actions)
 
