@@ -26,6 +26,12 @@
 
 **Interpretation:** The first successful wallet-bound demo award and the failed replay are observed from contract reads and the supplied negative execution log. This is **not** evidence that a DeFi exploit or economic loss occurred, nor a claim that all claim types pass.
 
+## Public site (first deployment)
+
+- Vercel Git integration deployed `main` as Vite build to [https://coverdict-testnet.vercel.app](https://coverdict-testnet.vercel.app); Vercel state `READY` for deployment `dpl_3yPszcPpNKwcnYUPPdFCMwSV7irT`.
+- Vercel project reports disabled SSO/password protection and a verified canonical domain.
+- **Not independently browser-validated**: wallet flows, on-page chain reads, Chrome/Firefox browser access and mobile layout still require manual confirmation. Do not describe this as a completed live user acceptance test.
+
 ## Still needed before a strong GenLayer Projects submission
 
 1. Save the **original successful** `resolve_claim(1)` transaction hash and leader/validator trace proving the AI decision, not only the negative replay trace.
