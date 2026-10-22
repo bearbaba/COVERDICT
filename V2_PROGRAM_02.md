@@ -1,6 +1,12 @@
 # COVERDICT V2 Program #2 — actual 19:30–19:40 ICT signed program
 
 
+## V2 positive claim end-to-end complete — October 22, 2026
+
+**User-provided post-award on-chain read: PASS.** `get_case(1)` on V2 now returns `status=CLAIMED`, `claimed=true`, `outcome=ELIGIBLE`, `award_credits=100`, `attempts=1` and the same immutable evidence digest `ea9d415a876825515f1ce08d3c39b1f841345a16ce4a7e6ab7151693b68a4ba7`. The claimant wallet B `0xd6b8a3a5eb329410d9504784812b8569afa8c2af` separately read `get_demo_balance(B)=100` (Accepted), and `get_program(2)` reports `submitted=1`, `approved=1`, `claimed=1`, `report_attested=true`. The stored state confirms a completed synthetic award lifecycle, not financial compensation.
+
+**Still to capture:** original successful `claim_demo_award(1)` transaction hash/GenVM receipt; separate `attach_report` and `attest_report` write transaction hashes; individual validator traces from the `resolve_claim` transaction. No repeated award attempt on V2 has been verified. One successful V2 resolution showed empty stderr, but general elimination of the earlier GenVM warning remains unproven. V2 is not audited or mainnet-ready.
+
 ## V2 live positive adjudication — October 22, 2026
 
 **User-supplied transaction details of [`resolve_claim(1)`](https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7): FINALIZED / GenVM Execution SUCCESS / Consensus Accepted, at 19:58:31 ICT.** Caller wallet B `0xd6b8a3a5eb329410d9504784812b8569afa8c2af`, contract `0x844BE9205a755900B7a6E40596DeDbdC69825e63`, mode Normal (Full Consensus), initial validators 5, rotation count **1**, stdout/stderr empty, return value `APPROVED`.
@@ -9,7 +15,7 @@
 - User-provided prior `get_case(1)` confirmed a real on-chain submission: Program #2, claimant B, status `SUBMITTED`, attempts 0, and Sepolia tx `0x7e24af7f845356332d300471cdbb70584ddea7568538e638aa438daec93ead9f`.
 - Verdict reason states that the independently fetched Sepolia receipt satisfied wallet, recipient, positive native ETH value, status, and the immutable **19:30–19:40 ICT** block-time window; both report and policy matched the locked parameters, and the distinct attestor's SHA256 confirmation was present.
 - **GenVM warning checkpoint:** unlike V1, this first successful V2 `resolve_claim` receipt has empty stderr; the earlier `Detected pickling storage class` warning was **not observed in this run**. This does not prove the warning cannot occur for other V2 claims; repeat adversarial/runtime checks.
-- **Persisted post-consensus case state (user-provided `get_case(1)`):** id=1, program_id=2, claimant B, tx hash `0x7e24af7f845356332d300471cdbb70584ddea7568538e638aa438daec93ead9f`, `status=APPROVED`, `outcome=ELIGIBLE`, `attempts=1`, `last_attempt_at=1792673911`, `award_credits=100`, `claimed=false`, `evidence_digest=ea9d415a876825515f1ce08d3c39b1f841345a16ce4a7e6ab7151693b68a4ba7`. This confirms state persistence after the successful Full Consensus transaction, not award collection. **NEXT:** claimant B calls `claim_demo_award(1)` once, then verify `get_case(1)=CLAIMED`, `get_demo_balance(B)=100`, and `get_program(2)` counters `submitted=1, approved=1, claimed=1`; capture the successful award write receipt and a read-back. Repeated award claim should fail.
+- **Pre-award checkpoint:** After the successful Full Consensus transaction, user read `get_case(1)` with `status=APPROVED`, `outcome=ELIGIBLE`, `attempts=1`, `award_credits=100`, `claimed=false`. **This was subsequently superseded by the CLAIMED/100-credit post-award read above.**
 - The five **initial** validators and one rotation are transaction metadata; individual validator vote or reasoning traces were **not** included in this shared receipt. The explorer has not been independently accessed here. No real incident, insurance compensation, or financial loss is established by this synthetic test.
 
 
