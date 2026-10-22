@@ -92,3 +92,17 @@ END OF SYNTHETIC INCIDENT REPORT
 ## Independent blockchain recheck
 
 Read-only GitHub Actions [Studionet RPC run #39727966321](https://github.com/bearbaba/COVERDICT/actions/runs/39727966321) completed SUCCESS on October 22, 2026 and observed `get_program_count=3`, `get_case_count=2`, `get_program(3)=AWAITING_INCIDENT_REPORT`, Program #3 submitted=0 and approved=0. The original Claim #1 remained CLAIMED/ELIGIBLE, Claim #2 remained DENIED/INELIGIBLE, and wallet A/B balances remained 100/0. This verification used the stable SDK without any wallet or signing; it does not imply that the post-incident report or UNVERIFIABLE case already exists.
+
+## Official post-window report — published 2026-10-22 after 12:47 ICT
+
+The synthetic incident window ended at 12:47 ICT. The report was committed to GitHub after that time. This is an issuer-authored test declaration, **not a real exploit or loss attestation**.
+
+- Git report commit: `4b6737cab3b7ecec5f642d14779aeb575c024127`
+- [Immutable report source](https://github.com/bearbaba/COVERDICT/blob/4b6737cab3b7ecec5f642d14779aeb575c024127/evidence/demo_program_03_report.txt)
+- Raw URL: `https://raw.githubusercontent.com/bearbaba/COVERDICT/4b6737cab3b7ecec5f642d14779aeb575c024127/evidence/demo_program_03_report.txt`
+- Verified SHA256: `8799473f94f80b3a171621ec069f6d7741d5e2d07e4036380aebcb00ac66f9da`
+- Exact source: 1918 ASCII bytes, trailing LF; SHA256 independently recomputed from immutable GitHub file.
+
+**Still pending on-chain:** only the issuer wallet A can sign `attach_report(3, raw_url, sha256)`. Confirm FINALIZED/SUCCESS and then `get_program(3).status=OPEN_FOR_CLAIMS` with pinned report fields. Do not assume the report is already attached simply because it exists on GitHub.
+
+**Next user-controlled write:** wallet C `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff` calls `submit_claim(3, "0x0000000000000000000000000000000000000000000000000000000000000001")` before 13:30 ICT. This is a nonexistent receipt verified by Blockscout HTTP 404, so the correct expected consensus result is UNVERIFIABLE. Read actual returned case ID rather than assume #3.
