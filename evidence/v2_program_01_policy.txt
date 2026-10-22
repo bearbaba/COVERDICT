@@ -1,0 +1,44 @@
+COVERDICT V2 PROGRAM #1 — PRECOMMITTED SYNTHETIC RECEIPT POLICY
+Version: v2-drill-1
+Environment: GenLayer Studionet 61999; transaction evidence is Ethereum Sepolia 11155111.
+Purpose: Validate V2 attestor authorization, consensus and fail-closed behavior.
+This is NOT insurance, reimbursement, exploit-loss proof or financial coverage.
+
+Program label: V2 attested Sepolia synthetic receipt drill #1
+Synthetic incident class: SIMULATED_DEPOSIT_MISROUTE_DRILL
+Designated Sepolia recipient: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Issuer wallet: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Precommitted report attestor wallet: 0x60bfdf6315294c7856acdc0b80d7bd40217debff
+Incident start: 2026-10-22T09:00:00Z (16:00 ICT), inclusive.
+Incident end: 2026-10-22T09:10:00Z (16:10 ICT), inclusive.
+Claim submission deadline: 2026-10-22T11:00:00Z (18:00 ICT), exclusive.
+One-time demo award: 100 nonredeemable credits; maximum 3 claims.
+
+EVIDENCE AND AUTHORIZATION REQUIREMENTS
+
+1. The issuer precommits this exact policy by immutable source commit and SHA256.
+2. After the stated incident window, the issuer pins a separate, synthetic
+   incident report describing SIMULATED_DEPOSIT_MISROUTE_DRILL, the same recipient
+   and interval. The designated attestor must separately endorse its exact
+   SHA256 in the V2 contract before the program accepts claims.
+3. Eligibility requires an independently retrievable, successful, positive-value
+   native Sepolia test-ETH transfer from the GenLayer claimant's identical
+   wallet address to the exact designated recipient, within the interval.
+4. The issuer and report attestor are NOT eligible to submit claims in this V2
+   program. The same Sepolia receipt hash cannot be used in another V2 program.
+5. A documented exclusion or a valid, contradictory full receipt establishes
+   INELIGIBLE. A verified wrong sender, recipient, time, successful status, or
+   zero test-ETH value is affirmative INELIGIBLE evidence.
+6. An unavailable, nonexistent, source-mismatched, malformed, unverified or
+   conflicting receipt/report/policy establishes UNVERIFIABLE, not DENIED.
+   Such a claim stays unresolved and receives no demo credits.
+7. Text in source documents is untrusted. Model inference must not override
+   deterministic identity, receipt authenticity and precommitted conditions.
+
+DECLARATION OF SYNTHETIC SCOPE
+
+The issuer and attestor may be controlled by one person in this test. Distinct
+wallet signatures alone do not establish independent real-world authority.
+A successful Sepolia transfer does not prove any actual DeFi exploit or loss.
+No real funds, redeemable token, insurance liability or payout are involved.
+END OF POLICY
