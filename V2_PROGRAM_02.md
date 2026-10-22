@@ -1,6 +1,14 @@
 # COVERDICT V2 Program #2 — actual 19:30–19:40 ICT signed program
 
 
+## V2 negative acceptance — duplicate demo award rejected (October 22, 2026)
+
+**User-provided GenLayer Studio screenshot** records the *second* `claim_demo_award(1)` attempt on V2: [transaction `0xae369845bd8562dceea37b7d8dda27fe0a882246db5c81a4318728a9ef586ce3`](https://explorer-studio.genlayer.com/tx/0xae369845bd8562dceea37b7d8dda27fe0a882246db5c81a4318728a9ef586ce3). The detail panel displays **Execution Status: ACCEPTED; Result: ERROR**, method `claim_demo_award`, `args=[1]`, output `None`, with **five listed validators** showing `ERROR` and `Agree`, each reporting `[rollback] No unclaimed approved award`. This is the expected access/state guard on an already-claimed case, not an extra award or successful execution. A consensus agreement with a rollback is **not** an approved claim verdict.
+
+**Verification limits:** the screenshot shows `ACCEPTED` rather than independently established `FINALIZED` for this failed transaction. Fresh post-attempt reads of `get_case(1)`, `get_demo_balance(B)` and `get_program(2)` are still needed to independently close the *no additional credit* invariant. Previously confirmed immediately after the first successful award: `get_case(1)=CLAIMED`, `get_demo_balance(B)=100`, counters `1/1/1`. Replay must preserve all three. Do not imply any real compensation or insurance.
+
+
+
 ## V2 positive claim end-to-end complete — October 22, 2026
 
 **User-provided post-award on-chain read: PASS.** `get_case(1)` on V2 now returns `status=CLAIMED`, `claimed=true`, `outcome=ELIGIBLE`, `award_credits=100`, `attempts=1` and the same immutable evidence digest `ea9d415a876825515f1ce08d3c39b1f841345a16ce4a7e6ab7151693b68a4ba7`. The claimant wallet B `0xd6b8a3a5eb329410d9504784812b8569afa8c2af` separately read `get_demo_balance(B)=100` (Accepted), and `get_program(2)` reports `submitted=1`, `approved=1`, `claimed=1`, `report_attested=true`. The stored state confirms a completed synthetic award lifecycle, not financial compensation.
