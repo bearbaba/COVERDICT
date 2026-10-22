@@ -24,7 +24,8 @@ COVERDICT is proposed as an **integration-ready claim adjudication module**, NOT
 - [ ] Successful AI decision transaction receipt and independent validator trace.
 - [x] Separate live `INELIGIBLE / DENIED` Case #2 with reason, receipt digest, zero award ([resolve receipt](https://explorer-studio.genlayer.com/tx/0x08dc22aca05271cbf270b1362248d89b95f52b06cbb040aac56d69c9011ba50a)).
 - [x] Live Case #3 `UNVERIFIABLE / SUBMITTED` with empty digest and zero **authorized** award (user-provided Studio case read; [Program #3 record](PROGRAM_03.md)).
-- [ ] Independent post-resolution wallet C balance read, `resolve_claim(3)` transaction receipt/validator traces, source-fault recovery and positive-decision original trace.
+- [x] Independently verified post-resolution wallet C balance **0** and live Case #3 `UNVERIFIABLE` via [read-only RPC](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513).
+- [ ] `resolve_claim(3)` execution receipt/individual validator traces, source-fault recovery and positive-decision original trace.
 - [ ] HTTPS deployed, public-read-only claim explorer and wallet flows validated on two actual browsers/wallets.
 - [ ] Source parity between tested repository code and deployed Studionet contract.
 - [ ] End-to-end narrated video with no fake screenshots or implied monetary insurance.
