@@ -81,3 +81,5 @@ On 2026-10-22 GitHub Actions [stable Studionet RPC smoke](https://github.com/bea
 - `get_program(2)`: **submitted=2, approved=1, claimed=1**. The rejected case increased submissions without increasing approvals or awards.
 
 This confirms the persisted negative decision and zero award independent of the user's screenshots. It does not prove the source incident is authentic, and individual validator votes for the negative adjudication were not supplied.
+
+- Case #2 denied-award retry: [GenLayer transaction](https://explorer-studio.genlayer.com/tx/0xb7eb2f6d36b2f185092a4cae788897e8e16ddef97fa83d7490649e40675a1ce1) FINALIZED, expected ERROR rollback, consensus ACCEPTED with five agreeing validators. See [negative acceptance](NEGATIVE_STUDIO_TEST.md). Wallet B post-retry balance to be checked independently.
