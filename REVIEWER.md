@@ -1,6 +1,6 @@
 # COVERDICT — GenLayer Projects acceptance evidence
 
-**Current status: DEPLOYED TO STUDIONET (SCREENSHOT), REVIEW IN PROGRESS.** Studio displays a FINALIZED deployment; deployed-source parity, actual AI consensus receipt, full claim demo and HTTPS site have not yet been verified. Not submission ready.
+**Current status: ONE POSITIVE TESTNET CLAIM END-TO-END VERIFIED BY USER-PROVIDED CONTRACT READS, REVIEW IN PROGRESS.** Claim #1 reports `ELIGIBLE → APPROVED → CLAIMED`, wallet demo balance is 100 and Program #2 counters read `1/1/1`. Deployment source parity, independent Full Consensus validator traces, negative cases, HTTPS application and complete transaction receipts remain pending. Not yet submission ready.
 
 ## Concrete contested consequence
 
@@ -37,7 +37,7 @@ Compared with a generic webpage classifier, the contract enforces wallet/transac
 | Program #2 incident report | **OPEN_FOR_CLAIMS, pinned report** (user-provided on-chain read) | [Program #2 acceptance record](PROGRAM_02.md); report hash match, no write receipt supplied |
 | AI leader/validator consensus | **Claim #1 APPROVED / ELIGIBLE (state read supplied); resolve receipt and validator traces pending** | [Program #2 case evidence](PROGRAM_02.md) |
 | Program & case lifecycle | **Program #2 claim submitted, approved, and marked CLAIMED; user-provided state reads** | [Program #1](PROGRAM_01.md), [Program #2](PROGRAM_02.md); [Program #2 creation tx](https://explorer-studio.genlayer.com/tx/0x3742313c03a2ef541e961ef642874e5e34c5becd3501b5c2276f9c7e9429e46a) |
-| Wallet award claim on-chain | **`get_case(1)` reports `CLAIMED` / `claimed=true`; balance and award transaction proof pending** | [Program #2 record](PROGRAM_02.md) |
+| Wallet award claim on-chain | **`get_case(1)`=CLAIMED; `get_demo_balance(wallet)`=100; Program #2 submitted/approved/claimed=1/1/1**. Receipt + replay-negative pending | [Program #2 record](PROGRAM_02.md) |
 | HTTPS production preview | **Not deployed** | — |
 
 **Suggested category:** Dispute Resolution (not “AI & Agents” merely because an LLM is used). This is a full application effort; submit under Projects only after completing the real contract + frontend flow. The exact awards/points are decided by GenLayer stewards, not the repository.
