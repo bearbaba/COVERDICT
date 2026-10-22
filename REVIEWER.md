@@ -83,3 +83,5 @@ On 2026-10-22 GitHub Actions [stable Studionet RPC smoke](https://github.com/bea
 This confirms the persisted negative decision and zero award independent of the user's screenshots. It does not prove the source incident is authentic, and individual validator votes for the negative adjudication were not supplied.
 
 - Case #2 denied-award retry: [GenLayer transaction](https://explorer-studio.genlayer.com/tx/0xb7eb2f6d36b2f185092a4cae788897e8e16ddef97fa83d7490649e40675a1ce1) FINALIZED, expected ERROR rollback, consensus ACCEPTED with five agreeing validators. See [negative acceptance](NEGATIVE_STUDIO_TEST.md). Wallet B post-retry balance to be checked independently.
+
+**Post-rollback independent verification:** [GitHub Actions live Studionet read](https://github.com/bearbaba/COVERDICT/actions/runs/39723617444) completed SUCCESS after the failed second award attempt; `get_demo_balance(wallet B)=0`, `get_case(2)=DENIED / INELIGIBLE / 0 credits`, Program #2 submitted/approved/claimed=`2/1/1`, and wallet A credits=`100`. Thus, the denied-award rollback did not credit wallet B. Individual vote traces for the original `resolve_claim(2)` remain unprovided.
