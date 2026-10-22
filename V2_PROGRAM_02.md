@@ -1,13 +1,26 @@
 # COVERDICT V2 Program #2 — actual 19:30–19:40 ICT signed program
 
+
+## V2 live positive adjudication — October 22, 2026
+
+**User-supplied transaction details of [`resolve_claim(1)`](https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7): FINALIZED / GenVM Execution SUCCESS / Consensus Accepted, at 19:58:31 ICT.** Caller wallet B `0xd6b8a3a5eb329410d9504784812b8569afa8c2af`, contract `0x844BE9205a755900B7a6E40596DeDbdC69825e63`, mode Normal (Full Consensus), initial validators 5, rotation count **1**, stdout/stderr empty, return value `APPROVED`.
+
+- Equivalence output: `outcome=ELIGIBLE`; evidence digest `ea9d415a876825515f1ce08d3c39b1f841345a16ce4a7e6ab7151693b68a4ba7`.
+- User-provided prior `get_case(1)` confirmed a real on-chain submission: Program #2, claimant B, status `SUBMITTED`, attempts 0, and Sepolia tx `0x7e24af7f845356332d300471cdbb70584ddea7568538e638aa438daec93ead9f`.
+- Verdict reason states that the independently fetched Sepolia receipt satisfied wallet, recipient, positive native ETH value, status, and the immutable **19:30–19:40 ICT** block-time window; both report and policy matched the locked parameters, and the distinct attestor's SHA256 confirmation was present.
+- **GenVM warning checkpoint:** unlike V1, this first successful V2 `resolve_claim` receipt has empty stderr; the earlier `Detected pickling storage class` warning was **not observed in this run**. This does not prove the warning cannot occur for other V2 claims; repeat adversarial/runtime checks.
+- **Next / not yet observed:** read `get_case(1)` to confirm persisted `APPROVED/ELIGIBLE`; **claimant B**, not A or C, calls `claim_demo_award(1)` exactly once; verify `get_case(1)=CLAIMED`, `get_demo_balance(B)=100` and `get_program(2)` counters `submitted=1, approved=1, claimed=1`; capture award receipt and post-award read, then negative replay test.
+- The five **initial** validators and one rotation are transaction metadata; individual validator vote or reasoning traces were **not** included in this shared receipt. The explorer has not been independently accessed here. No real incident, insurance compensation, or financial loss is established by this synthetic test.
+
+
 ## Post-window synthetic report — GitHub-pinned 2026-10-22 after 19:40 ICT
 
-- **Report created, NOT YET ON-CHAIN ATTACHED or attested.** Do not confuse a GitHub commit with an executed `attach_report` or `attest_report` transaction.
+- **Report GitHub-pinned; subsequently on-chain attached and attested.** User-provided `get_program(2)` confirmed `OPEN_FOR_CLAIMS`, `report_attested=true`, `attested_at=1792673488`, and matching report URL / SHA256. The original write transaction hashes for `attach_report` and successful `attest_report` are still not recorded.
 - Immutable report commit: `8b3df9673258fefc40b0a04ed387ce54091cb041`.
 - [Pinned report](https://github.com/bearbaba/COVERDICT/blob/8b3df9673258fefc40b0a04ed387ce54091cb041/evidence/v2_program_02_report.txt).
 - Raw report URL: `https://raw.githubusercontent.com/bearbaba/COVERDICT/8b3df9673258fefc40b0a04ed387ce54091cb041/evidence/v2_program_02_report.txt`.
 - Exact 2,377-byte ASCII/UTF-8 file (trailing LF) SHA256: `fc6b84e341cdd365658fef4c0abe42b4e0e42c605e6e24cbe51c055fce477170`. The local Git blob SHA-1 matches the blob returned after GitHub creation.
-- Next issuer wallet A write: `attach_report(2, report_url, report_sha256)` -> expected `AWAITING_ATTESTATION`. Only after its FINALIZED + GenVM SUCCESS and state read may wallet C (precommitted attestor) call `attest_report(2, report_sha256)` -> `OPEN_FOR_CLAIMS`.
+- **Observed:** user-provided `get_program(2)` progressed through `AWAITING_ATTESTATION` to `OPEN_FOR_CLAIMS`, `report_attested=true`; wallet C attestor authorization was required. A failed unauthorized `attest_report` call rolled back as designed.
 - Submitted claimant receipt candidate: `0x7e24af7f845356332d300471cdbb70584ddea7568538e638aa438daec93ead9f` on Sepolia; wallet B to wallet A, success according to user Etherscan excerpt. Block timestamp and the exact native value returned by Blockscout remain unverified from this environment. These receipt facts must be independently evaluated by GenLayer consensus; the issuer-authored synthetic report does not certify receipt validity, actual loss, or any compensation right.
 
 
