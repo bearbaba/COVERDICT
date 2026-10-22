@@ -25,7 +25,9 @@ COVERDICT is proposed as an **integration-ready claim adjudication module**, NOT
 - [x] Separate live `INELIGIBLE / DENIED` Case #2 with reason, receipt digest, zero award ([resolve receipt](https://explorer-studio.genlayer.com/tx/0x08dc22aca05271cbf270b1362248d89b95f52b06cbb040aac56d69c9011ba50a)).
 - [x] Live Case #3 `UNVERIFIABLE / SUBMITTED` with empty digest and zero **authorized** award (user-provided Studio case read; [Program #3 record](PROGRAM_03.md)).
 - [x] Independently verified post-resolution wallet C balance **0** and live Case #3 `UNVERIFIABLE` via [read-only RPC](https://github.com/bearbaba/COVERDICT/actions/runs/39733374513).
-- [ ] `resolve_claim(3)` execution receipt/individual validator traces, source-fault recovery and positive-decision original trace.
+- [x] Original Case #3 `resolve_claim(3)` [FINALIZED/SUCCESS receipt](https://explorer-studio.genlayer.com/tx/0xa0c07abcc1742178c03b53342ea44a3c54d049f1864fc1f2b7e5a834cb9df4ab) returning `SUBMITTED`, consensus Accepted and `UNVERIFIABLE` evidence output; wallet C 0 credits independently verified.
+- [ ] Individual validator vote traces for Case #3, source-fault recovery and original positive Case #1 decision/validator trace.
+- [ ] Investigate nonfatal GenVM nondet-storage warning on a NEW deployed contract (draft PR #6); preserve source parity of existing Studionet deployment.
 - [ ] HTTPS deployed, public-read-only claim explorer and wallet flows validated on two actual browsers/wallets.
 - [ ] Source parity between tested repository code and deployed Studionet contract.
 - [ ] End-to-end narrated video with no fake screenshots or implied monetary insurance.
