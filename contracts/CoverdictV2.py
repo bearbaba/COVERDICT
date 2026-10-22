@@ -181,7 +181,8 @@ class CoverdictV2(gl.Contract):
                 or type(max_claims) is not int or not 1 <= max_claims <= MAX_CLAIMS):
             raise gl.vm.UserError('Invalid demo-credit limits')
         issuer = gl.message.sender_address.as_hex.lower()
-        if not _address(attestor) or attestor.lower() == issuer:
+        if (not _address(attestor) or attestor.lower() == issuer
+                or attestor.lower() == deposit_contract.lower()):
             raise gl.vm.UserError('Separate report attestor required')
         program_id = int(self.program_count) + 1
         record = {
@@ -249,7 +250,8 @@ class CoverdictV2(gl.Contract):
         if caller in (program['issuer'], program['attestor']):
             raise gl.vm.UserError('Issuer and report attestor cannot submit claims')
         owner_key = f'{program_id}:{caller}'
-        receipt_key = f'{program_id}:{tx_hash.lower()}'
+        # V2: one Sepolia transaction cannot be reused across demo programs.
+        receipt_key = tx_hash.lower()
         if self.claimed_wallets.get(owner_key, False) or self.used_transactions.get(receipt_key, False):
             raise gl.vm.UserError('Duplicate wallet or transaction claim')
         if program['submitted'] >= program['max_claims']:
