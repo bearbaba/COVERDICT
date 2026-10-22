@@ -38,6 +38,13 @@ assert.equal(program.max_claims,3);
 assert.equal(program.policy_sha256,'5150f0cb08b88218dd9fa1e375782b741cc5aaca8f1a96dd0f799f2633bb653c');
 assert.equal(program.policy_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/c2f792197f12d0ab939bf83a0e3179f31f85088d/evidence/v2_program_01_policy.txt');
 assert.ok(['AWAITING_INCIDENT_REPORT','AWAITING_ATTESTATION','OPEN_FOR_CLAIMS'].includes(program.status));
+
+if(program.report_url){
+  assert.equal(program.report_url,'https://raw.githubusercontent.com/bearbaba/COVERDICT/f85784876f323f2c33a6d9c0b22b4efaa8923493/evidence/v2_program_01_report.txt');
+  assert.equal(program.report_sha256,'074f369862b5188cc520678a6424fb1f19c0515ad0d6b222c886ed2a0478683f');
+  console.log('PASS V2 Program #1: pinned post-window synthetic report matches SHA256 commit');
+}
+
 assert.ok(program.submitted>=0&&program.submitted<=program.max_claims,'Submitted claims out of bounds');
 assert.ok(program.approved>=0&&program.approved<=program.submitted,'Approved claims out of bounds');
 assert.ok(program.claimed>=0&&program.claimed<=program.approved,'Claimed awards out of bounds');
