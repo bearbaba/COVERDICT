@@ -40,3 +40,11 @@ max_claims = 10
 5. If `APPROVED`, only the claimant calls `claim_demo_award(case_id)` once. Record resulting virtual credit balance, repeated claim rejection. Do not imply financial loss.
 
 **Unknowns:** on-chain Program #2 creation, Blockscout GenVM accessibility, LLM verdict, reward claim and website have **not** been verified yet.
+
+## Sepolia evidence received (user-provided Etherscan transaction summary)
+
+- Receipt hash: `0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a` ([Etherscan Sepolia transaction](https://sepolia.etherscan.io/tx/0xb7e186434d67e72c8e42c8eac3a60a3a45be7b5391245fb3668fe3ade125143a)).
+- User provided: **Success**; block **11966554**; sender `0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb`, recipient `0xD6b8A3A5eB329410D9504784812b8569afA8C2aF`, transferred **0.001 Sepolia test-ETH**.
+- Independent Blockscout API fetch was **unavailable from the review environment**; precise UTC timestamp and the exact `status/hash/value` fields used by the GenLayer contract are still unverified. Therefore do **not** claim validator or receipt success yet.
+- SHA256 of the exact precommitted 992-byte policy was recomputed locally and matches the program state (`3aecb23e16be10a42f929442ee928850c653a170da3d8aace136e38b579183bc`).
+- Next action: after **09:30 ICT / 02:30 UTC**, pin and attach a clearly labeled **synthetic** incident report from the issuer, before the program deadline at **12:00 ICT**. No evidence of actual financial damage is asserted.
