@@ -1,5 +1,7 @@
 ## COVERDICT V2 — accepted reviewer demo (22 October 2026)
 
+**Production website deployed 23 October 2026:** [COVERDICT V2 live website](https://coverdict-testnet.vercel.app), Vercel READY for release commit `8bf9ccca8e3a95c1d1e680373dd15ce1b001ed3c` ([PR #14 merged](https://github.com/bearbaba/COVERDICT/pull/14)). Browser-level wallet acceptance has not been independently reproduced with this tool connection; live GenLayer V2 positive verdict and award state were accepted in Studio as documented below.
+
 **Recommended first:** [V2_REVIEWER_DEMO.md](V2_REVIEWER_DEMO.md), including exact code, policy/report evidence, on-chain explorer receipts, timestamps, and an English 2–3-minute walkthrough.
 
 - V2 contract address: `0x844BE9205a755900B7a6E40596DeDbdC69825e63` on GenLayer Studionet 61999, a separate deployment from legacy V1.

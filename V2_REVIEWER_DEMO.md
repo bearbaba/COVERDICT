@@ -1,5 +1,7 @@
 # COVERDICT V2 — Reviewer Video & Acceptance Guide
 
+**Public reviewer web (deployed 23 October 2026):** [https://coverdict-testnet.vercel.app](https://coverdict-testnet.vercel.app). Production commit `8bf9ccca8e3a95c1d1e680373dd15ce1b001ed3c` is shown READY by Vercel and mapped to the canonical domain, after [PR #14](https://github.com/bearbaba/COVERDICT/pull/14) merged with [green CI](https://github.com/bearbaba/COVERDICT/actions/runs/39966701633). Frontend build is configured with public `VITE_COVERDICT_V2_CONTRACT_ADDRESS` for the deployed V2 contract. The reviewer must still confirm browser loads live Program #2 and Case #1 and wallet B shows 100 demo credits; no independent browser E2E pass is claimed.
+
 **Environment:** GenLayer Studionet (chain 61999), deployed V2 contract `0x844BE9205a755900B7a6E40596DeDbdC69825e63`.
 **Scope:** one completed synthetic positive claim and a rejected second award. This is **NOT insurance, real DeFi loss verification, token compensation, escrow or Mainnet deployment**.
 
