@@ -1,3 +1,15 @@
+## COVERDICT V2 — accepted reviewer demo (22 October 2026)
+
+**Recommended first:** [V2_REVIEWER_DEMO.md](V2_REVIEWER_DEMO.md), including exact code, policy/report evidence, on-chain explorer receipts, timestamps, and an English 2–3-minute walkthrough.
+
+- V2 contract address: `0x844BE9205a755900B7a6E40596DeDbdC69825e63` on GenLayer Studionet 61999, a separate deployment from legacy V1.
+- Precommitted synthetic Program #2 window: Oct 22 19:30–19:40 ICT; attestor C sign-off: user-provided live read `get_program(2).report_attested=true`.
+- Claimant B submitted real Sepolia receipt, and [`resolve_claim(1)`](https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7) returned `ELIGIBLE/APPROVED` on Full Consensus with GenVM `SUCCESS`, no stderr in this run.
+- Post-award live reads: `get_case(1).status=CLAIMED`, `get_demo_balance(B)=100` nonredeemable credits, Program #2 `submitted/approved/claimed=1/1/1`.
+- [Repeat award attempt](https://explorer-studio.genlayer.com/tx/0xae369845bd8562dceea37b7d8dda27fe0a882246db5c81a4318728a9ef586ce3) rolled back `No unclaimed approved award`; subsequent on-chain reads remained unchanged, demonstrating the one-time credit gate for this case.
+- The reviewer web highlights only the **live-confirmed** positive case; the optional untested V2 close-unverifiable frontend action is hidden. The original V1 negative/unverifiable cases are recorded separately and are not misrepresented as new V2 acceptance.
+- This is a **synthetic testnet adjudication prototype**. Sha256 pins the issuer's document bytes; an attestor signature does not prove an actual exploit, economic loss, financial compensation, independent incident publisher or Mainnet safety.
+
 ## Case #1 original positive adjudication — FINALIZED consensus (October 22, 2026)
 
 The user provided the [original `resolve_claim(1)` Studio receipt](https://explorer-studio.genlayer.com/tx/0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5): hash `0x7f577cf22801b6d12b84ad820381817c8e42e5252518b6b4d553865dc68909f5`, wallet A `0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb`, deployed contract `0x044DB5B1d148d30f8EdF591497d8726F66C22a16`, October 22, 2026 **09:39:05 ICT**, Normal mode.

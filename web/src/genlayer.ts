@@ -3,11 +3,12 @@ import {studionet} from 'genlayer-js/chains';
 import {ExecutionResult,TransactionStatus,TransactionHashVariant} from 'genlayer-js/types';
 
 export type Program = {
-  id:number;issuer:string;label:string;deposit_contract:string;
+  id:number;issuer:string;attestor:string;report_attested:boolean;attested_at:number;
+  label:string;deposit_contract:string;
   incident_start:number;incident_end:number;claim_deadline:number;
   policy_url:string;policy_sha256:string;report_url:string;report_sha256:string;
   award_credits:number;max_claims:number;submitted:number;approved:number;claimed:number;
-  status:'AWAITING_INCIDENT_REPORT'|'OPEN_FOR_CLAIMS';
+  status:'AWAITING_INCIDENT_REPORT'|'AWAITING_ATTESTATION'|'OPEN_FOR_CLAIMS';
 };
 export type CaseRecord = {
   id:number;program_id:number;claimant:string;tx_hash:string;
@@ -25,13 +26,14 @@ type Eip1193 = {
 };
 declare global{interface Window{ethereum?:Eip1193}}
 
-const value=import.meta.env.VITE_COVERDICT_CONTRACT_ADDRESS||'';
+// V2 has a distinct ABI and storage. Never silently reuse the legacy V1 address.
+const value=import.meta.env.VITE_COVERDICT_V2_CONTRACT_ADDRESS||'';
 export const address=value as `0x${string}`;
 export const ready=/^0x[a-fA-F0-9]{40}$/.test(value);
 // Stable Studionet (61999) needs the stable 1.1.8 release.
 // SDK 2.0.0-rc.1 targets the Studio-dev v0.6 preview and fails gen_call on Studionet.
 const readClient=createClient({chain:studionet});
-function assertReady(){if(!ready)throw new Error('COVERDICT Studionet contract address is not configured.');}
+function assertReady(){if(!ready)throw new Error('COVERDICT V2 address is not configured. Set VITE_COVERDICT_V2_CONTRACT_ADDRESS.');}
 export async function read<T>(fn:string,args:(string|number)[]=[]):Promise<T>{
   assertReady();
   return await readClient.readContract({address,functionName:fn,args,transactionHashVariant:TransactionHashVariant.LATEST_FINAL}) as T;
