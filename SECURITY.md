@@ -1,3 +1,5 @@
+> **CURRENT SECURITY NOTICE — 24 OCT 2026:** A steward reported two live V2 claim-admission bugs: unverified submissions consume a program's `max_claims` capacity, and unverified claimants lock global `used_transactions` receipt hashes. **The deployed V2 has NOT been upgraded.** [V2.2 claim-admission candidate](contracts/CoverdictV2_2.py) and [tests](tests/test_coverdict_v22.py) implement provisional reservations and verified-only consumption, pending new deployment and live adversarial testing. Do not rely on the old V2 for open adversarial claims.
+
 # COVERDICT security policy · preproduction
 
 **Experimental, not audited, not insurance and not safe for real-money financial operations.** Only nontransferable, nonredeemable demo credits can be minted as claim awards. There is no custody, premium, payout token, redemption, payable method, or authorized liability commitment. Never send ETH, GEN, USDC or any financial asset to this contract.
@@ -20,6 +22,6 @@ Mainnet with asset custody should remain blocked until: independent security aud
 
 Do not report vulnerabilities with exploitable transaction details in public issues. Use GitHub private security reporting if available. Never commit signing keys or API tokens.
 
-## V2 isolated branch warning (2026-10-22)
+## Historical V2 branch warning (written 2026-10-22; superseded by subsequent deployment)
 
-The [separate V2 prototype](V2_IMPLEMENTATION.md) adds an attestor wallet, cross-program anti-replay, issuer/attestor claim restrictions and a module-level nondeterministic evaluator. V2 is **not deployed** to Studionet, and local shims / `genvm-lint` cannot establish live consensus safety or removal of the existing GenVM nondeterministic-storage warning. Two distinct signing wallets can still be controlled by one person, and an attestation acknowledges a SHA256-pinned document without proving its factual accuracy. The V1 contract and V1 web app remain unchanged. No V2 real-world protection, insurance or Mainnet capabilities exist.
+The [separate V2 prototype](V2_IMPLEMENTATION.md) added an attestor wallet, cross-program anti-replay, issuer/attestor claim restrictions and a module-level nondeterministic evaluator. **This historical note predates V2 deployment** at [the Studionet V2 contract](https://explorer-studio.genlayer.com/address/0x844BE9205a755900B7a6E40596DeDbdC69825e63). Local shims / `genvm-lint` still cannot establish live consensus safety or resolution of the old GenVM nondeterministic-storage warning. Two distinct signing wallets can still be controlled by one person, and an attestation acknowledges a SHA256-pinned document without proving its factual accuracy. The V1 contract and V1 web app remain unchanged. No V2 real-world protection, insurance or Mainnet capabilities exist.

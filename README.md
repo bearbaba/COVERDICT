@@ -1,5 +1,7 @@
 # COVERDICT
 
+> **SECURITY REVIEW IN PROGRESS (zoefunds · 24 Oct 2026):** the deployed V2 admission flow remains vulnerable to unverified capacity exhaustion and receipt-hash preemption. These weaknesses are addressed in a **separate, NOT DEPLOYED** [V2.2 source candidate](contracts/CoverdictV2_2.py), [focused tests](tests/test_coverdict_v22.py) and [review notes](V2_2_ADMISSION_SECURITY_REVIEW.md). The original Program #005/Claim #002 video is an accurate *historical V2* demonstration, not proof that V2 is patched. A fresh Studionet deployment and signed multi-wallet re-acceptance are required before we can claim a live security fix.
+
 > **LATEST GENLAYER PROJECTS REVIEW — 24 OCTOBER 2026:** [Read the single-page PROJECT_SUBMISSION.md](PROJECT_SUBMISSION.md) and watch the [3m21s end-to-end demo](https://youtu.be/cKqjh9GAJug). The recorded Program #005 / Claim #002 flow demonstrates an initial UNVERIFIABLE review (no award) followed by an ELIGIBLE decision and a one-time CLAIMED +100 synthetic demo-credit award (wallet B balance 200). These are testnet-only credits without cash value, not real insurance. **V2.1 is a separate, undeployed candidate.** Historical review notes below refer to earlier programs and prior release snapshots.
 
 

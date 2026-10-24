@@ -8,6 +8,8 @@
 **Source repository:** https://github.com/bearbaba/COVERDICT  
 **Deployed V2 contract (GenLayer Studionet, chain ID 61999):** [0x844BE9205a755900B7a6E40596DeDbdC69825e63](https://explorer-studio.genlayer.com/address/0x844BE9205a755900B7a6E40596DeDbdC69825e63)
 
+> **SECURITY REVIEW STATUS (24 OCT 2026):** zoefunds requested fixes to two admission vulnerabilities in the **deployed V2**. The submitted Program #005 demo remains historical evidence of a completed synthetic workflow, but **does not demonstrate these vulnerabilities are fixed**. A separate [V2.2 candidate](contracts/CoverdictV2_2.py), [regression tests](tests/test_coverdict_v22.py), and [security response](V2_2_ADMISSION_SECURITY_REVIEW.md) are available; V2.2 is **not deployed** and needs new Studionet adversarial acceptance.
+
 > **Scope:** A verifiable **synthetic, testnet-only** incident-claim adjudication demonstration. COVERDICT is **not** insurance, escrow, a financial compensation protocol, an independent oracle proving real-world losses, or a mainnet-ready security product. A Sepolia test-ETH transfer is not evidence of economic loss. Demo credits are nontransferable, nonredeemable and have **zero monetary value**.
 
 ## 1. Project summary
