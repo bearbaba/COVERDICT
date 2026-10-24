@@ -70,6 +70,31 @@ export async function connectWallet():Promise<string>{
   await ensureStudionet(wallet);
   return acc;
 }
+// The stable SDK models Studio execution via leader_receipt.execution_result.
+// Only an explicit successful result can mark an action FINALIZED as successful.
+// Never classify a missing txExecutionResultName as a failed transaction.
+function executionSucceeded(tx:import('genlayer-js/types').GenLayerTransaction):boolean|null{
+  if(tx.txExecutionResult===1||tx.txExecutionResultName===ExecutionResult.FINISHED_WITH_RETURN)return true;
+  if(tx.txExecutionResult!==undefined&&tx.txExecutionResult!==1)return false;
+  if(tx.txExecutionResultName===ExecutionResult.FINISHED_WITH_ERROR)return false;
+  const receipts=tx.consensus_data?.leader_receipt;
+  const leader=Array.isArray(receipts)?receipts[0]:undefined;
+  const result=leader?.execution_result?.toUpperCase();
+  if(result==='SUCCESS'||result==='FINISHED_WITH_RETURN'||result==='RETURN')return true;
+  if(result==='ERROR'||result==='FAILURE'||result==='FINISHED_WITH_ERROR'||result==='TIMEOUT')return false;
+  return null;
+}
+
+// Reconcile already-submitted transactions read-only: never sign or resubmit.
+export async function inspectFinalizedWrite(hash:string):Promise<'finalized'|'failed'|'unverified'>{
+  assertReady();
+  if(!/^0x[0-9a-fA-F]{64}$/.test(hash))return 'unverified';
+  const tx=await readClient.getTransaction({hash:hash as `0x${string}`});
+  if(tx.statusName!==TransactionStatus.FINALIZED&&tx.status!==7)return 'unverified';
+  const result=executionSucceeded(tx);
+  return result===true?'finalized':result===false?'failed':'unverified';
+}
+
 export async function write(fn:string,args:(string|number)[],account:string,onHash:(hash:string)=>void):Promise<string>{
   assertReady();
   const wallet=window.ethereum;
@@ -86,10 +111,14 @@ export async function write(fn:string,args:(string|number)[],account:string,onHa
   const hash=await client.writeContract({address,functionName:fn,args,value:0n});
   onHash(hash);
   const receipt=await readClient.waitForTransactionReceipt({
-    hash,status:TransactionStatus.FINALIZED,interval:3500,retries:85,
+    hash,status:TransactionStatus.FINALIZED,interval:3500,retries:85,fullTransaction:true,
   });
-  if(receipt.txExecutionResultName!==ExecutionResult.FINISHED_WITH_RETURN)
-    throw new Error('Transaction finalized without successful execution. Check the GenLayer explorer for details.');
+  // Studionet is a Studio network: genlayer-js 1.1.8 exposes consensus_data
+  // rather than txExecutionResultName there. A missing field is NOT a failure.
+  let outcome=executionSucceeded(receipt);
+  if(outcome===null)outcome=executionSucceeded(await readClient.getTransaction({hash}));
+  if(outcome===false)throw new Error('Transaction finalized with a failed GenVM execution. Inspect the transaction in GenLayer Explorer.');
+  if(outcome===null)throw new Error('Transaction finalized, but execution could not be independently classified. Inspect GenLayer Explorer before retrying.');
   return hash;
 }
 export const contractExplorer=(hash:string)=>`https://explorer-studio.genlayer.com/tx/${encodeURIComponent(hash)}`;
