@@ -172,7 +172,7 @@ class CoverdictV22(gl.Contract):
     cases: TreeMap[str, str]
     claimed_wallets: TreeMap[str, bool]  # committed only after a verified approval
     used_transactions: TreeMap[str, bool]  # committed only after a verified approval
-    pending_wallets: TreeMap[str, int]  # bounded, reclaimable per-wallet slots
+    pending_wallets: TreeMap[str, u256]  # bounded, reclaimable per-wallet slots
     credits: TreeMap[str, u256]
 
     def __init__(self):
@@ -279,7 +279,7 @@ class CoverdictV22(gl.Contract):
         # max_claims=1 program. submitted counts historical attempts.
         if program['approved'] >= program['max_claims']:
             raise gl.vm.UserError('Verified award capacity reached')
-        previous_id = int(self.pending_wallets.get(owner_key, 0))
+        previous_id = int(self.pending_wallets.get(owner_key, u256(0)))
         if previous_id:
             previous = self._case(previous_id)
             if previous['status'] == 'SUBMITTED' and now < previous['expires_at']:
@@ -289,7 +289,7 @@ class CoverdictV22(gl.Contract):
                 previous['outcome'] = 'UNVERIFIABLE'
                 previous['reason'] = 'Provisional review window expired without an award.'
                 self._save_case(previous)
-            self.pending_wallets[owner_key] = 0
+            self.pending_wallets[owner_key] = u256(0)
         case_id = int(self.case_count) + 1
         case = {
             'id': case_id, 'program_id': program_id, 'claimant': caller,
@@ -301,15 +301,15 @@ class CoverdictV22(gl.Contract):
         }
         self.cases[str(case_id)] = json.dumps(case, sort_keys=True)
         self.case_count = u256(case_id)
-        self.pending_wallets[owner_key] = case_id
+        self.pending_wallets[owner_key] = u256(case_id)
         program['submitted'] += 1  # audit count, NOT a capacity counter
         self._save_program(program)
         return case_id
 
     def _release_pending(self, case):
         key = f"{case['program_id']}:{case['claimant']}"
-        if int(self.pending_wallets.get(key, 0)) == case['id']:
-            self.pending_wallets[key] = 0
+        if int(self.pending_wallets.get(key, u256(0))) == case['id']:
+            self.pending_wallets[key] = u256(0)
 
     @gl.public.write
     def expire_pending_claim(self, case_id: int) -> str:
@@ -353,7 +353,7 @@ class CoverdictV22(gl.Contract):
         if now >= program['claim_deadline'] + CLAIM_REVIEW_GRACE:
             raise gl.vm.UserError('Review grace period has ended; close the unresolved claim')
         owner_key = f"{case['program_id']}:{case['claimant']}"
-        if int(self.pending_wallets.get(owner_key, 0)) != case['id']:
+        if int(self.pending_wallets.get(owner_key, u256(0))) != case['id']:
             raise gl.vm.UserError('Claim does not own pending wallet slot')
         # A receipt is only permanently used after a prior verified APPROVAL.
         if self.used_transactions.get(case['tx_hash'].lower(), False):
