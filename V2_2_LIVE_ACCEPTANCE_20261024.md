@@ -27,6 +27,12 @@ The user supplied both FINALIZED / GenVM SUCCESS / Consensus Accepted calls on *
 - **Readback after attestation:** still requested; expected `status=OPEN_FOR_CLAIMS`, `report_attested=true`. This is not yet independently recorded.
 - **Attack reproduction:** none documented so far. Do **not** claim the two admission vulnerabilities are fixed on-chain solely on the basis of attestation.
 
+## Live forged-receipt review: no award issued (24 October 2026)
+
+**Fake-hash attacker case ID 1:** `resolve_claim(1)` submitted by test wallet D `0xfb82De94A24556838aCcac6D0987A76f6C9417DF`, [Explorer TX `0x5ce39c1f51008435c1c9e3ddf9bbd5d6c1acb80afb202aedcd2b73277c7989cd`](https://explorer-studio.genlayer.com/tx/0x5ce39c1f51008435c1c9e3ddf9bbd5d6c1acb80afb202aedcd2b73277c7989cd), 24 Oct 21:28:31 ICT. **FINALIZED / SUCCESS / Accepted**; returned `SUBMITTED`.
+
+User readback `get_case(1)`: `outcome = UNVERIFIABLE`, `status = SUBMITTED`, `award_credits = 0`, `claimed = false`, `attempts = 1`, `evidence_digest = ""`, `expires_at = 1792853632`. GenLayer nondeterministic adjudication stated, `One or more pinned evidence sources could not be independently verified.` The fake Sepolia hash did **not** produce an eligible award. Note the provisional wallet reservation remains active until `cancel_unverifiable_claim(1)` (D only), expiry or subsequent cleanup; that cancellation and a rightful B claim have **not yet** been documented.
+
 ## First on-chain capacity-grief stage: fake hash admitted without award (24 Oct 2026)
 
 **Attacker test wallet D:** `0xfb82De94A24556838aCcac6D0987A76f6C9417DF`. User-supplied [GenLayer explorer TX](https://explorer-studio.genlayer.com/tx/0x944cdc05076e676835db2bf005122bf71a2e54f0617e30f70bffa084c7337bc0) `0x944cdc05076e676835db2bf005122bf71a2e54f0617e30f70bffa084c7337bc0`; call `submit_claim(1, 0x0000000000000000000000000000000000000000000000000000000000000000)` on selected V2.2 contract. Finalized, SUCCESS, Accepted. **Return: case ID 1.**
