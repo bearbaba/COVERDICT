@@ -1,7 +1,7 @@
 import React,{useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import{createRoot}from'react-dom/client';
 import {Activity,ArrowRight,ArrowUpRight,Check,CheckCircle2,Clock3,ExternalLink,FileCheck2,Fingerprint,Layers,LockKeyhole,RefreshCw,Search,Shield,ShieldCheck,Wallet,X} from'lucide-react';
-import{address,connectWallet,contractExplorer,read,ready,write,type Program,type CaseRecord,type TxRecord}from'./genlayer';
+import{address,connectWallet,contractExplorer,inspectFinalizedWrite,read,ready,write,type Program,type CaseRecord,type TxRecord}from'./genlayer';
 import'./style.css';
 
 type Tab='programs'|'claims'|'create'|'activity';
@@ -115,6 +115,26 @@ function App(){
   wallet.on('accountsChanged',accountsChanged);wallet.on('chainChanged',chainChanged);
   return()=>{wallet.removeListener?.('accountsChanged',accountsChanged);wallet.removeListener?.('chainChanged',chainChanged)};
  },[]);
+ // Older Studio receipts were erroneously flagged failed because the SDK does
+ // not populate txExecutionResultName. Correct local history from real chain data.
+ useEffect(()=>{
+  if(!account)return;
+  let active=true;
+  const wrong=readActivity(account).filter(t=>t.status==='failed');
+  if(wrong.length){
+   void Promise.all(wrong.map(async t=>{
+    try{return {hash:t.hash,status:await inspectFinalizedWrite(t.hash)}}catch{return {hash:t.hash,status:'unverified' as const}}
+   })).then(results=>{
+    if(!active)return;
+    const corrected=new Map(results.filter(x=>x.status==='finalized').map(x=>[x.hash,x.status]));
+    if(!corrected.size)return;
+    const updated=readActivity(account).map(t=>t.status==='failed'&&corrected.has(t.hash)?{...t,status:'finalized' as const}:t);
+    try{localStorage.setItem(storageKey(account),JSON.stringify(updated))}catch{/* storage optional */}
+    if(currentWallet.current.toLowerCase()===account.toLowerCase())setTxs(updated);
+   });
+  }
+  return()=>{active=false};
+ },[account]);
  const doConnect=async()=>{setError('');try{const a=await connectWallet();setAccount(a);await refresh(a);}catch(e){setError(e instanceof Error?e.message:String(e))}};
  const hideWallet=()=>{setAccount('');setCredits(null);setNotice('Wallet hidden locally. Revoke site access in your wallet settings if desired.');};
  const act=async(label:string,fn:string,args:(string|number)[],complete?:()=>void)=>{
