@@ -416,7 +416,7 @@ function App(){
       <button type="button" className="tx-monitor-recheck" disabled={!!busy} onClick={()=>void recheckLiveTx()}>Recheck on-chain (no signature) <RefreshCw size={14}/></button>}
     <small className="tx-monitor-foot">Studionet 61999 · Synthetic testnet only</small>
    </aside>}
-   {activeProgramId!==null&&<section className={`active-workflow ${activeClaim?.status==='CLAIMED'&&activeClaim.claimed?'active-workflow-complete':''}`} aria-label="Current pinned program and claim result">
+   {activeProgramId!==null&&<section className={`active-workflow ${liveTx&&tab!=='create'?'active-workflow-with-monitor':''} ${activeClaim?.status==='CLAIMED'&&activeClaim.claimed?'active-workflow-complete':''}`} aria-label="Current pinned program and claim result">
     <div className="active-workflow-top">
      <div><span className="active-workflow-kicker"><span className="tx-monitor-dot"/> CURRENT WORKSPACE · PROGRAM #{String(activeProgramId).padStart(3,'0')}</span>
       <h2>{activeProgram?.label??`Program #${activeProgramId}`}</h2>

@@ -164,3 +164,13 @@ html{scroll-behavior:smooth}
 .active-workflow-checking{color:#aadbd8}.active-workflow-warning{color:#ffd6a8}
 @media(max-width:980px){.active-workflow-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.active-workflow-result{align-items:flex-start;flex-wrap:wrap}.result-totals{width:100%;justify-content:flex-start}}
 @media(max-width:600px){.active-workflow{padding:17px}.active-workflow-top{flex-direction:column}.active-workflow-steps{grid-template-columns:1fr 1fr;gap:7px}.active-workflow-steps>div{padding:9px}.result-totals{gap:9px}.result-totals>div{min-width:0;flex:1}}
+
+/* The floating live transaction monitor must not cover the final result. */
+@media(min-width:1121px){
+ .active-workflow-with-monitor{margin-right:382px}
+ .active-workflow-with-monitor .active-workflow-steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .active-workflow-with-monitor .active-workflow-result{flex-wrap:wrap}
+}
+@media(min-width:781px) and (max-width:1120px){
+ .shell.has-tx-monitor .main>.tx-monitor{position:relative;right:auto;top:auto;width:100%;max-height:none;z-index:2;margin:0 0 24px}
+}
