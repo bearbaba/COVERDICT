@@ -1,7 +1,7 @@
 # Response to zoefunds — claim admission / receipt preemption
 
 **Review request:** 24 October 2026 · GenLayer Projects · COVERDICT  
-**Response state:** V2.2 source candidate implemented and tested in Python shims; **NOT deployed**. The old V2 contract and original Program #005 demonstration remain unchanged.
+**Response state:** V2.2 has been deployed to a separate Studionet instance according to the user-provided Studio screenshot (selected address `0x65F96FB47380996Aa672b1eC1de8DF95451eC150`). **Security acceptance is NOT yet complete:** chain readbacks, attacker-first transactions and legitimate follow-up award still need to be run and linked. The old V2 contract and Program #005 demonstration remain unchanged.
 
 Thank you for identifying the two real claim-admission vulnerabilities. We reproduced their causes in V2 source:
 
@@ -28,8 +28,8 @@ python -m pytest -q tests/
 genvm-lint check contracts/CoverdictV2_2.py
 ```
 
-We **do not** claim that new source has changed immutable V2 `0x844BE9205a755900B7a6E40596DeDbdC69825e63`. Program #005 / Claim #002 and the 24 October YouTube video remain evidence of the earlier V2 workflow, not security acceptance of V2.2.
+**Selected new V2.2 deployment:** [`0x65F96FB47380996Aa672b1eC1de8DF95451eC150`](https://explorer-studio.genlayer.com/address/0x65F96FB47380996Aa672b1eC1de8DF95451eC150) · [Studio import](https://studio.genlayer.com/?import-contract=0x65F96FB47380996Aa672b1eC1de8DF95451eC150). An earlier separate deploy record exposed `0xd849FAED757cf4c3f92602cE8732e4EcB8bF6a39`; to prevent mismatched reviewer evidence, all future V2.2 test receipts should target the selected `0x65F96FB47380996Aa672b1eC1de8DF95451eC150` address. We do not claim that either new deployment has changed immutable V2 `0x844BE9205a755900B7a6E40596DeDbdC69825e63`. Program #005 / Claim #002 and the original YouTube video remain earlier V2 workflow evidence, **not** adversarial security acceptance of V2.2.
 
-**Still required for acceptance:** deploy a *new* V2.2 instance on GenLayer Studionet using a wallet signature; save the deployment receipt and contract address; validate actual `get_program`/`get_case` state in the two adversarial flows with multiple wallets; and publish a V2.2-aware browser demo (the old V2 UI uses `submitted` as a cap and must not simply be pointed at the new contract).
+**Still required for acceptance:** confirm the selected V2.2 instance via `get_contract_version()`, `get_program_count()`, and `get_case_count()`; archive the exact deployment receipt; validate actual `get_program`/`get_case` state in the two adversarial flows with multiple wallets; and publish a V2.2-aware browser demo (the old V2 UI uses `submitted` as a cap and must not simply be pointed at the new contract).
 
 Known residual limitations: provisional submissions from many sybil wallets can grow state; the app still uses one Blockscout API and issuer-authored synthetic reports, not independently authenticated loss evidence. This is not mainnet finance.

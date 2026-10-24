@@ -1,6 +1,8 @@
 # COVERDICT V2.2 — Claim-Admission Security Patch (for zoefunds review)
 
-**Status 24 October 2026: source + simulated regression tests; NOT DEPLOYED.**  
+**Status 24 October 2026: new Studionet instance shown DEPLOYED in user-provided GenLayer Studio screenshot; targeted read calls and live adversarial acceptance still pending.**  
+**Selected V2.2 test instance:** [`0x65F96FB47380996Aa672b1eC1de8DF95451eC150`](https://explorer-studio.genlayer.com/address/0x65F96FB47380996Aa672b1eC1de8DF95451eC150) · [Import into Studio](https://studio.genlayer.com/?import-contract=0x65F96FB47380996Aa672b1eC1de8DF95451eC150).  
+**Other deployment shown in an earlier explorer export:** [`0xd849FAED757cf4c3f92602cE8732e4EcB8bF6a39`](https://explorer-studio.genlayer.com/address/0xd849FAED757cf4c3f92602cE8732e4EcB8bF6a39). Both are separate addresses. Use only the selected `0x65F96FB47380996Aa672b1eC1de8DF95451eC150` instance for the security reproduction and annotate all resulting case IDs and receipts with this address.  
 **Existing V2 remains unchanged:** [Studionet 0x844BE9205a755900B7a6E40596DeDbdC69825e63](https://explorer-studio.genlayer.com/address/0x844BE9205a755900B7a6E40596DeDbdC69825e63). Program #005/Claim #002 and original YouTube demo are historical V2 evidence. Do not imply a patch to that immutable deployment.
 
 ## Root cause and corrections
@@ -29,7 +31,7 @@ Run: `python -m pytest -q tests/test_coverdict_v22.py` and `python -m pytest -q 
 - `UNVERIFIABLE` cancellation restricted to the claimant, followed by a successful valid claim.
 - Existing role-separation, attestation, source SHA256, one-time award, and wrong-sender denial tests.
 
-**Important limits / next gate:** These tests use deterministic GenLayer Python shims and fixture receipts. They are not a security audit or live GenVM proof. V2.2 needs GenVM lint, **fresh Studionet deployment**, adversarial on-chain smoke, source/deployment parity, and a two-wallet browser demo with live readbacks before steward may call this deployed/fixed. The existing V2 contract can never be changed by GitHub commits. New `submitted` semantics require a V2.2-aware frontend; the existing V2 UI still uses `submitted >= max_claims` to disable submission and must not be pointed at V2.2 unmodified.
+**Important limits / next gate:** Tests use GenLayer Python shims and fixture receipts. Full Python suite 90 PASS and GenVM lint pass, but neither is an on-chain security audit. The selected V2.2 instance has been shown deployed in Studio; **get_contract_version, program count, case count and adversarial transactions on that exact address remain to be recorded**. Browser integration is not complete; do not present V2 UI as compatible with V2.2. The existing V2 contract can never be changed by GitHub commits. New `submitted` semantics require a V2.2-aware frontend; the existing V2 UI still uses `submitted >= max_claims` to disable submission and must not be pointed at V2.2 unmodified.
 
 ## Reviewer reproduction
 
