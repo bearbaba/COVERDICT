@@ -12,10 +12,11 @@ export type Program = {
 };
 export type CaseRecord = {
   id:number;program_id:number;claimant:string;tx_hash:string;
-  status:'SUBMITTED'|'APPROVED'|'DENIED'|'CLAIMED'|'CLOSED_UNVERIFIABLE';
+  status:'SUBMITTED'|'APPROVED'|'DENIED'|'CLAIMED'|'CLOSED_UNVERIFIABLE'|'EXPIRED'|'CANCELLED_UNVERIFIABLE'|'REPLAY_REJECTED'|'CAPACITY_FULL';
   outcome:''|'ELIGIBLE'|'INELIGIBLE'|'UNVERIFIABLE';
   reason:string;evidence_digest:string;attempts:number;last_attempt_at:number;
   claimed:boolean;award_credits:number;
+  submitted_at?:number;expires_at?:number;
 };
 export type TxRecord = {hash:string;label:string;status:'pending'|'finalized'|'failed'|'unverified';at:number};
 
@@ -26,10 +27,24 @@ type Eip1193 = {
 };
 declare global{interface Window{ethereum?:Eip1193}}
 
-// V2 has a distinct ABI and storage. Never silently reuse the legacy V1 address.
-const value=import.meta.env.VITE_COVERDICT_V2_CONTRACT_ADDRESS||'';
+// V2 is historical; V2.2 is the verified security release, with distinct storage.
+// Existing ?program= links are preserved as V2 archive URLs unless a release is explicit.
+const search=typeof window==='undefined'?new URLSearchParams():new URLSearchParams(window.location.search);
+const releaseParam=search.get('version');
+export const release: 'v2'|'v2.2' = releaseParam==='v2'||(!releaseParam&&search.has('program'))?'v2':'v2.2';
+const historical=import.meta.env.VITE_COVERDICT_V2_CONTRACT_ADDRESS||'0x844BE9205a755900B7a6E40596DeDbdC69825e63';
+const security=import.meta.env.VITE_COVERDICT_V22_CONTRACT_ADDRESS||'0x65F96FB47380996Aa672b1eC1de8DF95451eC150';
+const value=release==='v2'?historical:security;
 export const address=value as `0x${string}`;
 export const ready=/^0x[a-fA-F0-9]{40}$/.test(value);
+export const contractVersion=release==='v2'?'2.0.0-testnet-experimental':'2.2.0-testnet-admission-candidate';
+export const releaseUrl=(target:'v2'|'v2.2',program?:number)=>{
+  const url=new URL(window.location.href);
+  url.searchParams.set('version',target);
+  if(program!==undefined)url.searchParams.set('program',String(program));
+  else url.searchParams.delete('program');
+  return url.pathname+url.search;
+};
 // Stable Studionet (61999) needs the stable 1.1.8 release.
 // SDK 2.0.0-rc.1 targets the Studio-dev v0.6 preview and fails gen_call on Studionet.
 // The browser calls the app origin, which forwards JSON-RPC to the documented
@@ -43,7 +58,7 @@ const appStudionet={...studionet,rpcUrls:{
   default:{...studionet.rpcUrls.default,http:[rpcEndpoint]},
 }};
 const readClient=createClient({chain:appStudionet});
-function assertReady(){if(!ready)throw new Error('COVERDICT V2 address is not configured. Set VITE_COVERDICT_V2_CONTRACT_ADDRESS.');}
+function assertReady(){if(!ready)throw new Error('COVERDICT '+release+' contract address is invalid. Check the release configuration.');}
 export async function read<T>(fn:string,args:(string|number)[]=[]):Promise<T>{
   assertReady();
   return await readClient.readContract({address,functionName:fn,args,transactionHashVariant:TransactionHashVariant.LATEST_FINAL}) as T;
@@ -130,7 +145,7 @@ export async function write(
   }catch{
     throw new Error('Studionet RPC preflight failed. No transaction was broadcast. Check connectivity before signing.');
   }
-  if(version!=='2.0.0-testnet-experimental')
+  if(version!==contractVersion)
     throw new Error('Unexpected Studionet contract version. No transaction was broadcast.');
   const client=createClient({chain:appStudionet,account:account as `0x${string}`,provider:wallet});
   const hash=await client.writeContract({address,functionName:fn,args,value:0n});
