@@ -197,3 +197,14 @@ html{scroll-behavior:smooth}
 .active-workflow-result-eligible{background:#14372f;border-color:#3c8267}
 .result-retry-note{margin-top:10px!important;color:#f5d0a0!important}
 .result-cooldown{font-size:12px;color:#f7cf9c;display:inline-flex;align-items:center;padding:10px 0}
+
+/* Contract release selector: clearly distinguish the live security patch from archival V2. */
+.release-switch{display:flex;align-items:center;gap:3px;border:1px solid #31545d;background:#0c2531;border-radius:12px;padding:4px;flex-shrink:0}
+.release-switch a{font-size:11px;font-weight:800;white-space:nowrap;color:#9cbec5;padding:8px 10px;border-radius:8px;transition:background .15s ease,color .15s ease}
+.release-switch a.release-active{background:#27604f;color:#dcffeb}
+.release-switch a:hover{color:#e9fff5}
+.v22-live-panel{border:1px solid #3f7366;background:linear-gradient(110deg,#122f32,#102333)}
+.v22-live-panel .verified-demo-heading{flex-wrap:wrap;gap:8px}
+.v22-live-panel .verified-links{flex-wrap:wrap}
+@media(max-width:1100px){.top-inner{height:auto;min-height:76px;flex-wrap:wrap;padding-top:11px;padding-bottom:11px;row-gap:9px}.release-switch{order:4}.wallet-actions{margin-left:auto}}
+@media(max-width:650px){.release-switch{width:100%;order:5;justify-content:stretch}.release-switch a{flex:1;text-align:center}.top-inner .nav{order:4;overflow-x:auto;width:100%}.top-inner .wallet-actions{order:2}.top-inner .release-marker{display:none}.v22-live-panel .verified-demo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
