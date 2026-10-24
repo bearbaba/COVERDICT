@@ -5,7 +5,7 @@ import{address,connectWallet,contractExplorer,inspectFinalizedWrite,read,ready,w
 import'./style.css';
 
 type Tab='programs'|'claims'|'create'|'activity';
-const UI_RELEASE='WALLET VIEW · R4';
+const UI_RELEASE='PROGRAM LOOKUP · R5';
 type LiveTx = {
  label:string;fn:string;account:string;hash:string;startedAt:number;
  phase:'signing'|'submitted'|'finalized'|'failed'|'unverified';
@@ -233,7 +233,7 @@ function App(){
  const openProgram=(id:number)=>{setSelected(id);setReports({url:'',sha:''});setClaimTx('')};
  const lookupProgram=async()=>{
   const id=Number(sharedProgramId.trim());
-  if(!/^\\d+$/.test(sharedProgramId.trim())||!Number.isSafeInteger(id)||id<1){
+  if(!/^\d+$/.test(sharedProgramId.trim())||!Number.isSafeInteger(id)||id<1){
    setError('Enter a valid Program ID.');return;
   }
   if(programTotal!==null&&id>programTotal){setError('Unknown Program ID on Studionet.');return}
@@ -248,7 +248,7 @@ function App(){
  };
  useEffect(()=>{
   const fromLink=new URLSearchParams(window.location.search).get('program');
-  if(!fromLink||!/^\\d+$/.test(fromLink))return;
+  if(!fromLink||!/^\d+$/.test(fromLink))return;
   setSharedProgramId(fromLink);
   const id=Number(fromLink);
   if(!Number.isSafeInteger(id)||id<1)return;

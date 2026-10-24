@@ -81,3 +81,11 @@ def test_wallet_scoped_programs_and_explicit_shared_lookup():
     assert "Explore testnet programs" not in ui
     assert "ON-CHAIN PROGRAMS</span><strong>{programTotal" not in ui
     assert "Public claims" in ui or "Public Claims" in ui
+
+def test_program_lookup_accepts_numeric_id_and_direct_links():
+    ui = (ROOT / "web/src/main.tsx").read_text(encoding="utf-8")
+    assert "const UI_RELEASE='PROGRAM LOOKUP · R5'" in ui
+    assert r"/^\d+$/.test(sharedProgramId.trim())" in ui
+    assert r"/^\d+$/.test(fromLink)" in ui
+    assert r"/^\\d+$/" not in ui
+    assert "get_program',[id]" in ui
