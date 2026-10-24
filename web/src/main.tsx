@@ -5,7 +5,7 @@ import{address,connectWallet,contractExplorer,inspectFinalizedWrite,read,ready,w
 import'./style.css';
 
 type Tab='programs'|'claims'|'create'|'activity';
-const UI_RELEASE='LIVE TX · R3';
+const UI_RELEASE='WALLET VIEW · R4';
 type LiveTx = {
  label:string;fn:string;account:string;hash:string;startedAt:number;
  phase:'signing'|'submitted'|'finalized'|'failed'|'unverified';
@@ -54,6 +54,9 @@ function App(){
  const[error,setError]=useState('');
  const[notice,setNotice]=useState('');
  const[search,setSearch]=useState('');
+ const[sharedProgramId,setSharedProgramId]=useState('');
+ const[sharedProgram,setSharedProgram]=useState<Program|null>(null);
+ const[lookupBusy,setLookupBusy]=useState(false);
  const[selected,setSelected]=useState<number|null>(null);
  const[claimTx,setClaimTx]=useState('');
  const[reports,setReports]=useState({url:'',sha:''});
@@ -61,7 +64,7 @@ function App(){
  const[txs,setTxs]=useState<TxRecord[]>([]);
  const[liveTx,setLiveTx]=useState<LiveTx|null>(null);
  const currentWallet=useRef('');
- const selectedProgram=programs.find(p=>p.id===selected)??null;
+ const selectedProgram=programs.find(p=>p.id===selected)??(sharedProgram?.id===selected?sharedProgram:null);
  const verifiedExample=cases.find(c=>c.id===1&&c.program_id===2&&c.status==='CLAIMED'&&c.claimed&&c.outcome==='ELIGIBLE'&&c.award_credits===100);
  const verifiedExampleProgram=programs.find(p=>p.id===2&&p.report_attested&&p.claimed>=1);
  const canWrite=ready&&!!account&&!busy;
@@ -204,7 +207,11 @@ function App(){
   finally{setBusy('')}
  };
  const shownCases=claimScope==='all'?cases:cases.filter(c=>account&&c.claimant.toLowerCase()===account.toLowerCase());
- const shown=useMemo(()=>programs.filter(p=>p.label.toLowerCase().includes(search.toLowerCase())||String(p.id)===search),[programs,search]);
+ // Personal workspace: only the connected issuer's programs appear in its list.
+ // Public chain records remain available by explicit ID (and Explorer), not broadcast
+ // as a feed of unrelated wallets' work.
+ const ownPrograms=useMemo(()=>account?programs.filter(p=>p.issuer.toLowerCase()===account.toLowerCase()):[],[programs,account]);
+ const shown=useMemo(()=>ownPrograms.filter(p=>p.label.toLowerCase().includes(search.toLowerCase())||String(p.id)===search),[ownPrograms,search]);
  const sendClaim=(event:React.FormEvent)=>{
   event.preventDefault();
   if(!selectedProgram)return;
@@ -224,6 +231,33 @@ function App(){
   void act('Create reimbursement program','create_program',[create.label.trim(),create.contract.trim(),start,end,deadline,create.url.trim(),create.sha.trim(),Number(create.award),Number(create.max),create.attestor.trim()]);
  };
  const openProgram=(id:number)=>{setSelected(id);setReports({url:'',sha:''});setClaimTx('')};
+ const lookupProgram=async()=>{
+  const id=Number(sharedProgramId.trim());
+  if(!/^\\d+$/.test(sharedProgramId.trim())||!Number.isSafeInteger(id)||id<1){
+   setError('Enter a valid Program ID.');return;
+  }
+  if(programTotal!==null&&id>programTotal){setError('Unknown Program ID on Studionet.');return}
+  if(programs.some(p=>p.id===id)){setError('');openProgram(id);return}
+  setLookupBusy(true);setError('');
+  try{
+   const record=await read<Program>('get_program',[id]);
+   if(record.id!==id)throw new Error('Unexpected Program ID returned by the contract.');
+   setSharedProgram(record);openProgram(id);
+  }catch{setError('Unable to open that Program ID from Studionet. Verify the ID or retry.')}
+  finally{setLookupBusy(false)}
+ };
+ useEffect(()=>{
+  const fromLink=new URLSearchParams(window.location.search).get('program');
+  if(!fromLink||!/^\\d+$/.test(fromLink))return;
+  setSharedProgramId(fromLink);
+  const id=Number(fromLink);
+  if(!Number.isSafeInteger(id)||id<1)return;
+  let active=true;
+  void read<Program>('get_program',[id]).then(program=>{
+   if(active&&program.id===id){setSharedProgram(program);openProgram(id);}
+  }).catch(()=>{/* Invalid or unavailable shared program stays unopened. */});
+  return()=>{active=false};
+ },[]);
  return <div className={`shell ${liveTx?"has-tx-monitor":""}`}>
   <header className="topbar"><div className="container top-inner"><button className="logo" onClick={()=>{setSelected(null);setTab('programs')}}><span className="logo-symbol"><ShieldCheck size={21}/></span><strong>COVER<span>DICT</span></strong><small>V2 TESTNET</small><span className="release-marker">{UI_RELEASE}</span></button><nav className="nav"><button className={tab==='programs'?'active':''} onClick={()=>{setSelected(null);setTab('programs')}}>Programs</button><button className={tab==='claims'?'active':''} onClick={()=>{setSelected(null);setClaimScope('all');setTab('claims')}}>Public Claims</button><button className={tab==='create'?'active':''} onClick={()=>{setSelected(null);setTab('create')}}>Create Program</button>{account&&<button className={tab==='activity'?'active':''} onClick={()=>{setSelected(null);setTab('activity')}}>My Activity</button>}</nav><div className="wallet-actions"><span className="net"><i/> Studionet</span><button className="btn border" title={account?'Hide wallet from this app (does not revoke permissions)':'Connect wallet'} onClick={()=>account?hideWallet():void doConnect()}><Wallet size={16}/>{account?addr(account)+' · Hide':'Connect wallet'}</button></div></div></header>
   <main className="container main">
@@ -259,13 +293,30 @@ function App(){
     <small className="tx-monitor-foot">Studionet 61999 · Synthetic testnet only</small>
    </aside>}
    {tab==='programs'&&<>
-    <section className="hero"><div><div className="eyebrow"><span className="dot"/> COVERDICT V2 · GENLAYER FULL CONSENSUS</div><h1>Evidence in.<br/><em>Consensus out.</em></h1><p>{intro}</p><div className="actions"><button className="btn primary" onClick={()=>document.getElementById('program-list')?.scrollIntoView({behavior:'smooth'})}>Explore programs <ArrowRight size={16}/></button><button className="btn border" onClick={()=>{setClaimScope('mine');setTab('claims')}}>My claims</button><a className="btn border" href="https://github.com/bearbaba/COVERDICT" target="_blank" rel="noreferrer">Read the source <ExternalLink size={16}/></a></div></div><div className="hero-art"><div className="halo"><Shield size={66} strokeWidth={1.25}/></div><div className="float-tag"><Fingerprint size={15}/> EVIDENCE-BOUND</div><div className="float-tag bottom"><FileCheck2 size={15}/> PUBLIC CLAIM STATES</div></div></section>
+    <section className="hero"><div><div className="eyebrow"><span className="dot"/> COVERDICT V2 · GENLAYER FULL CONSENSUS</div><h1>Evidence in.<br/><em>Consensus out.</em></h1><p>{intro}</p><div className="actions"><button className="btn primary" onClick={()=>document.getElementById('program-list')?.scrollIntoView({behavior:'smooth'})}>{account?'My programs':'Open programs'} <ArrowRight size={16}/></button><button className="btn border" onClick={()=>{setClaimScope('mine');setTab('claims')}}>My claims</button><a className="btn border" href="https://github.com/bearbaba/COVERDICT" target="_blank" rel="noreferrer">Read the source <ExternalLink size={16}/></a></div></div><div className="hero-art"><div className="halo"><Shield size={66} strokeWidth={1.25}/></div><div className="float-tag"><Fingerprint size={15}/> EVIDENCE-BOUND</div><div className="float-tag bottom"><FileCheck2 size={15}/> PUBLIC CLAIM STATES</div></div></section>
     {verifiedExample&&verifiedExampleProgram&&<section className="verified-demo" aria-label="Completed on-chain acceptance case"><div className="verified-demo-heading"><span className="verified-kicker"><CheckCircle2 size={16}/> ON-CHAIN ACCEPTANCE · OCTOBER 22, 2026</span><span className="pill claimed">COMPLETED</span></div><div className="verified-demo-grid"><div><span>PROGRAM</span><strong>#002</strong></div><div><span>CONSENSUS</span><strong>ELIGIBLE</strong></div><div><span>CLAIM</span><strong>CLAIMED</strong></div><div><span>DEMO AWARD</span><strong>100</strong></div></div><p>Live Studionet state confirms a pinned synthetic report, authorized attestor signature and one-time demo-credit claim. No money, insurance or actual economic loss is involved.</p><div className="verified-links"><button className="btn border" onClick={()=>{setSelected(2);setTab('programs')}}>Inspect Program #2 <ArrowUpRight size={14}/></button><button className="btn border" onClick={()=>{setClaimScope('all');setTab('claims')}}>View Claim #1 <ArrowUpRight size={14}/></button><a className="btn border" href="https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7" target="_blank" rel="noreferrer">AI Consensus proof <ExternalLink size={14}/></a></div></section>}
-    <section className="numbers"><div><span>ON-CHAIN PROGRAMS</span><strong>{programTotal??'—'}</strong></div><div><span>ON-CHAIN CLAIMS</span><strong>{caseTotal??'—'}</strong></div><div><span>APPROVED · LOADED</span><strong>{cases.filter(c=>c.status==='APPROVED'||c.status==='CLAIMED').length}</strong></div><div><span>CLAIMED · LOADED</span><strong>{cases.filter(c=>c.status==='CLAIMED').length}</strong></div></section>
-    <div id="program-list" className="section-title"><div><div className="eyebrow">SYNTHETIC INCIDENT PROGRAMS</div><h2>Explore testnet programs</h2></div><div className="lookup"><Search size={16}/><input placeholder="Search program or ID" value={search} onChange={e=>setSearch(e.target.value)}/><button aria-label="Refresh" title="Refresh" onClick={()=>void refresh()} disabled={loading}><RefreshCw size={16}/></button></div></div>
-    {dataError&&<div className="data-status" role="status"><span>Studionet data is temporarily unavailable. Your on-chain programs have not been cleared.</span><button className="btn border" onClick={()=>void refresh()} disabled={loading}><RefreshCw size={14}/> Retry</button></div>}
-    {loading&&!loaded?<div className="data-status">Loading on-chain programs…</div>:!dataError&&shown.length===0?<div className="empty"><Layers size={32}/><h3>No on-chain programs to show</h3><p>Programs appear only after an on-chain issuer creates them. Each program is issuer-defined and does not represent real coverage.</p></div>:<div className="cards">{shown.map(p=><button key={p.id} className="program-card" onClick={()=>openProgram(p.id)}><div className="card-top"><span className="tiny">PROGRAM #{p.id.toString().padStart(3,'0')}</span><span className="pill">{p.status.replaceAll('_',' ')}</span></div><h3>{p.label}</h3><p><span>Sepolia demo recipient</span> <code>{addr(p.deposit_contract)}</code></p><div className="card-footer"><span><Clock3 size={14}/> Claims close {when(p.claim_deadline)}</span><strong>{p.award_credits} demo credits <ArrowUpRight size={16}/></strong></div></button>)}</div>}
-    {programTotal!==null&&programTotal>programs.length&&<div className="load-more"><span>Showing {programs.length} of {programTotal} on-chain programs</span><button className="btn border" disabled={loading} onClick={()=>setProgramLimit(n=>n+30)}>Load older programs <ArrowRight size={14}/></button></div>}
+    <section className="personal-overview" aria-label="Wallet-specific workspace">
+     <div><Wallet size={20}/><strong>{account?'My programs':'Your wallet workspace'}</strong><p>{account?`Showing programs created by ${addr(account)} only. Other wallets' programs are not listed here.`:'Connect a wallet to view the programs you created. Public evidence is available through explicit links.'}</p></div>
+     <span className="personal-overview-count">{account?ownPrograms.length:'—'} <small>MY PROGRAMS · LOADED</small></span>
+    </section>
+    <div id="program-list" className="section-title">
+     <div><div className="eyebrow">WALLET-SPECIFIC PROGRAMS</div><h2>My programs</h2></div>
+     {account&&<div className="lookup"><Search size={16}/><input placeholder="Search my programs" value={search} onChange={e=>setSearch(e.target.value)}/><button aria-label="Refresh" title="Refresh" onClick={()=>void refresh()} disabled={loading}><RefreshCw size={16}/></button></div>}
+    </div>
+    {dataError&&<div className="data-status" role="status"><span>Studionet is temporarily unavailable. Existing on-chain data has not been cleared.</span><button className="btn border" onClick={()=>void refresh()} disabled={loading}>Retry</button></div>}
+    {!account?<div className="empty personal-empty"><Wallet size={30}/><h3>Connect your wallet</h3><p>Only programs issued by the connected wallet appear in your personal list. Nothing here is a private on-chain record.</p><button className="btn primary" onClick={()=>void doConnect()}>Connect wallet <ArrowRight size={15}/></button></div>
+     :loading&&!loaded?<div className="data-status">Loading your on-chain programs…</div>
+     :!dataError&&shown.length===0?<div className="empty personal-empty"><Layers size={32}/><h3>{search?'No matching programs':'No programs created by this wallet'}</h3><p>Use Create Program to publish a synthetic testnet program. Programs created by other wallets never appear in this personal list.</p></div>
+     :<div className="cards">{shown.map(p=><button key={p.id} className="program-card" onClick={()=>openProgram(p.id)}><div className="card-top"><span className="tiny">MY PROGRAM #{p.id.toString().padStart(3,'0')}</span><span className="pill">{p.status.replaceAll('_',' ')}</span></div><h3>{p.label}</h3><p><span>Sepolia demo recipient</span><code>{addr(p.deposit_contract)}</code></p><div className="card-footer"><span><Clock3 size={14}/> Claims close {when(p.claim_deadline)}</span><strong>{p.award_credits} demo credits <ArrowUpRight size={16}/></strong></div></button>)}</div>}
+    {account&&programTotal!==null&&programTotal>programs.length&&<div className="load-more"><span>Loaded {programs.length} recent chain records to find yours. Older programs may exist.</span><button className="btn border" disabled={loading} onClick={()=>setProgramLimit(n=>n+30)}>Find older programs <ArrowRight size={14}/></button></div>}
+    <section className="program-lookup" aria-label="Open a specific shared program">
+      <div><div className="eyebrow">SHARED PROGRAM ACCESS</div><h3>Have a Program ID?</h3><p>Open a specific testnet program to inspect its evidence or submit a claim. We don't list unrelated wallets' programs in your workspace.</p></div>
+      <form onSubmit={e=>{e.preventDefault();void lookupProgram()}} className="program-lookup-form">
+       <input aria-label="Program ID" inputMode="numeric" pattern="[0-9]+" placeholder="Program ID e.g. 4" value={sharedProgramId} onChange={e=>setSharedProgramId(e.target.value)} required/>
+       <button type="submit" className="btn border" disabled={lookupBusy}>{lookupBusy?'Opening…':'Open program'} <ArrowRight size={14}/></button>
+      </form>
+      <small>Programs and claims are public on-chain. This changes discovery in the interface, not blockchain visibility.</small>
+    </section>
    </>}
    {tab==='claims'&&<>{dataError&&<div className="data-status"><span>Unable to refresh claims from Studionet.</span><button className="btn border" onClick={()=>void refresh()} disabled={loading}>Retry</button></div>}<div className="section-title"><div><div className="eyebrow">PUBLIC ON-CHAIN CLAIM HISTORY</div><h2>{claimScope==='all'?'Public claims':'My claims'}</h2></div><div className="claim-scope"><button className={claimScope==='all'?'active':''} onClick={()=>setClaimScope('all')}>All claims</button><button className={claimScope==='mine'?'active':''} onClick={()=>setClaimScope('mine')}>My claims</button><button className="btn border" onClick={()=>void refresh()}><RefreshCw size={15}/> Refresh</button></div></div>{claimScope==='mine'&&account&&<div className="wallet-summary"><div className="wallet-summary-identity"><Wallet size={18}/><div><span>CONNECTED WALLET</span><strong>{addr(account)}</strong></div></div><div className="wallet-summary-balance"><span>MY DEMO CREDITS</span><strong>{credits??'—'}</strong></div></div>}{claimScope==='mine'&&!account?<div className="empty"><Wallet size={30}/><h3>Connect your wallet</h3><p>To filter claims belonging to your address, connect the claimant wallet. You can still view public claims without connecting.</p></div>:shownCases.length===0?<div className="empty"><FileCheck2 size={30}/><h3>No matching claims in the loaded history</h3><p>Browse a program to submit a Sepolia testnet receipt. If older claims exist, use Load older claims below to fetch them.</p></div>:<div className="claims">{shownCases.map(c=><article className="case" key={c.id}><div className="card-top"><span className="tiny">CLAIM #{c.id.toString().padStart(3,'0')} · PROGRAM #{c.program_id}</span><span className={`pill ${c.status.toLowerCase()}`}>{c.status}</span></div><h3>{c.outcome||'Awaiting review'}</h3><p>{c.reason||'Submitted. Consensus has not yet assessed the evidence.'}</p><details className="claim-proof"><summary>View claim evidence and rules</summary><p><strong>Evidence fingerprint:</strong> <code>{c.evidence_digest||'Not yet verified'}</code></p><p><strong>On-chain claimant (public):</strong> <code>{claimScope==='all'?addr(c.claimant):c.claimant}</code></p><p>Eligibility is based on the issuer's pinned synthetic terms and public testnet receipt, not actual DeFi loss.</p>{programs.find(p=>p.id===c.program_id)&&<a href={programs.find(p=>p.id===c.program_id)!.policy_url} target="_blank" rel="noreferrer">Read pinned policy <ExternalLink size={13}/></a>}</details><a href={`https://eth-sepolia.blockscout.com/tx/${c.tx_hash}`} target="_blank" rel="noreferrer">View Sepolia testnet receipt <ExternalLink size={14}/></a><div className="case-actions">{c.status==='SUBMITTED'&&<button className="btn primary" disabled={!canWrite||!canResolveCase(c)} onClick={()=>void act('Resolve claim','resolve_claim',[c.id])}>{c.outcome==='UNVERIFIABLE'?'Retry evidence review':'Run independent consensus'} <ArrowRight size={16}/></button>}{c.status==='SUBMITTED'&&c.outcome==='UNVERIFIABLE'&&<small className="case-info">Evidence could not be verified. No award was issued. Review can be retried after the 10-minute cooldown.</small>}{c.status==='APPROVED'&&!c.claimed&&account.toLowerCase()===c.claimant.toLowerCase()&&<button className="btn primary" disabled={!canWrite} onClick={()=>void act('Claim demo award','claim_demo_award',[c.id])}>Claim {c.award_credits} demo credits <Check size={16}/></button>}{c.status==='CLAIMED'&&<span className="verified"><CheckCircle2 size={16}/> Award claimed once</span>}</div></article>)}</div>}{caseTotal!==null&&caseTotal>cases.length&&<div className="load-more"><span>Scanned {cases.length} of {caseTotal} total claims. Older wallet claims may not be loaded.</span><button className="btn border" disabled={loading} onClick={()=>setCaseLimit(n=>n+30)}>Load older claims <ArrowRight size={14}/></button></div>}</>}
    {tab==='create'&&<><div className="eyebrow">ADVANCED · ISSUER-DEFINED DEMO PROGRAM</div><h2>Create a program</h2><p className="lead">Advanced issuer workflow. This creates a testnet simulation, not insurance. Anyone may publish a program; issuer claims are not independently endorsed. A pinned policy and a designated independent signer address must exist before the incident window begins.</p><p className="field-note">All times below use your device's local timezone ({Intl.DateTimeFormat().resolvedOptions().timeZone}). COVERDICT converts them to UTC timestamps before submission. Incident start must be at least 16 minutes in the future.</p><div className="create-workspace"><form className="form-card" onSubmit={sendProgram}><label>Program label<input value={create.label} onChange={e=>setCreate(v=>({...v,label:e.target.value}))} placeholder="Simulated vault coverage · Example protocol" required minLength={8}/></label><label>Sepolia address receiving the test transaction<input value={create.contract} onChange={e=>setCreate(v=>({...v,contract:e.target.value}))} placeholder="0x..." required/></label><label>Designated report attestor wallet<input value={create.attestor} onChange={e=>setCreate(v=>({...v,attestor:e.target.value}))} placeholder="0x... distinct from issuer and recipient" required pattern="0x[0-9a-fA-F]{40}"/></label><div className="columns"><label>Incident window start (local time)<input type="datetime-local" value={create.start} onChange={e=>setCreate(v=>({...v,start:e.target.value}))} required/></label><label>Incident window end (local time)<input type="datetime-local" value={create.end} onChange={e=>setCreate(v=>({...v,end:e.target.value}))} required/></label></div><label>Claim deadline (local time)<input type="datetime-local" value={create.deadline} onChange={e=>setCreate(v=>({...v,deadline:e.target.value}))} required/></label><label>Immutable policy raw URL<input value={create.url} onChange={e=>setCreate(v=>({...v,url:e.target.value}))} placeholder="https://raw.githubusercontent.com/bearbaba/COVERDICT/<40-char-commit>/evidence/policy.txt" required/></label><label>SHA-256 hash of policy bytes<input value={create.sha} onChange={e=>setCreate(v=>({...v,sha:e.target.value}))} placeholder="64 lowercase hexadecimal characters" required/></label><div className="columns"><label>Demo credits per eligible claim<input type="number" min="1" max="10000" value={create.award} onChange={e=>setCreate(v=>({...v,award:e.target.value}))}/></label><label>Maximum claims<input type="number" min="1" max="20" value={create.max} onChange={e=>setCreate(v=>({...v,max:e.target.value}))}/></label></div><button className="btn primary wide" disabled={!canWrite}>{busy||'Create on-chain program'} <ArrowRight size={16}/></button>{liveTx?.fn==='create_program'&&<section className={`create-inline-result create-inline-${liveTx.phase}`} aria-label="Create program status">

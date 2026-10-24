@@ -69,3 +69,15 @@ def test_create_program_keeps_user_on_create_page_and_docks_monitor():
     assert "create.attestor.trim()])" in ui
     assert "create.attestor.trim()],()=>setTab('programs')" not in ui
     assert ".create-side-rail .tx-monitor{position:relative" in css
+
+def test_wallet_scoped_programs_and_explicit_shared_lookup():
+    ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
+    assert "WALLET VIEW · R4" in ui
+    assert "p.issuer.toLowerCase()===account.toLowerCase()" in ui
+    assert "My programs" in ui
+    assert "Have a Program ID?" in ui
+    assert "get_program',[id]" in ui
+    assert "Public evidence is available through explicit links." in ui
+    assert "Explore testnet programs" not in ui
+    assert "ON-CHAIN PROGRAMS</span><strong>{programTotal" not in ui
+    assert "Public claims" in ui or "Public Claims" in ui
