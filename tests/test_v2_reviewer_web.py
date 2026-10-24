@@ -12,7 +12,9 @@ def test_v2_reviewer_contract_gate():
     assert "VITE_COVERDICT_CONTRACT_ADDRESS||" not in client
     assert "0x844BE9205a755900B7a6E40596DeDbdC69825e63" in env
     assert "get_contract_version" in ui
-    assert "2.0.0-testnet-experimental" in ui
+    assert "2.0.0-testnet-experimental" in client
+    assert "2.2.0-testnet-admission-candidate" in client
+    assert "contractVersion" in ui
 
 
 def test_v2_attestor_and_claim_ui():
@@ -58,7 +60,8 @@ def test_live_wallet_signing_and_result_panel():
 def test_create_program_keeps_user_on_create_page_and_docks_monitor():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
     css=(ROOT/"web/src/style.css").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='VERDICT CLARITY · R9'" in ui
+    assert "const UI_RELEASE=release===" in ui
+    assert "SECURITY RELEASE · V2.2" in ui
     assert "className=\"create-workspace\"" in ui
     assert "className=\"create-side-rail\"" in ui
     assert "Wallet activity, in real time." in ui
@@ -72,7 +75,7 @@ def test_create_program_keeps_user_on_create_page_and_docks_monitor():
 
 def test_wallet_scoped_programs_and_explicit_shared_lookup():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
-    assert "VERDICT CLARITY · R9" in ui
+    assert "HISTORICAL RELEASE · V2" in ui
     assert "p.issuer.toLowerCase()===account.toLowerCase()" in ui
     assert "My programs" in ui
     assert "Have a Program ID?" in ui
@@ -84,7 +87,8 @@ def test_wallet_scoped_programs_and_explicit_shared_lookup():
 
 def test_program_lookup_accepts_numeric_id_and_direct_links():
     ui = (ROOT / "web/src/main.tsx").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='VERDICT CLARITY · R9'" in ui
+    assert "const UI_RELEASE=release===" in ui
+    assert "SECURITY RELEASE · V2.2" in ui
     assert r"/^\d+$/.test(sharedProgramId.trim())" in ui
     assert r"/^\d+$/.test(fromLink)" in ui
     assert r"/^\\d+$/" not in ui
@@ -127,9 +131,11 @@ def test_current_program_persists_across_tabs_and_final_award_is_verified():
 
 def test_program_detail_uses_existing_case_instead_of_repeat_submission():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='VERDICT CLARITY · R9'" in ui
-    assert "selectedProgram.submitted<selectedProgram.max_claims&&!selectedClaim" in ui
-    assert "selectedProgram.submitted>=selectedProgram.max_claims" in ui
+    assert "const UI_RELEASE=release===" in ui
+    assert "SECURITY RELEASE · V2.2" in ui
+    assert "!awardCapacityFull(selectedProgram)&&!selectedClaim" in ui
+    assert "awardCapacityFull(selectedProgram)" in ui
+    assert "release==='v2.2'?p.approved>=p.max_claims:p.submitted>=p.max_claims" in ui
     assert "Your existing claim" in ui
     assert "Run independent consensus" in ui and "Claim demo award" in ui
     assert "Claim capacity reached" in ui
@@ -138,10 +144,43 @@ def test_program_detail_uses_existing_case_instead_of_repeat_submission():
 def test_unverifiable_execution_is_not_misrepresented_as_award():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
     css=(ROOT/"web/src/style.css").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='VERDICT CLARITY · R9'" in ui
+    assert "const UI_RELEASE=release===" in ui
+    assert "SECURITY RELEASE · V2.2" in ui
     assert "FINALIZED · VERDICT" in ui
     assert "Consensus execution succeeded but did not approve this claim" in ui
     assert "active-workflow-result-unverifiable" in ui
     assert "No award has been approved" in ui
     assert "last_attempt_at+600" in ui
     assert ".active-workflow-result-unverifiable" in css
+
+def test_v22_live_and_historical_routes_are_separated():
+    ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
+    client=(ROOT/"web/src/genlayer.ts").read_text(encoding="utf-8")
+    env=(ROOT/"web/.env.example").read_text(encoding="utf-8")
+    assert "VITE_COVERDICT_V22_CONTRACT_ADDRESS" in client
+    assert "0x65F96FB47380996Aa672b1eC1de8DF95451eC150" in env
+    assert "releaseUrl('v2.2',1)" in ui
+    assert "releaseUrl('v2',5)" in ui
+    assert "releaseParam==='v2'||(!releaseParam&&search.has('program'))" in client
+    assert "contractVersion" in client
+
+
+def test_v22_capacity_and_pending_claim_recovery():
+    ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
+    sdk=(ROOT/"web/src/genlayer.ts").read_text(encoding="utf-8")
+    assert "release==='v2.2'?p.approved>=p.max_claims:p.submitted>=p.max_claims" in ui
+    assert "selectedProgram.submitted>=selectedProgram.max_claims" not in ui
+    assert "remainingCapacity(selectedProgram)" in ui
+    assert "cancel_unverifiable_claim" in ui
+    assert "expire_pending_claim" in ui
+    assert "now<record.expires_at" in ui
+    assert "CANCELLED_UNVERIFIABLE" in sdk
+    assert "CAPACITY_FULL" in sdk and "REPLAY_REJECTED" in sdk
+
+
+def test_v22_verified_badge_requires_onchain_readback():
+    ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
+    assert "v22Approved=release==='v2.2'&&programs.find" in ui
+    assert "c.id===3&&c.program_id===1&&c.status==='CLAIMED'" in ui
+    assert "v22Approved?'LIVE STATE VERIFIED':'INSPECT LIVE PROOF'" in ui
+    assert "V2_2_FINAL_LIVE_RESULT_20261024.md" in ui
