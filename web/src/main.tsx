@@ -5,7 +5,7 @@ import{address,connectWallet,contractExplorer,inspectFinalizedWrite,read,ready,w
 import'./style.css';
 
 type Tab='programs'|'claims'|'create'|'activity';
-const UI_RELEASE='PROGRAM LOOKUP · R5';
+const UI_RELEASE='RPC ROUTE · R6';
 type LiveTx = {
  label:string;fn:string;account:string;hash:string;startedAt:number;
  phase:'signing'|'submitted'|'finalized'|'failed'|'unverified';

@@ -58,7 +58,7 @@ def test_live_wallet_signing_and_result_panel():
 def test_create_program_keeps_user_on_create_page_and_docks_monitor():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
     css=(ROOT/"web/src/style.css").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='PROGRAM LOOKUP · R5'" in ui
+    assert "const UI_RELEASE='RPC ROUTE · R6'" in ui
     assert "className=\"create-workspace\"" in ui
     assert "className=\"create-side-rail\"" in ui
     assert "Wallet activity, in real time." in ui
@@ -72,7 +72,7 @@ def test_create_program_keeps_user_on_create_page_and_docks_monitor():
 
 def test_wallet_scoped_programs_and_explicit_shared_lookup():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
-    assert "PROGRAM LOOKUP · R5" in ui
+    assert "RPC ROUTE · R6" in ui
     assert "p.issuer.toLowerCase()===account.toLowerCase()" in ui
     assert "My programs" in ui
     assert "Have a Program ID?" in ui
@@ -84,8 +84,26 @@ def test_wallet_scoped_programs_and_explicit_shared_lookup():
 
 def test_program_lookup_accepts_numeric_id_and_direct_links():
     ui = (ROOT / "web/src/main.tsx").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='PROGRAM LOOKUP · R5'" in ui
+    assert "const UI_RELEASE='RPC ROUTE · R6'" in ui
     assert r"/^\d+$/.test(sharedProgramId.trim())" in ui
     assert r"/^\d+$/.test(fromLink)" in ui
     assert r"/^\\d+$/" not in ui
     assert "get_program',[id]" in ui
+
+def test_studionet_uses_same_origin_rpc_proxy_and_preflights_before_signing():
+    import json
+    sdk = (ROOT / "web/src/genlayer.ts").read_text(encoding="utf-8")
+    vite = (ROOT / "web/vite.config.ts").read_text(encoding="utf-8")
+    config = json.loads((ROOT / "web/vercel.json").read_text(encoding="utf-8"))
+    assert config["rewrites"] == [
+        {"source": "/genlayer-rpc", "destination": "https://studio.genlayer.com/api"}
+    ]
+    assert "new URL('/genlayer-rpc',window.location.origin)" in sdk
+    assert "createClient({chain:appStudionet})" in sdk
+    assert "createClient({chain:appStudionet,account:" in sdk
+    assert "version=await readClient.readContract" in sdk
+    assert sdk.index("version=await readClient.readContract") < sdk.index("const client=createClient({chain:appStudionet,account:")
+    assert "No transaction was broadcast" in sdk
+    assert "'/genlayer-rpc':{" in vite
+    assert "target:'https://studio.genlayer.com'" in vite
+    assert "changeOrigin:true" in vite

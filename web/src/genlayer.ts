@@ -32,7 +32,17 @@ export const address=value as `0x${string}`;
 export const ready=/^0x[a-fA-F0-9]{40}$/.test(value);
 // Stable Studionet (61999) needs the stable 1.1.8 release.
 // SDK 2.0.0-rc.1 targets the Studio-dev v0.6 preview and fails gen_call on Studionet.
-const readClient=createClient({chain:studionet});
+// The browser calls the app origin, which forwards JSON-RPC to the documented
+// GenLayer Studionet endpoint. This avoids browser CORS on the upstream API.
+// Do not mutate the imported shared chain object: this SDK may do so for endpoint overrides.
+const rpcEndpoint=typeof window==='undefined'
+  ?'https://studio.genlayer.com/api'
+  :new URL('/genlayer-rpc',window.location.origin).toString();
+const appStudionet={...studionet,rpcUrls:{
+  ...studionet.rpcUrls,
+  default:{...studionet.rpcUrls.default,http:[rpcEndpoint]},
+}};
+const readClient=createClient({chain:appStudionet});
 function assertReady(){if(!ready)throw new Error('COVERDICT V2 address is not configured. Set VITE_COVERDICT_V2_CONTRACT_ADDRESS.');}
 export async function read<T>(fn:string,args:(string|number)[]=[]):Promise<T>{
   assertReady();
@@ -111,7 +121,18 @@ export async function write(
   const activeAfter=await wallet.request({method:'eth_accounts'}) as string[];
   if(!Array.isArray(activeAfter)||activeAfter[0]?.toLowerCase()!==account.toLowerCase())
     throw new Error('Wallet account changed while connecting. Reconnect and verify the address.');
-  const client=createClient({chain:studionet,account:account as `0x${string}`,provider:wallet});
+  // Before MetaMask prompts for a signature, verify RPC reachability and ABI.
+  // A failed preflight has not broadcast a transaction and must not be retried blindly.
+  let version:unknown;
+  try{
+    version=await readClient.readContract({address,functionName:'get_contract_version',args:[],
+      transactionHashVariant:TransactionHashVariant.LATEST_FINAL});
+  }catch{
+    throw new Error('Studionet RPC preflight failed. No transaction was broadcast. Check connectivity before signing.');
+  }
+  if(version!=='2.0.0-testnet-experimental')
+    throw new Error('Unexpected Studionet contract version. No transaction was broadcast.');
+  const client=createClient({chain:appStudionet,account:account as `0x${string}`,provider:wallet});
   const hash=await client.writeContract({address,functionName:fn,args,value:0n});
   onHash(hash);
   onStatus?.('PENDING');
