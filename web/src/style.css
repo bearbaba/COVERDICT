@@ -186,3 +186,14 @@ html{scroll-behavior:smooth}
 .drawer-award-confirmed div{display:grid;gap:5px}
 .drawer-award-confirmed strong{font-size:13px}
 .drawer-award-confirmed small{font-size:11px;color:#a9d2c2}
+
+/* R9: consensus execution success must not be confused with eligibility. */
+.active-workflow-result-pending{background:#0d2a32;border-color:#305a62}
+.active-workflow-result-unverifiable{background:linear-gradient(145deg,#3a2e23,#222c2c);border-color:#936f43}
+.active-workflow-result-unverifiable .result-emblem{background:#553e26;border-color:#967646;color:#f4c883}
+.active-workflow-result-unverifiable .result-eyebrow{color:#f4c883}
+.active-workflow-result-unverifiable .result-copy h3{color:#fce1ae}
+.active-workflow-result-denied{background:#33272a;border-color:#8a5255}
+.active-workflow-result-eligible{background:#14372f;border-color:#3c8267}
+.result-retry-note{margin-top:10px!important;color:#f5d0a0!important}
+.result-cooldown{font-size:12px;color:#f7cf9c;display:inline-flex;align-items:center;padding:10px 0}

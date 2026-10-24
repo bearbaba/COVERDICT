@@ -5,7 +5,7 @@ import{address,connectWallet,contractExplorer,inspectFinalizedWrite,read,ready,w
 import'./style.css';
 
 type Tab='programs'|'claims'|'create'|'activity';
-const UI_RELEASE='CLAIM DETAIL · R8';
+const UI_RELEASE='VERDICT CLARITY · R9';
 type LiveTx = {
  label:string;fn:string;account:string;hash:string;startedAt:number;
  phase:'signing'|'submitted'|'finalized'|'failed'|'unverified';
@@ -228,6 +228,14 @@ function App(){
       }
       if(currentWallet.current.toLowerCase()===actor.toLowerCase()){
        setFocusCase(item);setFocusBalance(balance);setFocusReading(false);
+       if(fn==='resolve_claim'){
+        const positive=item.status==='APPROVED'&&item.outcome==='ELIGIBLE';
+        setLiveTx(tx=>tx?.fn==='resolve_claim'&&tx.account.toLowerCase()===actor.toLowerCase()
+          ?{...tx,phase:positive?'finalized':'unverified',
+            status:`FINALIZED · VERDICT ${item.outcome||'UNKNOWN'}`,
+            detail:positive?'Evidence approved by GenLayer. You may now claim the demo award.'
+              :`Consensus execution succeeded but did not approve this claim. ${item.reason} No demo credits were issued.`}:tx);
+       }
        setCases(previous=>previous.map(c=>c.id===id?item:c));
        if(balance!==null)setCredits(balance);
       }
@@ -437,14 +445,17 @@ function App(){
      <div className={activeClaim?.outcome==='ELIGIBLE'?'step-done':''}><CheckCircle2 size={16}/><span>AI consensus</span><strong>{activeClaim?.outcome||'NOT RESOLVED'}</strong></div>
      <div className={activeClaim?.status==='CLAIMED'?'step-done':''}><CheckCircle2 size={16}/><span>Demo award</span><strong>{activeClaim?.status==='CLAIMED'?'CLAIMED':'NOT CLAIMED'}</strong></div>
     </div>
-    {activeClaim&&<div className="active-workflow-result" role="status" aria-live="polite">
+    {activeClaim&&<div className={`active-workflow-result ${activeClaim.outcome==='UNVERIFIABLE'?'active-workflow-result-unverifiable':activeClaim.outcome==='INELIGIBLE'?'active-workflow-result-denied':activeClaim.outcome==='ELIGIBLE'?'active-workflow-result-eligible':'active-workflow-result-pending'}`} role="status" aria-live="polite">
      {activeClaim.status==='CLAIMED'&&activeClaim.claimed&&activeClaim.outcome==='ELIGIBLE'
       ?<><div className="result-emblem"><CheckCircle2 size={30}/></div><div className="result-copy"><span className="result-eyebrow">FINAL ON-CHAIN RESULT · PROGRAM #{String(activeProgramId).padStart(3,'0')} · CLAIM #{String(activeClaim.id).padStart(3,'0')}</span><h3>CLAIMED · Demo award received</h3><p>The case is marked CLAIMED on GenLayer. This is a non-transferable, non-redeemable testnet credit, not an insurance payout.</p></div><div className="result-totals"><div><small>THIS CLAIM</small><strong>+{activeClaim.award_credits}</strong><span>demo credits</span></div><div><small>WALLET TOTAL</small><strong>{focusCase?.status==='CLAIMED'?(focusBalance??'—'):(credits??'—')}</strong><span>{focusCase?.status==='CLAIMED'&&focusBalance===null?'Balance verification pending':'on-chain demo credits'}</span></div></div></>
-      :<><div className="result-emblem pending"><FileCheck2 size={25}/></div><div className="result-copy"><span className="result-eyebrow">CASE #{String(activeClaim.id).padStart(3,'0')} · GENLAYER ON-CHAIN STATUS</span><h3>{activeClaim.status==='APPROVED'&&activeClaim.outcome==='ELIGIBLE'?'APPROVED · ELIGIBLE':activeClaim.outcome==='INELIGIBLE'?'INELIGIBLE · NOT AWARDED':activeClaim.outcome==='UNVERIFIABLE'?'UNVERIFIABLE · Evidence incomplete':'Claim submitted · Awaiting AI review'}</h3><p>{activeClaim.reason||'Consensus has not assessed this case yet. The recorded Sepolia receipt is available for verification.'}</p></div></>}
+      :<><div className="result-emblem pending"><FileCheck2 size={25}/></div><div className="result-copy"><span className="result-eyebrow">CASE #{String(activeClaim.id).padStart(3,'0')} · GENLAYER ON-CHAIN STATUS</span><h3>{activeClaim.status==='APPROVED'&&activeClaim.outcome==='ELIGIBLE'?'APPROVED · ELIGIBLE':activeClaim.outcome==='INELIGIBLE'?'INELIGIBLE · NOT AWARDED':activeClaim.outcome==='UNVERIFIABLE'?'UNVERIFIABLE · Evidence incomplete':'Claim submitted · Awaiting AI review'}</h3><p>{activeClaim.reason||'Consensus has not assessed this case yet. The recorded Sepolia receipt is available for verification.'}</p>
+      {activeClaim.outcome==='UNVERIFIABLE'&&<p className="result-retry-note">No award has been approved. The contract allows another independent review only after a 10-minute cooldown. This is not a guarantee of approval or a remedy for missing evidence.</p>}
+      </div></>}
     </div>}
     {focusReading&&<p className="active-workflow-checking"><LoaderCircle className="tx-monitor-spinner" size={16}/> Reading the updated case and wallet balance from Studionet…</p>}
     {focusNotice&&<p className="active-workflow-warning">{focusNotice}</p>}
     <div className="active-workflow-actions">
+      {activeClaim?.status==='SUBMITTED'&&activeClaim.outcome==='UNVERIFIABLE'&&activeClaim.attempts>0&&!canResolveCase(activeClaim)&&<span className="result-cooldown">Review cooldown until {when(activeClaim.last_attempt_at+600)} · Do not submit duplicate claims</span>}
       {activeClaim?.status==='SUBMITTED'&&canResolveCase(activeClaim)&&<button className="btn primary" disabled={!canWrite||focusReading} onClick={()=>void act('Resolve claim','resolve_claim',[activeClaim.id])}>{activeClaim.outcome==='UNVERIFIABLE'?'Retry evidence review':'Run independent consensus'} <ArrowRight size={16}/></button>}
       {activeClaim?.status==='APPROVED'&&activeClaim.outcome==='ELIGIBLE'&&!activeClaim.claimed&&<button className="btn primary" disabled={!canWrite||focusReading} onClick={()=>void act('Claim demo award','claim_demo_award',[activeClaim.id])}>Claim {activeClaim.award_credits} demo credits <Check size={16}/></button>}
       {activeClaim&&<button className="btn border" disabled={focusReading||!!busy} onClick={()=>void recheckCurrentCase()}><RefreshCw size={15}/> Recheck on-chain</button>}
