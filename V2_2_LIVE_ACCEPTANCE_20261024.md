@@ -17,6 +17,16 @@
 **Incident timing:** 24 Oct 21:00–21:10 ICT (UNIX `1792850400`–`1792851000`). Submission deadline 23:30 ICT (`1792859400`).  
 **Test verdict:** setup PASSED. The capacity-grief and receipt-preemption attack tests remain **NOT YET EXECUTED**.
 
+## Report attachment and independent attestation completed (24 October 2026)
+
+The user supplied both FINALIZED / GenVM SUCCESS / Consensus Accepted calls on **the selected V2.2 contract** (`0x65F96FB47380996Aa672b1eC1de8DF95451eC150`).
+
+- **Wallet A, 21:15:09 ICT:** [`attach_report(1, pinned_report_url, pinned_report_sha256)`](https://explorer-studio.genlayer.com/tx/0xc4e805ea0596ca7e977288e9d787478c136d5cc147e12a3b9198d5c6918263e4), TX `0xc4e805ea0596ca7e977288e9d787478c136d5cc147e12a3b9198d5c6918263e4`. Immediately following this call, user read `status=AWAITING_ATTESTATION`, `report_attested=false`, `submitted=approved=claimed=0`, report SHA correctly pinned.
+- **Wallet C, 21:18:47 ICT:** [`attest_report(1, pinned_report_sha256)`](https://explorer-studio.genlayer.com/tx/0x07cfa6c166de1a4525b3999e161a28eaa952e652c5ec391b92dd332c0f1d43a1), TX `0x07cfa6c166de1a4525b3999e161a28eaa952e652c5ec391b92dd332c0f1d43a1`, separate designated attestor wallet `0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff`.
+- **Exact report digest used twice:** `a1e2952ad7631f9aff6e006bdd10543484c6557382f23e11adcfd94353ad556d`. The immutable Git URL is `https://raw.githubusercontent.com/bearbaba/COVERDICT/0432e00dfd1ce0e3f1747eb2457d619a0e5215c0/evidence/v22_antigrief_20261024_2110_report.txt`.
+- **Readback after attestation:** still requested; expected `status=OPEN_FOR_CLAIMS`, `report_attested=true`. This is not yet independently recorded.
+- **Attack reproduction:** none documented so far. Do **not** claim the two admission vulnerabilities are fixed on-chain solely on the basis of attestation.
+
 ## Candidate Sepolia receipt supplied by claimant (21:03 ICT, 24 Oct)
 
 - **Candidate transaction:** [`0xdacd7b2f146f69dfe2c8f8296e63c7a0176ed5095efa66cd751bd6f4401cb809`](https://sepolia.etherscan.io/tx/0xdacd7b2f146f69dfe2c8f8296e63c7a0176ed5095efa66cd751bd6f4401cb809).
