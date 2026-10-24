@@ -27,6 +27,14 @@ The user supplied both FINALIZED / GenVM SUCCESS / Consensus Accepted calls on *
 - **Readback after attestation:** still requested; expected `status=OPEN_FOR_CLAIMS`, `report_attested=true`. This is not yet independently recorded.
 - **Attack reproduction:** none documented so far. Do **not** claim the two admission vulnerabilities are fixed on-chain solely on the basis of attestation.
 
+## First on-chain capacity-grief stage: fake hash admitted without award (24 Oct 2026)
+
+**Attacker test wallet D:** `0xfb82De94A24556838aCcac6D0987A76f6C9417DF`. User-supplied [GenLayer explorer TX](https://explorer-studio.genlayer.com/tx/0x944cdc05076e676835db2bf005122bf71a2e54f0617e30f70bffa084c7337bc0) `0x944cdc05076e676835db2bf005122bf71a2e54f0617e30f70bffa084c7337bc0`; call `submit_claim(1, 0x0000000000000000000000000000000000000000000000000000000000000000)` on selected V2.2 contract. Finalized, SUCCESS, Accepted. **Return: case ID 1.**
+
+Immediately afterward, user read `get_program(1)` showing `status=OPEN_FOR_CLAIMS`, `submitted=1`, **`approved=0`**, `claimed=0`, `max_claims=1`, `report_attested=true`, `attested_at=1792851527`.
+
+**Observation:** Submission of forged provisional hash did not itself consume the verified award slot, contrary to V2 behavior. **Incomplete security acceptance:** must still exercise fake-hash resolve/cancel and prove rightful claimant B can submit and receive the award despite D's attack. This read result alone is not a full end-to-end proof.
+
 ## Candidate Sepolia receipt supplied by claimant (21:03 ICT, 24 Oct)
 
 - **Candidate transaction:** [`0xdacd7b2f146f69dfe2c8f8296e63c7a0176ed5095efa66cd751bd6f4401cb809`](https://sepolia.etherscan.io/tx/0xdacd7b2f146f69dfe2c8f8296e63c7a0176ed5095efa66cd751bd6f4401cb809).
