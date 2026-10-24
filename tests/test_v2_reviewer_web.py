@@ -32,3 +32,14 @@ def test_reviewer_scope_is_observed_not_fabricated():
     assert "verifiedExample&&verifiedExampleProgram" in ui
     assert "close_unverifiable_claim" not in ui
     assert "nonredeemable demo" in ui or "non-redeemable demo" in ui
+
+def test_studionet_success_is_not_misclassified_from_missing_sdk_field():
+    client = (ROOT / "web/src/genlayer.ts").read_text(encoding="utf-8")
+    ui = (ROOT / "web/src/main.tsx").read_text(encoding="utf-8")
+    assert "executionSucceeded" in client
+    assert "consensus_data?.leader_receipt" in client
+    assert "result==='SUCCESS'" in client
+    assert "fullTransaction:true" in client
+    assert "outcome===null" in client
+    assert "inspectFinalizedWrite" in ui
+    assert "Transaction finalized without successful execution." not in client
