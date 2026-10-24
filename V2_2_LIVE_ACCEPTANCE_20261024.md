@@ -8,6 +8,15 @@
 
 **Other V2.2 deployment:** 0xd849FAED757cf4c3f92602cE8732e4EcB8bF6a39. Do NOT mix its contract state, case IDs or proofs into this test. Existing V2 Program #005 remains at 0x844BE9205a755900B7a6E40596DeDbdC69825e63 and is historical, not part of this attack rehearsal.
 
+## Verified live Program #001 creation (24 Oct 2026)
+
+**Program created:** `create_program` on selected V2.2 instance [`0x65F96FB47380996Aa672b1eC1de8DF95451eC150`](https://explorer-studio.genlayer.com/address/0x65F96FB47380996Aa672b1eC1de8DF95451eC150).  
+**Creation transaction:** [`0xd4f894567e91724295d9b736d15c7aa10bbf0657c51b622984f52e29d8548e40`](https://explorer-studio.genlayer.com/tx/0xd4f894567e91724295d9b736d15c7aa10bbf0657c51b622984f52e29d8548e40).  
+**Recorded by user:** FINALIZED / GenVM SUCCESS / Consensus Accepted (5/5 Agree), return value `1`; Program #001.  
+**Independent source integrity check:** SHA256 of exact [immutable pinned policy](https://github.com/bearbaba/COVERDICT/blob/c9af56599af03cc0939810e124f8fae00a765c4b/evidence/v22_antigrief_20261024_2100_policy.txt), including its final newline, equals `6d28fec817147c71021eef61fa684ea9621fc8704bd05a9ed25c70151b010762`; matches on-chain create input.  
+**Incident timing:** 24 Oct 21:00–21:10 ICT (UNIX `1792850400`–`1792851000`). Submission deadline 23:30 ICT (`1792859400`).  
+**Test verdict:** setup PASSED. The capacity-grief and receipt-preemption attack tests remain **NOT YET EXECUTED**.
+
 ## Frozen one-slot program configuration
 
 **Clock:** Vietnam/ICT UTC+07:00. All inputs below are UNIX seconds in UTC. **Create the program BEFORE 21:00 ICT, at least 15 minutes prior to its start**; otherwise do not force out-of-window transactions. If the window is missed, prepare a fresh dated pinned policy and schedule a new program.
