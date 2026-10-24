@@ -1,0 +1,28 @@
+COVERDICT V2.2 - ANTI-GRIEF LIVE REPRODUCTION - 24 OCTOBER 2026
+Policy version: 1
+GenLayer network: Studionet (chain ID 61999)
+Evidence network: Ethereum Sepolia (chain ID 11155111)
+TESTNET SYNTHETIC CLAIM ONLY. NOT INSURANCE, REAL LOSS, COVERAGE OR REIMBURSEMENT.
+
+Program label: COVERDICT V2.2 Anti-Grief 2100
+Incident class: SIMULATED_DEPOSIT_MISROUTE_DRILL
+Issuer and designated Sepolia receipt recipient: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Designated independent report attestor: 0x60bfdf6315294c7856acdc0b80d7bd40217debff
+Incident start inclusive: 2026-10-24T14:00:00Z (21:00 ICT)
+Incident end inclusive: 2026-10-24T14:10:00Z (21:10 ICT)
+Claim submission deadline exclusive: 2026-10-24T16:30:00Z (23:30 ICT)
+Verified award capacity: 1
+Award for eligible claimant: 100 nontransferable, nonredeemable demo credits
+
+SYNTHETIC ELIGIBILITY
+1. Before the incident starts, the issuer must commit this exact policy and SHA256 in the GenLayer V2.2 contract, with the same fixed recipient, interval and award capacity.
+2. After the incident ends, the issuer must publish a SHA256-pinned post-window report at an immutable Git commit URL, naming the same synthetic incident class, exact receipt recipient and interval.
+3. A different designated report attestor must sign the exact report SHA256 on GenLayer before claims are registered. Its signature is confirmation of the report bytes, not proof of real loss.
+4. Eligible evidence is a real, successful, positive-value native test-ETH transaction on Ethereum Sepolia, sent by the same wallet that submits the GenLayer claim, to the locked recipient above, with an on-chain block timestamp within the incident interval.
+5. Issuer and attestor wallets cannot claim. A sender-mismatched or otherwise invalid receipt is INELIGIBLE and does not receive an award. Unavailable or ambiguous evidence is UNVERIFIABLE and does not receive an award.
+6. A provisional claim does not consume verified capacity or reserve a global receipt. Only a verified ELIGIBLE consensus adjudication commits the single program award slot, the verified claimant wallet and its receipt against replay.
+7. Duplicate verified receipts across COVERDICT V2.2 programs and second redemption of the same approved award are forbidden. A review of UNVERIFIABLE or INELIGIBLE evidence must not grant credits.
+8. The issuer deliberately permits adversarial test cases in which a separate, non-eligible attack wallet submits an invalid receipt or a public receipt belonging to the rightful claimant. That attacker claim is not an insured loss or eligible payout.
+
+This is a synthetic verification drill with zero cash value, no funds held by COVERDICT, and no actual loss or insurance compensation.
+END OF PINNED V2.2 ANTI-GRIEF POLICY
