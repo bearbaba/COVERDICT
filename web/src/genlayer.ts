@@ -1,6 +1,6 @@
 import {createClient} from 'genlayer-js';
 import {studionet} from 'genlayer-js/chains';
-import {ExecutionResult,TransactionStatus,TransactionHashVariant} from 'genlayer-js/types';
+import {ExecutionResult,TransactionStatus,TransactionHashVariant,type TransactionHash} from 'genlayer-js/types';
 
 export type Program = {
   id:number;issuer:string;attestor:string;report_attested:boolean;attested_at:number;
@@ -89,7 +89,7 @@ function executionSucceeded(tx:import('genlayer-js/types').GenLayerTransaction):
 export async function inspectFinalizedWrite(hash:string):Promise<'finalized'|'failed'|'unverified'>{
   assertReady();
   if(!/^0x[0-9a-fA-F]{64}$/.test(hash))return 'unverified';
-  const tx=await readClient.getTransaction({hash:hash as `0x${string}`});
+  const tx=await readClient.getTransaction({hash:hash as TransactionHash});
   if(tx.statusName!==TransactionStatus.FINALIZED&&tx.status!==7)return 'unverified';
   const result=executionSucceeded(tx);
   return result===true?'finalized':result===false?'failed':'unverified';
@@ -111,7 +111,7 @@ export async function write(fn:string,args:(string|number)[],account:string,onHa
   const hash=await client.writeContract({address,functionName:fn,args,value:0n});
   onHash(hash);
   const receipt=await readClient.waitForTransactionReceipt({
-    hash,status:TransactionStatus.FINALIZED,interval:3500,retries:85,fullTransaction:true,
+    hash,status:TransactionStatus.FINALIZED,interval:3500,retries:85,
   });
   // Studionet is a Studio network: genlayer-js 1.1.8 exposes consensus_data
   // rather than txExecutionResultName there. A missing field is NOT a failure.
