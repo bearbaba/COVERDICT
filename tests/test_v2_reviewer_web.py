@@ -54,3 +54,18 @@ def test_live_wallet_signing_and_result_panel():
     assert "FINALIZED but execution result is unverified" in sdk
     assert "Recheck on-chain (no signature)" in ui
     assert "position:fixed" in css and "tx-spin" in css
+
+def test_create_program_keeps_user_on_create_page_and_docks_monitor():
+    ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
+    css=(ROOT/"web/src/style.css").read_text(encoding="utf-8")
+    assert "const UI_RELEASE='LIVE TX · R3'" in ui
+    assert "className=\"create-workspace\"" in ui
+    assert "className=\"create-side-rail\"" in ui
+    assert "Wallet activity, in real time." in ui
+    assert "tab!=='create'&&liveTx&&<aside" in ui
+    assert "liveTx?.fn==='create_program'" in ui
+    assert "create-inline-result" in ui
+    assert "onClick={()=>{setSelected(liveTx.programId!);setTab('programs')}}" in ui
+    assert "create.attestor.trim()])" in ui
+    assert "create.attestor.trim()],()=>setTab('programs')" not in ui
+    assert ".create-side-rail .tx-monitor{position:relative" in css
