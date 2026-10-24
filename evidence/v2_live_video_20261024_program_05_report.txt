@@ -1,0 +1,50 @@
+COVERDICT V2 PROGRAM #5 - POST-WINDOW SYNTHETIC INCIDENT REPORT
+Report version: 1
+Report type: TESTNET SIMULATION ONLY - NOT A REAL INCIDENT OR LOSS.
+Program ID: 5
+Program label: COVERDICT V2 Live Signed Demo 1330
+Synthetic incident class: SIMULATED_DEPOSIT_MISROUTE_DRILL
+GenLayer network: Studionet (chain ID 61999)
+Evidence network: Ethereum Sepolia (chain ID 11155111)
+Designated Sepolia recipient: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Issuer wallet: 0x4c7cb73ac8f8999af21cfc9ff4cf2333a9508dcb
+Designated report attestor: 0x60bfdf6315294c7856acdc0b80d7bd40217debff
+Incident start inclusive: 2026-10-24T06:30:00Z (13:30 ICT)
+Incident end inclusive: 2026-10-24T06:40:00Z (13:40 ICT)
+Claim deadline exclusive: 2026-10-24T11:00:00Z (18:00 ICT)
+Immutable precommitted policy SHA256: 091da618e427aebd97bd686a43c38618d5b7b1c026730cc04366e0cbc1795f0f
+Immutable precommitted policy commit: 9b3c198be031fd062484b5258c264fd1c7b547a7
+
+ISSUER'S POST-WINDOW SYNTHETIC DECLARATION
+The issuer declares the fixed recipient and the incident interval above to
+be in scope for the precommitted SIMULATED_DEPOSIT_MISROUTE_DRILL. This is a
+synthetic demonstration with artificial eligibility criteria. It does NOT
+certify that any real protocol was exploited, that funds were lost or that
+any compensation is owed.
+
+The designated receipt evidence must be a REAL Ethereum Sepolia transaction
+whose verified on-chain receipt proves a successful positive-value native
+test-ETH transfer from the SAME claimant wallet that submits the claim
+on GenLayer to the designated Sepolia recipient. The Sepolia BLOCK TIMESTAMP
+must be inside 13:30:00-13:40:00 ICT on 24 October 2026 (both inclusive).
+An issuer statement, a screenshot or this report is not sufficient proof.
+
+Candidate claimant-supplied testnet receipt hash for independent checking:
+0xd2a4cdcc7f242af32a78adf4d1868ed7eba3e27723a86d79aa9d2ff6ff6dad7b
+This hash is an evidence pointer, not a certification. Its sender, recipient,
+native amount, status and timestamp must be independently fetched and checked.
+
+Verified wrong sender, wrong recipient, failed transaction, zero native value
+or outside-window block time is INELIGIBLE. Unavailable, conflicting or
+unparseable proof is UNVERIFIABLE. Neither condition is automatic approval.
+Receipt re-use is prohibited across COVERDICT V2 programs.
+
+The separate designated report attestor must explicitly confirm the exact
+SHA256 of THESE committed report bytes in COVERDICT V2. This signature is
+a distinct on-chain role sign-off, not an independent real-world loss oracle.
+The issuer and attestor cannot submit claims.
+
+The award is solely 100 nontransferable, nonredeemable demo credits per
+approved claim, capacity one. No real insurance, payout, escrow, custody,
+recoverable value or legally enforceable financial entitlement is involved.
+END OF PROGRAM #5 SYNTHETIC INCIDENT REPORT
