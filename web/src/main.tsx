@@ -535,8 +535,15 @@ function App(){
   <div className="drawer-claim-actions">
    {selectedClaim.status==='SUBMITTED'&&canResolveCase(selectedClaim)&&<button className="btn primary wide" disabled={!canWrite||focusReading} onClick={()=>void act('Resolve claim','resolve_claim',[selectedClaim.id])}>Run independent consensus <ArrowRight size={16}/></button>}
    {selectedClaim.status==='APPROVED'&&selectedClaim.outcome==='ELIGIBLE'&&!selectedClaim.claimed&&<button className="btn primary wide" disabled={!canWrite||focusReading} onClick={()=>void act('Claim demo award','claim_demo_award',[selectedClaim.id])}>Claim {selectedClaim.award_credits} demo credits <Check size={16}/></button>}
-   {selectedClaim.status==='CLAIMED'&&selectedClaim.claimed&&<div className="drawer-award-confirmed"><CheckCircle2 size={18}/> CLAIMED · +{selectedClaim.award_credits} demo credits</div>}
+   {selectedClaim.status==='CLAIMED'&&selectedClaim.claimed&&<div className="drawer-award-confirmed" role="status">
+    <CheckCircle2 size={25}/>
+    <div><strong>CLAIMED · +{selectedClaim.award_credits} demo credits</strong>
+     <small>Wallet total: {focusCase?.status==='CLAIMED'?(focusBalance??'Verification pending'):(credits??'Verification pending')} demo credits</small>
+     <small>Verified synthetic testnet award. No funds transferred.</small>
+    </div>
+   </div>}
    <button className="btn border wide" disabled={focusReading||!!busy} onClick={()=>void recheckCurrentCase()}><RefreshCw size={15}/> Recheck on-chain</button>
+   {selectedClaim.status==='CLAIMED'&&selectedClaim.claimed&&<button className="btn border wide" onClick={finishActiveProgram}>Finish workspace <CheckCircle2 size={16}/></button>}
   </div>
  </div>}
  {selectedProgram.status==='OPEN_FOR_CLAIMS'&&!selectedClaim&&selectedProgram.submitted>=selectedProgram.max_claims&&<div className="drawer-form">

@@ -174,3 +174,15 @@ html{scroll-behavior:smooth}
 @media(min-width:781px) and (max-width:1120px){
  .shell.has-tx-monitor .main>.tx-monitor{position:relative;right:auto;top:auto;width:100%;max-height:none;z-index:2;margin:0 0 24px}
 }
+
+/* R8 - actionable program drawer with signed claim and award outcomes. */
+.drawer-claim-progress{border:1px solid #326a5c;background:#112d2a;border-radius:14px;padding:18px}
+.drawer-claim-verdict{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#092622;border:1px solid #3c7263;border-radius:8px;padding:11px 12px;margin:12px 0}
+.drawer-claim-verdict span{font-size:10px;color:#a3cfbf;font-weight:800;letter-spacing:.09em}
+.drawer-claim-verdict strong{font-size:12px;color:#a9f1c9}
+.drawer-claim-actions{display:grid;gap:11px}
+.drawer-award-confirmed{display:flex;align-items:center;gap:12px;padding:16px;background:#14493a;border:1px solid #6cb78c;border-radius:12px;color:#bbf5d3}
+.drawer-award-confirmed svg{flex:0 0 auto}
+.drawer-award-confirmed div{display:grid;gap:5px}
+.drawer-award-confirmed strong{font-size:13px}
+.drawer-award-confirmed small{font-size:11px;color:#a9d2c2}
