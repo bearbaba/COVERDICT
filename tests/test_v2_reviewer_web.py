@@ -58,7 +58,7 @@ def test_live_wallet_signing_and_result_panel():
 def test_create_program_keeps_user_on_create_page_and_docks_monitor():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
     css=(ROOT/"web/src/style.css").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='RPC ROUTE · R6'" in ui
+    assert "const UI_RELEASE='CLAIM WORKSPACE · R7'" in ui
     assert "className=\"create-workspace\"" in ui
     assert "className=\"create-side-rail\"" in ui
     assert "Wallet activity, in real time." in ui
@@ -72,7 +72,7 @@ def test_create_program_keeps_user_on_create_page_and_docks_monitor():
 
 def test_wallet_scoped_programs_and_explicit_shared_lookup():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
-    assert "RPC ROUTE · R6" in ui
+    assert "CLAIM WORKSPACE · R7" in ui
     assert "p.issuer.toLowerCase()===account.toLowerCase()" in ui
     assert "My programs" in ui
     assert "Have a Program ID?" in ui
@@ -84,7 +84,7 @@ def test_wallet_scoped_programs_and_explicit_shared_lookup():
 
 def test_program_lookup_accepts_numeric_id_and_direct_links():
     ui = (ROOT / "web/src/main.tsx").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='RPC ROUTE · R6'" in ui
+    assert "const UI_RELEASE='CLAIM WORKSPACE · R7'" in ui
     assert r"/^\d+$/.test(sharedProgramId.trim())" in ui
     assert r"/^\d+$/.test(fromLink)" in ui
     assert r"/^\\d+$/" not in ui
@@ -107,3 +107,20 @@ def test_studionet_uses_same_origin_rpc_proxy_and_preflights_before_signing():
     assert "'/genlayer-rpc':{" in vite
     assert "target:'https://studio.genlayer.com'" in vite
     assert "changeOrigin:true" in vite
+
+def test_current_program_persists_across_tabs_and_final_award_is_verified():
+    ui = (ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
+    css = (ROOT/"web/src/style.css").read_text(encoding="utf-8")
+    assert "coverdict-v2-active-program" in ui
+    assert "localStorage.setItem(ACTIVE_PROGRAM_KEY,String(activeProgramId))" in ui
+    assert "const openProgram=(id:number)=>{pinProgram(id)" in ui
+    assert "CURRENT WORKSPACE · PROGRAM #" in ui
+    assert "active-workflow-result" in ui and ".active-workflow-result" in css
+    assert "verifyCaseAfterFinality" in ui
+    assert "get_case',[id]" in ui and "get_demo_balance',[actor]" in ui
+    assert "item.status==='CLAIMED'&&item.claimed" in ui
+    assert "item.attempts>beforeAttempts" in ui
+    assert "Finish workspace" in ui
+    assert "activeClaim?.status==='CLAIMED'&&activeClaim.claimed" in ui
+    assert "FINAL ON-CHAIN RESULT" in ui
+    assert "No need to enter the Program ID again." in ui

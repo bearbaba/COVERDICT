@@ -5,7 +5,7 @@ import{address,connectWallet,contractExplorer,inspectFinalizedWrite,read,ready,w
 import'./style.css';
 
 type Tab='programs'|'claims'|'create'|'activity';
-const UI_RELEASE='RPC ROUTE · R6';
+const UI_RELEASE='CLAIM WORKSPACE · R7';
 type LiveTx = {
  label:string;fn:string;account:string;hash:string;startedAt:number;
  phase:'signing'|'submitted'|'finalized'|'failed'|'unverified';
@@ -61,13 +61,58 @@ function App(){
  const[claimTx,setClaimTx]=useState('');
  const[reports,setReports]=useState({url:'',sha:''});
  const[create,setCreate]=useState({label:'',contract:'',start:datePlaceholder(86400_000),end:datePlaceholder(2*86400_000),deadline:datePlaceholder(3*86400_000),url:'',sha:'',attestor:'',award:'100',max:'10'});
+ // A current program is pinned across navigation and reloads until the user
+ // deliberately finishes the workflow. This is a browser UX state only.
+ const ACTIVE_PROGRAM_KEY='coverdict-v2-active-program';
+ const[activeProgramId,setActiveProgramId]=useState<number|null>(()=>{
+  try{const id=Number(localStorage.getItem(ACTIVE_PROGRAM_KEY)||'0');return Number.isSafeInteger(id)&&id>0?id:null}
+  catch{return null}
+ });
+ const[activeProgramRemote,setActiveProgramRemote]=useState<Program|null>(null);
+ const[focusCase,setFocusCase]=useState<CaseRecord|null>(null);
+ const[focusBalance,setFocusBalance]=useState<number|null>(null);
+ const[focusReading,setFocusReading]=useState(false);
+ const[focusNotice,setFocusNotice]=useState('');
  const[txs,setTxs]=useState<TxRecord[]>([]);
  const[liveTx,setLiveTx]=useState<LiveTx|null>(null);
  const currentWallet=useRef('');
  const selectedProgram=programs.find(p=>p.id===selected)??(sharedProgram?.id===selected?sharedProgram:null);
+ const activeProgram=programs.find(p=>p.id===activeProgramId)
+  ??(sharedProgram?.id===activeProgramId?sharedProgram:null)
+  ??(activeProgramRemote?.id===activeProgramId?activeProgramRemote:null);
+ const activeClaim=account?(
+   (focusCase?.program_id===activeProgramId&&focusCase.claimant.toLowerCase()===account.toLowerCase()?focusCase:null)
+    ??cases.find(c=>c.program_id===activeProgramId&&c.claimant.toLowerCase()===account.toLowerCase())
+    ??null
+ ):null;
  const verifiedExample=cases.find(c=>c.id===1&&c.program_id===2&&c.status==='CLAIMED'&&c.claimed&&c.outcome==='ELIGIBLE'&&c.award_credits===100);
  const verifiedExampleProgram=programs.find(p=>p.id===2&&p.report_attested&&p.claimed>=1);
  const canWrite=ready&&!!account&&!busy;
+ const pinProgram=(id:number)=>{if(!Number.isSafeInteger(id)||id<1)return;setActiveProgramId(id);};
+ useEffect(()=>{
+  if(activeProgramId===null){setActiveProgramRemote(null);return}
+  try{localStorage.setItem(ACTIVE_PROGRAM_KEY,String(activeProgramId))}catch{/* optional */}
+  let active=true;
+  void read<Program>('get_program',[activeProgramId]).then(record=>{
+   if(active&&record.id===activeProgramId)setActiveProgramRemote(record);
+  }).catch(()=>{/* Keep the ID pinned; never manufacture a program status. */});
+  return()=>{active=false};
+ },[activeProgramId]);
+ useEffect(()=>{
+  const change=(event:StorageEvent)=>{
+   if(event.key!==ACTIVE_PROGRAM_KEY)return;
+   const id=Number(event.newValue||'0');
+   setActiveProgramId(Number.isSafeInteger(id)&&id>0?id:null);
+  };
+  window.addEventListener('storage',change);
+  return()=>window.removeEventListener('storage',change);
+ },[]);
+ useEffect(()=>{setFocusCase(null);setFocusBalance(null);setFocusNotice('');setFocusReading(false)},[account,activeProgramId]);
+ const finishActiveProgram=()=>{
+  if(activeClaim?.status!=='CLAIMED'||!activeClaim.claimed)return;
+  try{localStorage.removeItem(ACTIVE_PROGRAM_KEY)}catch{/* optional */}
+  setActiveProgramId(null);setSelected(null);setFocusCase(null);setFocusBalance(null);
+ };
  const isClaimWindowOpen=(p:Program)=>p.status==='OPEN_FOR_CLAIMS'&&Date.now()/1000<p.claim_deadline;
  const canResolveCase=(record:CaseRecord)=>{
   const program=programs.find(p=>p.id===record.program_id);
@@ -147,11 +192,77 @@ function App(){
  },[account]);
  const doConnect=async()=>{setError('');try{const a=await connectWallet();setAccount(a);await refresh(a);}catch(e){setError(e instanceof Error?e.message:String(e))}};
  const hideWallet=()=>{setAccount('');setCredits(null);setNotice('Wallet hidden locally. Revoke site access in your wallet settings if desired.');};
+ // A chain write confirms transaction execution, not the requested verdict.
+ // Read the exact claim until its stored status changes before showing an award.
+ const verifyCaseAfterFinality=async(fn:string,id:number,actor:string,beforeAttempts:number)=>{
+  setFocusReading(true);setFocusNotice('');
+  for(let i=0;i<10;i++){
+   try{
+    const item=await read<CaseRecord>('get_case',[id]);
+    if(item.id===id&&item.claimant.toLowerCase()===actor.toLowerCase()){
+     const advanced=fn==='resolve_claim'?item.attempts>beforeAttempts
+       :item.status==='CLAIMED'&&item.claimed;
+     if(advanced){
+      let balance:number|null=null;
+      if(item.status==='CLAIMED'){
+       try{
+        const n=Number(await read<number>('get_demo_balance',[actor]));
+        if(Number.isSafeInteger(n)&&n>=0)balance=n;
+       }catch{/* Do not invent a balance when the read fails. */}
+      }
+      if(currentWallet.current.toLowerCase()===actor.toLowerCase()){
+       setFocusCase(item);setFocusBalance(balance);setFocusReading(false);
+       setCases(previous=>previous.map(c=>c.id===id?item:c));
+       if(balance!==null)setCredits(balance);
+      }
+      return;
+     }
+    }
+   }catch{/* RPC final state can lag the transaction receipt. */}
+   await new Promise<void>(resolve=>setTimeout(resolve,1250));
+  }
+  if(currentWallet.current.toLowerCase()===actor.toLowerCase()){
+   setFocusReading(false);
+   setFocusNotice('Transaction finalized, but the updated claim state is not yet available. Recheck on-chain without signing again.');
+  }
+ };
+ const recheckCurrentCase=async()=>{
+  if(!account||!activeClaim||busy||focusReading)return;
+  const actor=account,id=activeClaim.id;
+  setFocusReading(true);setFocusNotice('');
+  try{
+   const item=await read<CaseRecord>('get_case',[id]);
+   if(item.id!==id||item.claimant.toLowerCase()!==actor.toLowerCase())
+    throw new Error('Unexpected claim owner.');
+   let balance:number|null=null;
+   if(item.status==='CLAIMED'){
+    try{
+     const n=Number(await read<number>('get_demo_balance',[actor]));
+     if(Number.isSafeInteger(n)&&n>=0)balance=n;
+    }catch{/* Wallet total remains pending until readable. */}
+   }
+   if(currentWallet.current.toLowerCase()===actor.toLowerCase()){
+    setFocusCase(item);setFocusBalance(balance);
+    setCases(previous=>previous.map(c=>c.id===id?item:c));
+    if(balance!==null)setCredits(balance);
+   }
+  }catch{
+   if(currentWallet.current.toLowerCase()===actor.toLowerCase())
+    setFocusNotice('Studionet could not verify the current claim record. Try Recheck; do not sign the same transaction twice.');
+  }finally{if(currentWallet.current.toLowerCase()===actor.toLowerCase())setFocusReading(false)}
+ };
  const act=async(label:string,fn:string,args:(string|number)[],complete?:()=>void)=>{
   if(busy)return;
   setError('');setNotice('');setBusy(label);
   let hash='';
   const actor=account;
+  const caseId=(fn==='resolve_claim'||fn==='claim_demo_award')?Number(args[0]):null;
+  const previousAttempts=caseId===null?0:(cases.find(c=>c.id===caseId)?.attempts??focusCase?.attempts??0);
+  if(caseId!==null&&Number.isSafeInteger(caseId)&&caseId>0){
+   const item=cases.find(c=>c.id===caseId);
+   if(item)pinProgram(item.program_id);
+   setFocusCase(null);setFocusBalance(null);setFocusNotice('');
+  }
   const startedAt=Date.now();
   setLiveTx({label,fn,account:actor,hash:'',startedAt,phase:'signing',status:'AWAITING WALLET SIGNATURE',detail:'Review this action in MetaMask. The transaction has not been broadcast.'});
   try{
@@ -176,6 +287,10 @@ function App(){
      }
     }catch{/* The transaction success is independent from optional detail reads. */}
    }
+   // Resolve and award need an immediate, verified RESULT on this same screen.
+   // Do not navigate away or ask for another wallet signature.
+   if(caseId!==null&&Number.isSafeInteger(caseId)&&caseId>0)
+    await verifyCaseAfterFinality(fn,caseId,actor,previousAttempts);
    await refresh(actor);
    complete?.();
   }catch(e){
@@ -230,7 +345,7 @@ function App(){
   }
   void act('Create reimbursement program','create_program',[create.label.trim(),create.contract.trim(),start,end,deadline,create.url.trim(),create.sha.trim(),Number(create.award),Number(create.max),create.attestor.trim()]);
  };
- const openProgram=(id:number)=>{setSelected(id);setReports({url:'',sha:''});setClaimTx('')};
+ const openProgram=(id:number)=>{pinProgram(id);setSelected(id);setReports({url:'',sha:''});setClaimTx('')};
  const lookupProgram=async()=>{
   const id=Number(sharedProgramId.trim());
   if(!/^\d+$/.test(sharedProgramId.trim())||!Number.isSafeInteger(id)||id<1){
@@ -292,6 +407,35 @@ function App(){
       <button type="button" className="tx-monitor-recheck" disabled={!!busy} onClick={()=>void recheckLiveTx()}>Recheck on-chain (no signature) <RefreshCw size={14}/></button>}
     <small className="tx-monitor-foot">Studionet 61999 · Synthetic testnet only</small>
    </aside>}
+   {activeProgramId!==null&&<section className={`active-workflow ${activeClaim?.status==='CLAIMED'&&activeClaim.claimed?'active-workflow-complete':''}`} aria-label="Current pinned program and claim result">
+    <div className="active-workflow-top">
+     <div><span className="active-workflow-kicker"><span className="tx-monitor-dot"/> CURRENT WORKSPACE · PROGRAM #{String(activeProgramId).padStart(3,'0')}</span>
+      <h2>{activeProgram?.label??`Program #${activeProgramId}`}</h2>
+      <p>{activeProgram?activeProgram.status.replaceAll('_',' '):'Loading program status from Studionet'} · Pinned on this browser until the claim is completed. No need to enter the Program ID again.</p>
+     </div>
+     <button className="btn border" onClick={()=>{setTab('programs');setSelected(activeProgramId)}} disabled={!activeProgram}>Program details <ArrowUpRight size={15}/></button>
+    </div>
+    <div className="active-workflow-steps">
+     <div className={activeProgram?.report_attested?'step-done':''}><CheckCircle2 size={16}/><span>Incident report</span><strong>{activeProgram?.report_attested?'ATTESTED':'WAITING'}</strong></div>
+     <div className={activeClaim?'step-done':''}><CheckCircle2 size={16}/><span>Claim</span><strong>{activeClaim?'#'+String(activeClaim.id).padStart(3,'0'):'NOT FOUND FOR THIS WALLET'}</strong></div>
+     <div className={activeClaim?.outcome==='ELIGIBLE'?'step-done':''}><CheckCircle2 size={16}/><span>AI consensus</span><strong>{activeClaim?.outcome||'NOT RESOLVED'}</strong></div>
+     <div className={activeClaim?.status==='CLAIMED'?'step-done':''}><CheckCircle2 size={16}/><span>Demo award</span><strong>{activeClaim?.status==='CLAIMED'?'CLAIMED':'NOT CLAIMED'}</strong></div>
+    </div>
+    {activeClaim&&<div className="active-workflow-result" role="status" aria-live="polite">
+     {activeClaim.status==='CLAIMED'&&activeClaim.claimed&&activeClaim.outcome==='ELIGIBLE'
+      ?<><div className="result-emblem"><CheckCircle2 size={30}/></div><div className="result-copy"><span className="result-eyebrow">FINAL ON-CHAIN RESULT · PROGRAM #{String(activeProgramId).padStart(3,'0')} · CLAIM #{String(activeClaim.id).padStart(3,'0')}</span><h3>CLAIMED · Demo award received</h3><p>The case is marked CLAIMED on GenLayer. This is a non-transferable, non-redeemable testnet credit, not an insurance payout.</p></div><div className="result-totals"><div><small>THIS CLAIM</small><strong>+{activeClaim.award_credits}</strong><span>demo credits</span></div><div><small>WALLET TOTAL</small><strong>{focusCase?.status==='CLAIMED'?(focusBalance??'—'):(credits??'—')}</strong><span>{focusCase?.status==='CLAIMED'&&focusBalance===null?'Balance verification pending':'on-chain demo credits'}</span></div></div></>
+      :<><div className="result-emblem pending"><FileCheck2 size={25}/></div><div className="result-copy"><span className="result-eyebrow">CASE #{String(activeClaim.id).padStart(3,'0')} · GENLAYER ON-CHAIN STATUS</span><h3>{activeClaim.status==='APPROVED'&&activeClaim.outcome==='ELIGIBLE'?'APPROVED · ELIGIBLE':activeClaim.outcome==='INELIGIBLE'?'INELIGIBLE · NOT AWARDED':activeClaim.outcome==='UNVERIFIABLE'?'UNVERIFIABLE · Evidence incomplete':'Claim submitted · Awaiting AI review'}</h3><p>{activeClaim.reason||'Consensus has not assessed this case yet. The recorded Sepolia receipt is available for verification.'}</p></div></>}
+    </div>}
+    {focusReading&&<p className="active-workflow-checking"><LoaderCircle className="tx-monitor-spinner" size={16}/> Reading the updated case and wallet balance from Studionet…</p>}
+    {focusNotice&&<p className="active-workflow-warning">{focusNotice}</p>}
+    <div className="active-workflow-actions">
+      {activeClaim?.status==='SUBMITTED'&&canResolveCase(activeClaim)&&<button className="btn primary" disabled={!canWrite||focusReading} onClick={()=>void act('Resolve claim','resolve_claim',[activeClaim.id])}>{activeClaim.outcome==='UNVERIFIABLE'?'Retry evidence review':'Run independent consensus'} <ArrowRight size={16}/></button>}
+      {activeClaim?.status==='APPROVED'&&activeClaim.outcome==='ELIGIBLE'&&!activeClaim.claimed&&<button className="btn primary" disabled={!canWrite||focusReading} onClick={()=>void act('Claim demo award','claim_demo_award',[activeClaim.id])}>Claim {activeClaim.award_credits} demo credits <Check size={16}/></button>}
+      {activeClaim&&<button className="btn border" disabled={focusReading||!!busy} onClick={()=>void recheckCurrentCase()}><RefreshCw size={15}/> Recheck on-chain</button>}
+      {activeClaim?.status==='CLAIMED'&&activeClaim.claimed&&<button className="btn border" onClick={finishActiveProgram}>Finish workspace <CheckCircle2 size={15}/></button>}
+      {!activeClaim&&account&&<button className="btn border" onClick={()=>{setTab('claims');setClaimScope('mine')}}>Find my claim <ArrowRight size={15}/></button>}
+    </div>
+   </section>}
    {tab==='programs'&&<>
     <section className="hero"><div><div className="eyebrow"><span className="dot"/> COVERDICT V2 · GENLAYER FULL CONSENSUS</div><h1>Evidence in.<br/><em>Consensus out.</em></h1><p>{intro}</p><div className="actions"><button className="btn primary" onClick={()=>document.getElementById('program-list')?.scrollIntoView({behavior:'smooth'})}>{account?'My programs':'Open programs'} <ArrowRight size={16}/></button><button className="btn border" onClick={()=>{setClaimScope('mine');setTab('claims')}}>My claims</button><a className="btn border" href="https://github.com/bearbaba/COVERDICT" target="_blank" rel="noreferrer">Read the source <ExternalLink size={16}/></a></div></div><div className="hero-art"><div className="halo"><Shield size={66} strokeWidth={1.25}/></div><div className="float-tag"><Fingerprint size={15}/> EVIDENCE-BOUND</div><div className="float-tag bottom"><FileCheck2 size={15}/> PUBLIC CLAIM STATES</div></div></section>
     {verifiedExample&&verifiedExampleProgram&&<section className="verified-demo" aria-label="Completed on-chain acceptance case"><div className="verified-demo-heading"><span className="verified-kicker"><CheckCircle2 size={16}/> ON-CHAIN ACCEPTANCE · OCTOBER 22, 2026</span><span className="pill claimed">COMPLETED</span></div><div className="verified-demo-grid"><div><span>PROGRAM</span><strong>#002</strong></div><div><span>CONSENSUS</span><strong>ELIGIBLE</strong></div><div><span>CLAIM</span><strong>CLAIMED</strong></div><div><span>DEMO AWARD</span><strong>100</strong></div></div><p>Live Studionet state confirms a pinned synthetic report, authorized attestor signature and one-time demo-credit claim. No money, insurance or actual economic loss is involved.</p><div className="verified-links"><button className="btn border" onClick={()=>{setSelected(2);setTab('programs')}}>Inspect Program #2 <ArrowUpRight size={14}/></button><button className="btn border" onClick={()=>{setClaimScope('all');setTab('claims')}}>View Claim #1 <ArrowUpRight size={14}/></button><a className="btn border" href="https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7" target="_blank" rel="noreferrer">AI Consensus proof <ExternalLink size={14}/></a></div></section>}
