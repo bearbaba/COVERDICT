@@ -276,7 +276,7 @@ function App(){
  {liveTx.hash&&<a href={contractExplorer(liveTx.hash)} target="_blank" rel="noreferrer">Open Explorer <ExternalLink size={13}/></a>}
  </section>}</form>
  <div className="create-side-rail">
-  {liveTx?{liveTx&&<aside className={`tx-monitor tx-monitor-${liveTx.phase}`} aria-label="Live on-chain transaction" role="status" aria-live="polite">
+  {liveTx?<aside className={`tx-monitor tx-monitor-${liveTx.phase}`} aria-label="Live on-chain transaction" role="status" aria-live="polite">
     <div className="tx-monitor-heading"><span><span className="tx-monitor-dot"/> LIVE TRANSACTION</span>
      {(!busy||liveTx.phase==='finalized')&&<button className="tx-monitor-close" title="Dismiss transaction details" aria-label="Dismiss transaction details" onClick={()=>setLiveTx(null)}><X size={16}/></button>}
     </div>
