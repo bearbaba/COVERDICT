@@ -39,7 +39,7 @@ def test_studionet_success_is_not_misclassified_from_missing_sdk_field():
     assert "executionSucceeded" in client
     assert "consensus_data?.leader_receipt" in client
     assert "result==='SUCCESS'" in client
-    assert "fullTransaction:true" in client
+    assert "readClient.getTransaction({hash})" in client
     assert "outcome===null" in client
     assert "inspectFinalizedWrite" in ui
     assert "Transaction finalized without successful execution." not in client
