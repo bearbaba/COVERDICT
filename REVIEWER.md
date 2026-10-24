@@ -1,3 +1,5 @@
+> **LATEST GENLAYER PROJECTS REVIEW — 24 OCTOBER 2026:** [Read the single-page PROJECT_SUBMISSION.md](PROJECT_SUBMISSION.md) and watch the [3m21s end-to-end demo](https://youtu.be/cKqjh9GAJug). The recorded Program #005 / Claim #002 flow demonstrates an initial UNVERIFIABLE review (no award) followed by an ELIGIBLE decision and a one-time CLAIMED +100 synthetic demo-credit award (wallet B balance 200). These are testnet-only credits without cash value, not real insurance. **V2.1 is a separate, undeployed candidate.** Historical review notes below refer to earlier programs and prior release snapshots.
+
 ## COVERDICT V2 — accepted reviewer demo (22 October 2026)
 
 **Production website deployed 23 October 2026:** [COVERDICT V2 live website](https://coverdict-testnet.vercel.app), Vercel READY for release commit `8bf9ccca8e3a95c1d1e680373dd15ce1b001ed3c` ([PR #14 merged](https://github.com/bearbaba/COVERDICT/pull/14)). Browser-level wallet acceptance has not been independently reproduced with this tool connection; live GenLayer V2 positive verdict and award state were accepted in Studio as documented below.
