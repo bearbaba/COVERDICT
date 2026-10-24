@@ -160,6 +160,15 @@ function App(){
   }catch(e){console.error('Studionet contract read failed',e);setDataError(true)}
   finally{setLoading(false)}
  },[account,programLimit,caseLimit]);
+ // When opening the new release for the first time, restore the most
+ // recent still-unfinished claim for this connected wallet automatically.
+ // Never select another wallet's case and never silently sign anything.
+ useEffect(()=>{
+  if(activeProgramId!==null||!account||!loaded)return;
+  const pending=cases.find(c=>c.claimant.toLowerCase()===account.toLowerCase()
+   &&(c.status==='SUBMITTED'||c.status==='APPROVED'));
+  if(pending)pinProgram(pending.program_id);
+ },[activeProgramId,account,loaded,cases]);
  useEffect(()=>{void refresh()},[refresh]);
  useEffect(()=>{const id=window.setInterval(()=>{if(ready)void refresh()},60000);return()=>clearInterval(id)},[refresh]);
  useEffect(()=>{
