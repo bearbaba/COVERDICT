@@ -58,7 +58,7 @@ def test_live_wallet_signing_and_result_panel():
 def test_create_program_keeps_user_on_create_page_and_docks_monitor():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
     css=(ROOT/"web/src/style.css").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='CLAIM WORKSPACE · R7'" in ui
+    assert "const UI_RELEASE='CLAIM DETAIL · R8'" in ui
     assert "className=\"create-workspace\"" in ui
     assert "className=\"create-side-rail\"" in ui
     assert "Wallet activity, in real time." in ui
@@ -72,7 +72,7 @@ def test_create_program_keeps_user_on_create_page_and_docks_monitor():
 
 def test_wallet_scoped_programs_and_explicit_shared_lookup():
     ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
-    assert "CLAIM WORKSPACE · R7" in ui
+    assert "CLAIM DETAIL · R8" in ui
     assert "p.issuer.toLowerCase()===account.toLowerCase()" in ui
     assert "My programs" in ui
     assert "Have a Program ID?" in ui
@@ -84,7 +84,7 @@ def test_wallet_scoped_programs_and_explicit_shared_lookup():
 
 def test_program_lookup_accepts_numeric_id_and_direct_links():
     ui = (ROOT / "web/src/main.tsx").read_text(encoding="utf-8")
-    assert "const UI_RELEASE='CLAIM WORKSPACE · R7'" in ui
+    assert "const UI_RELEASE='CLAIM DETAIL · R8'" in ui
     assert r"/^\d+$/.test(sharedProgramId.trim())" in ui
     assert r"/^\d+$/.test(fromLink)" in ui
     assert r"/^\\d+$/" not in ui
@@ -124,3 +124,13 @@ def test_current_program_persists_across_tabs_and_final_award_is_verified():
     assert "activeClaim?.status==='CLAIMED'&&activeClaim.claimed" in ui
     assert "FINAL ON-CHAIN RESULT" in ui
     assert "No need to enter the Program ID again." in ui
+
+def test_program_detail_uses_existing_case_instead_of_repeat_submission():
+    ui=(ROOT/"web/src/main.tsx").read_text(encoding="utf-8")
+    assert "const UI_RELEASE='CLAIM DETAIL · R8'" in ui
+    assert "selectedProgram.submitted<selectedProgram.max_claims&&!selectedClaim" in ui
+    assert "selectedProgram.submitted>=selectedProgram.max_claims" in ui
+    assert "Your existing claim" in ui
+    assert "Run independent consensus" in ui and "Claim demo award" in ui
+    assert "Claim capacity reached" in ui
+    assert "drawer-claim-progress" in ui
