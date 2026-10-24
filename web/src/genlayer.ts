@@ -95,7 +95,12 @@ export async function inspectFinalizedWrite(hash:string):Promise<'finalized'|'fa
   return result===true?'finalized':result===false?'failed':'unverified';
 }
 
-export async function write(fn:string,args:(string|number)[],account:string,onHash:(hash:string)=>void):Promise<string>{
+// One status source for UI progress and final verification: the Studio SDK's
+// getTransaction exposes actual consensus status and leader execution result.
+export async function write(
+  fn:string,args:(string|number)[],account:string,
+  onHash:(hash:string)=>void,onStatus?:(status:string)=>void,
+):Promise<string>{
   assertReady();
   const wallet=window.ethereum;
   if(!wallet||!/^0x[a-fA-F0-9]{40}$/.test(account))throw new Error('Connect your wallet.');
@@ -107,18 +112,39 @@ export async function write(fn:string,args:(string|number)[],account:string,onHa
   if(!Array.isArray(activeAfter)||activeAfter[0]?.toLowerCase()!==account.toLowerCase())
     throw new Error('Wallet account changed while connecting. Reconnect and verify the address.');
   const client=createClient({chain:studionet,account:account as `0x${string}`,provider:wallet});
-  // Stable 1.1.x uses direct writeContract + value; the v2 RC fee estimator does not exist here.
   const hash=await client.writeContract({address,functionName:fn,args,value:0n});
   onHash(hash);
-  const receipt=await readClient.waitForTransactionReceipt({
-    hash,status:TransactionStatus.FINALIZED,interval:3500,retries:85,
-  });
-  // Studionet is a Studio network: genlayer-js 1.1.8 exposes consensus_data
-  // rather than txExecutionResultName there. A missing field is NOT a failure.
-  let outcome=executionSucceeded(receipt);
-  if(outcome===null)outcome=executionSucceeded(await readClient.getTransaction({hash}));
-  if(outcome===false)throw new Error('Transaction finalized with a failed GenVM execution. Inspect the transaction in GenLayer Explorer.');
-  if(outcome===null)throw new Error('Transaction finalized, but execution could not be independently classified. Inspect GenLayer Explorer before retrying.');
-  return hash;
+  onStatus?.('PENDING');
+  // Progress is polled from the chain, not simulated. A missing execution result
+  // must remain unverified; never treat FINALIZED alone as success.
+  for(let attempt=0;attempt<100;attempt++){
+    try{
+      const tx=await readClient.getTransaction({hash});
+      const status=tx.statusName||(tx.status===7?TransactionStatus.FINALIZED:String(tx.status??'PENDING'));
+      onStatus?.(status);
+      if(status===TransactionStatus.FINALIZED||tx.status===7){
+        let outcome=executionSucceeded(tx);
+        if(outcome===null){
+          await new Promise<void>(r=>setTimeout(r,1800));
+          outcome=executionSucceeded(await readClient.getTransaction({hash}));
+        }
+        if(outcome===false)throw new Error('GenVM execution failed. Inspect the transaction in GenLayer Explorer. Do not sign again.');
+        if(outcome===null)throw new Error('FINALIZED but execution result is unverified. Inspect Explorer before retrying; do not sign again.');
+        return hash;
+      }
+      if([TransactionStatus.CANCELED,TransactionStatus.UNDETERMINED,
+          TransactionStatus.VALIDATORS_TIMEOUT,TransactionStatus.LEADER_TIMEOUT].includes(status as TransactionStatus))
+        throw new Error('Transaction ended without a verified success. Inspect GenLayer Explorer; do not resubmit automatically.');
+    }catch(e){
+      // Business/consensus errors must be shown; only transient RPC polling errors
+      // may retry while the live progress indicator remains visible.
+      const message=e instanceof Error?e.message:String(e);
+      if(message.includes('GenVM execution failed')||message.includes('FINALIZED but')||
+         message.includes('ended without a verified success'))throw e;
+      onStatus?.('RPC RECONNECTING');
+    }
+    await new Promise<void>(r=>setTimeout(r,3500));
+  }
+  throw new Error('Still waiting for finality. Inspect Explorer using the recorded hash; do not sign again.');
 }
 export const contractExplorer=(hash:string)=>`https://explorer-studio.genlayer.com/tx/${encodeURIComponent(hash)}`;

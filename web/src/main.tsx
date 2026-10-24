@@ -1,10 +1,15 @@
 import React,{useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import{createRoot}from'react-dom/client';
-import {Activity,ArrowRight,ArrowUpRight,Check,CheckCircle2,Clock3,ExternalLink,FileCheck2,Fingerprint,Layers,LockKeyhole,RefreshCw,Search,Shield,ShieldCheck,Wallet,X} from'lucide-react';
+import {Activity,ArrowRight,ArrowUpRight,Check,CheckCircle2,Clock3,ExternalLink,FileCheck2,Fingerprint,Layers,LoaderCircle,LockKeyhole,RefreshCw,Search,Shield,ShieldCheck,Wallet,X} from'lucide-react';
 import{address,connectWallet,contractExplorer,inspectFinalizedWrite,read,ready,write,type Program,type CaseRecord,type TxRecord}from'./genlayer';
 import'./style.css';
 
 type Tab='programs'|'claims'|'create'|'activity';
+type LiveTx = {
+ label:string;fn:string;account:string;hash:string;startedAt:number;
+ phase:'signing'|'submitted'|'finalized'|'failed'|'unverified';
+ status:string;detail:string;programId?:number;
+};
 // Wallet-local activity is intentionally separate from public chain data.
 const STORAGE_PREFIX='coverdict-testnet-wallet-activity-v2';
 const storageKey=(wallet:string)=>`${STORAGE_PREFIX}:${wallet.toLowerCase()}`;
@@ -53,6 +58,7 @@ function App(){
  const[reports,setReports]=useState({url:'',sha:''});
  const[create,setCreate]=useState({label:'',contract:'',start:datePlaceholder(86400_000),end:datePlaceholder(2*86400_000),deadline:datePlaceholder(3*86400_000),url:'',sha:'',attestor:'',award:'100',max:'10'});
  const[txs,setTxs]=useState<TxRecord[]>([]);
+ const[liveTx,setLiveTx]=useState<LiveTx|null>(null);
  const currentWallet=useRef('');
  const selectedProgram=programs.find(p=>p.id===selected)??null;
  const verifiedExample=cases.find(c=>c.id===1&&c.program_id===2&&c.status==='CLAIMED'&&c.claimed&&c.outcome==='ELIGIBLE'&&c.award_credits===100);
@@ -138,13 +144,62 @@ function App(){
  const doConnect=async()=>{setError('');try{const a=await connectWallet();setAccount(a);await refresh(a);}catch(e){setError(e instanceof Error?e.message:String(e))}};
  const hideWallet=()=>{setAccount('');setCredits(null);setNotice('Wallet hidden locally. Revoke site access in your wallet settings if desired.');};
  const act=async(label:string,fn:string,args:(string|number)[],complete?:()=>void)=>{
-  setError('');setNotice('');setBusy(label);let hash='';
+  if(busy)return;
+  setError('');setNotice('');setBusy(label);
+  let hash='';
   const actor=account;
+  const startedAt=Date.now();
+  setLiveTx({label,fn,account:actor,hash:'',startedAt,phase:'signing',status:'AWAITING WALLET SIGNATURE',detail:'Review this action in MetaMask. The transaction has not been broadcast.'});
   try{
-   await write(fn,args,actor,h=>{hash=h;recordActivity(actor,prev=>[{hash:h,label,at:Date.now(),status:'pending'},...prev])});
+   await write(fn,args,actor,
+    h=>{
+     hash=h;
+     recordActivity(actor,prev=>[{hash:h,label,at:Date.now(),status:'pending'},...prev]);
+     setLiveTx(t=>t?.account===actor?{...t,hash:h,phase:'submitted',status:'PENDING',detail:'Signed and submitted. Watching actual GenLayer consensus and finality.'}:t);
+    },
+    status=>setLiveTx(t=>t?.account===actor?{...t,phase:'submitted',status,detail:'Reading live status from GenLayer Studionet. No second signature is needed.'}:t),
+   );
+   // Show the confirmed result immediately; slower reads/UI refresh come after.
    recordActivity(actor,prev=>prev.map(t=>t.hash===hash?{...t,status:'finalized'}:t));
-   await refresh(actor);complete?.();setNotice(`${label} executed successfully and finalized.`);
-  }catch(e){const message=e instanceof Error?e.message:String(e);setError(message);if(hash)recordActivity(actor,prev=>prev.map(t=>t.hash===hash?{...t,status:message.includes('without successful execution')?'failed':'unverified'}:t))}
+   setLiveTx(t=>t?.account===actor?{...t,phase:'finalized',status:'FINALIZED · GENVM SUCCESS',
+    detail:'Execution verified on-chain. No need to submit or sign again.'}:t);
+   if(fn==='create_program'){
+    try{
+     const id=Number(await read<number>('get_program_count'));
+     const program=await read<Program>('get_program',[id]);
+     if(program.label===String(args[0])&&program.issuer.toLowerCase()===actor.toLowerCase()&&program.policy_sha256===args[6]){
+      setLiveTx(t=>t?.account===actor?{...t,programId:id,detail:`Program #${id} verified in on-chain storage. Ready for the incident window.`}:t);
+     }
+    }catch{/* The transaction success is independent from optional detail reads. */}
+   }
+   await refresh(actor);
+   complete?.();
+  }catch(e){
+   const message=e instanceof Error?e.message:String(e);
+   if(hash){
+    const failed=message.includes('GenVM execution failed');
+    recordActivity(actor,prev=>prev.map(t=>t.hash===hash?{...t,status:failed?'failed':'unverified'}:t));
+    setLiveTx(t=>t?.account===actor?{...t,phase:failed?'failed':'unverified',
+      status:failed?'GENVM EXECUTION FAILED':'VERIFICATION INCOMPLETE',
+      detail:message}:t);
+   }else{
+    setLiveTx(t=>t?.account===actor?{...t,phase:'unverified',status:'NOT BROADCAST',detail:message}:t);
+   }
+  }finally{setBusy('')}
+ };
+ const recheckLiveTx=async()=>{
+  if(!liveTx?.hash||busy)return;
+  const active=liveTx;
+  setBusy('Checking transaction');
+  setLiveTx(t=>t?.hash===active.hash?{...t,phase:'submitted',status:'VERIFYING ON-CHAIN',detail:'Read-only check. No wallet signature required.'}:t);
+  try{
+   const status=await inspectFinalizedWrite(active.hash);
+   setLiveTx(t=>t?.hash===active.hash?{...t,phase:status==='finalized'?'finalized':status==='failed'?'failed':'unverified',
+    status:status==='finalized'?'FINALIZED · GENVM SUCCESS':status==='failed'?'GENVM EXECUTION FAILED':'VERIFICATION INCOMPLETE',
+    detail:status==='finalized'?'On-chain execution confirmed.':status==='failed'?'GenVM execution was not successful.':'Check Explorer before submitting another transaction.'}:t);
+   if(status!=='unverified')recordActivity(active.account,prev=>prev.map(x=>x.hash===active.hash?{...x,status}:x));
+   if(status==='finalized')await refresh(active.account);
+  }catch(e){setLiveTx(t=>t?.hash===active.hash?{...t,phase:'unverified',status:'RPC UNAVAILABLE',detail:e instanceof Error?e.message:String(e)}:t)}
   finally{setBusy('')}
  };
  const shownCases=claimScope==='all'?cases:cases.filter(c=>account&&c.claimant.toLowerCase()===account.toLowerCase());
@@ -165,15 +220,43 @@ function App(){
   if(start<Math.floor(Date.now()/1000)+16*60||!(start<end&&end<deadline)||deadline>Date.now()/1000+30*86400){
    setError('Choose a future incident start at least 16 minutes from now, with start < end < deadline, all within 30 days.');return;
   }
-  void act('Create reimbursement program','create_program',[create.label.trim(),create.contract.trim(),start,end,deadline,create.url.trim(),create.sha.trim(),Number(create.award),Number(create.max),create.attestor.trim()],()=>setTab('programs'));
+  void act('Create reimbursement program','create_program',[create.label.trim(),create.contract.trim(),start,end,deadline,create.url.trim(),create.sha.trim(),Number(create.award),Number(create.max),create.attestor.trim()]);
  };
  const openProgram=(id:number)=>{setSelected(id);setReports({url:'',sha:''});setClaimTx('')};
- return <div className="shell">
+ return <div className={`shell ${liveTx?"has-tx-monitor":""}`}>
   <header className="topbar"><div className="container top-inner"><button className="logo" onClick={()=>{setSelected(null);setTab('programs')}}><span className="logo-symbol"><ShieldCheck size={21}/></span><strong>COVER<span>DICT</span></strong><small>V2 TESTNET</small></button><nav className="nav"><button className={tab==='programs'?'active':''} onClick={()=>{setSelected(null);setTab('programs')}}>Programs</button><button className={tab==='claims'?'active':''} onClick={()=>{setSelected(null);setClaimScope('all');setTab('claims')}}>Public Claims</button><button className={tab==='create'?'active':''} onClick={()=>{setSelected(null);setTab('create')}}>Create Program</button>{account&&<button className={tab==='activity'?'active':''} onClick={()=>{setSelected(null);setTab('activity')}}>My Activity</button>}</nav><div className="wallet-actions"><span className="net"><i/> Studionet</span><button className="btn border" title={account?'Hide wallet from this app (does not revoke permissions)':'Connect wallet'} onClick={()=>account?hideWallet():void doConnect()}><Wallet size={16}/>{account?addr(account)+' · Hide':'Connect wallet'}</button></div></div></header>
   <main className="container main">
    {!ready&&<section className="warning"><LockKeyhole size={20}/><div><strong>Contract not configured</strong><p>Set <code>VITE_COVERDICT_V2_CONTRACT_ADDRESS</code> to the reviewed COVERDICT V2 Studionet address at build time. We never display fabricated contract data.</p></div></section>}
    {error&&<section className="error compact-error" role="alert"><X size={16}/><span>{error}</span><button onClick={()=>setError('')}><X size={16}/></button></section>}
    {notice&&<section className="success" role="status"><Check size={18}/><span>{notice}</span><button onClick={()=>setNotice('')}><X size={16}/></button></section>}
+   {liveTx&&<aside className={`tx-monitor tx-monitor-${liveTx.phase}`} aria-label="Live on-chain transaction" role="status" aria-live="polite">
+    <div className="tx-monitor-heading"><span><span className="tx-monitor-dot"/> LIVE TRANSACTION</span>
+     {(!busy||liveTx.phase==='finalized')&&<button className="tx-monitor-close" title="Dismiss transaction details" aria-label="Dismiss transaction details" onClick={()=>setLiveTx(null)}><X size={16}/></button>}
+    </div>
+    <div className="tx-monitor-hero">
+     {liveTx.phase==='signing'||liveTx.phase==='submitted'
+       ?<LoaderCircle className="tx-monitor-spinner" size={29}/>
+       :liveTx.phase==='finalized'?<CheckCircle2 size={30} className="tx-monitor-check"/>
+       :<Clock3 size={30} className="tx-monitor-warn"/>}
+     <div><small>{liveTx.phase==='signing'?'SIGN IN WALLET':liveTx.phase==='submitted'?'CONSENSUS IN PROGRESS':liveTx.phase==='finalized'?'EXECUTION CONFIRMED':'NEEDS VERIFICATION'}</small><h3>{liveTx.label}</h3></div>
+    </div>
+    <div className="tx-monitor-result"><span>ON-CHAIN STATUS</span><strong>{liveTx.status}</strong><p>{liveTx.detail}</p></div>
+    <div className="tx-monitor-steps">
+     <div className={liveTx.hash?'done':'active'}><Check size={13}/> {liveTx.hash?'Signed & submitted':'Waiting for wallet signature'}</div>
+     <div className={liveTx.phase==='finalized'?'done':liveTx.phase==='submitted'?'active':''}><Check size={13}/> {liveTx.phase==='finalized'?'GenVM success verified':'Consensus & finality'}</div>
+    </div>
+    {liveTx.programId!==undefined&&<div className="tx-monitor-program">
+      <span>CREATED PROGRAM</span><strong>#{String(liveTx.programId).padStart(3,'0')}</strong>
+      <button onClick={()=>{setSelected(liveTx.programId!);setTab('programs')}}>View program <ArrowRight size={14}/></button>
+     </div>}
+    <div className="tx-monitor-meta"><span>WALLET</span><code>{addr(liveTx.account)}</code><span>CONTRACT</span><code>{addr(address)}</code></div>
+    {liveTx.hash&&<a className="tx-monitor-explorer" href={contractExplorer(liveTx.hash)} target="_blank" rel="noreferrer">
+     <span>{addr(liveTx.hash)} · Open GenLayer Explorer</span><ExternalLink size={15}/>
+    </a>}
+    {(liveTx.phase==='unverified'||liveTx.phase==='failed')&&liveTx.hash&&
+      <button type="button" className="tx-monitor-recheck" disabled={!!busy} onClick={()=>void recheckLiveTx()}>Recheck on-chain (no signature) <RefreshCw size={14}/></button>}
+    <small className="tx-monitor-foot">Studionet 61999 · Synthetic testnet only</small>
+   </aside>}
    {tab==='programs'&&<>
     <section className="hero"><div><div className="eyebrow"><span className="dot"/> COVERDICT V2 · GENLAYER FULL CONSENSUS</div><h1>Evidence in.<br/><em>Consensus out.</em></h1><p>{intro}</p><div className="actions"><button className="btn primary" onClick={()=>document.getElementById('program-list')?.scrollIntoView({behavior:'smooth'})}>Explore programs <ArrowRight size={16}/></button><button className="btn border" onClick={()=>{setClaimScope('mine');setTab('claims')}}>My claims</button><a className="btn border" href="https://github.com/bearbaba/COVERDICT" target="_blank" rel="noreferrer">Read the source <ExternalLink size={16}/></a></div></div><div className="hero-art"><div className="halo"><Shield size={66} strokeWidth={1.25}/></div><div className="float-tag"><Fingerprint size={15}/> EVIDENCE-BOUND</div><div className="float-tag bottom"><FileCheck2 size={15}/> PUBLIC CLAIM STATES</div></div></section>
     {verifiedExample&&verifiedExampleProgram&&<section className="verified-demo" aria-label="Completed on-chain acceptance case"><div className="verified-demo-heading"><span className="verified-kicker"><CheckCircle2 size={16}/> ON-CHAIN ACCEPTANCE · OCTOBER 22, 2026</span><span className="pill claimed">COMPLETED</span></div><div className="verified-demo-grid"><div><span>PROGRAM</span><strong>#002</strong></div><div><span>CONSENSUS</span><strong>ELIGIBLE</strong></div><div><span>CLAIM</span><strong>CLAIMED</strong></div><div><span>DEMO AWARD</span><strong>100</strong></div></div><p>Live Studionet state confirms a pinned synthetic report, authorized attestor signature and one-time demo-credit claim. No money, insurance or actual economic loss is involved.</p><div className="verified-links"><button className="btn border" onClick={()=>{setSelected(2);setTab('programs')}}>Inspect Program #2 <ArrowUpRight size={14}/></button><button className="btn border" onClick={()=>{setClaimScope('all');setTab('claims')}}>View Claim #1 <ArrowUpRight size={14}/></button><a className="btn border" href="https://explorer-studio.genlayer.com/tx/0xa38a935a081667c9d88d5692a84cdfc426eda164df0e7788e2c567bcfb275ad7" target="_blank" rel="noreferrer">AI Consensus proof <ExternalLink size={14}/></a></div></section>}

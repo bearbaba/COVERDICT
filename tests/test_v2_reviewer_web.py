@@ -43,3 +43,14 @@ def test_studionet_success_is_not_misclassified_from_missing_sdk_field():
     assert "outcome===null" in client
     assert "inspectFinalizedWrite" in ui
     assert "Transaction finalized without successful execution." not in client
+
+def test_live_wallet_signing_and_result_panel():
+    ui = (ROOT / "web/src/main.tsx").read_text(encoding="utf-8")
+    css = (ROOT / "web/src/style.css").read_text(encoding="utf-8")
+    sdk = (ROOT / "web/src/genlayer.ts").read_text(encoding="utf-8")
+    assert "tx-monitor-spinner" in ui and "tx-monitor-program" in ui
+    assert "LIVE TRANSACTION" in ui and "FINALIZED · GENVM SUCCESS" in ui
+    assert "onStatus?.(status)" in sdk and "executionSucceeded(tx)" in sdk
+    assert "FINALIZED but execution result is unverified" in sdk
+    assert "Recheck on-chain (no signature)" in ui
+    assert "position:fixed" in css and "tx-spin" in css
