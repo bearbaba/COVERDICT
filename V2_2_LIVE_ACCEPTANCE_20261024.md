@@ -17,6 +17,13 @@
 **Incident timing:** 24 Oct 21:00–21:10 ICT (UNIX `1792850400`–`1792851000`). Submission deadline 23:30 ICT (`1792859400`).  
 **Test verdict:** setup PASSED. The capacity-grief and receipt-preemption attack tests remain **NOT YET EXECUTED**.
 
+## Candidate Sepolia receipt supplied by claimant (21:03 ICT, 24 Oct)
+
+- **Candidate transaction:** [`0xdacd7b2f146f69dfe2c8f8296e63c7a0176ed5095efa66cd751bd6f4401cb809`](https://sepolia.etherscan.io/tx/0xdacd7b2f146f69dfe2c8f8296e63c7a0176ed5095efa66cd751bd6f4401cb809).
+- **User-supplied Etherscan excerpt:** `Success`, block `11984250`, native Sepolia test-ETH transfer from wallet B `0xD6b8A3A5eB329410D9504784812b8569afA8C2aF` to wallet A `0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb`.
+- **Verification pending:** the pasted excerpt gives only a relative "36 secs ago" timestamp and inconsistent amount formatting; exact block timestamp and transfer value must be verified independently through Blockscout. Both excerpts show a positive transfer, but this record is **not an independent source confirmation**.
+- **Report stage:** the incident ends **21:10 ICT**; only after this point may the issuer publish the immutable post-window report, attach it, and have the distinct attestor sign the exact digest. No attack-case result is asserted yet.
+
 ## Frozen one-slot program configuration
 
 **Clock:** Vietnam/ICT UTC+07:00. All inputs below are UNIX seconds in UTC. **Create the program BEFORE 21:00 ICT, at least 15 minutes prior to its start**; otherwise do not force out-of-window transactions. If the window is missed, prepare a fresh dated pinned policy and schedule a new program.
