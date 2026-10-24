@@ -1,0 +1,32 @@
+COVERDICT V2.2 - PROGRAM #001 POST-WINDOW SYNTHETIC INCIDENT REPORT
+Report version: 1
+Date issued: 2026-10-24, after 21:10 ICT
+Nature: Testnet-only synthetic drill. No real incident, loss, coverage, liability or financial award.
+
+Contract: 0x65F96FB47380996Aa672b1eC1de8DF95451eC150
+Program: 1
+Label: COVERDICT V2.2 Anti-Grief 2100
+Declared synthetic incident class: SIMULATED_DEPOSIT_MISROUTE_DRILL
+Exact designated Sepolia recipient: 0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb
+Issuer: 0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb
+Designated report attestor: 0x60Bfdf6315294c7856Acdc0B80D7Bd40217DEBff
+Locked incident window: 2026-10-24T14:00:00Z through 2026-10-24T14:10:00Z inclusive (21:00-21:10 ICT).
+Claim submission deadline: 2026-10-24T16:30:00Z (23:30 ICT).
+Verified award capacity: 1.
+Award: 100 nontransferable, nonredeemable demo credits of zero monetary value.
+
+This report affirms that the issuer-defined synthetic incident declaration matches the precommitted policy's SIMULATED_DEPOSIT_MISROUTE_DRILL class, the exact recipient and the locked time interval. The issuer makes no claim of real-world exploit, economic loss or entitlement to insurance compensation.
+
+Precommitted immutable policy:
+https://raw.githubusercontent.com/bearbaba/COVERDICT/c9af56599af03cc0939810e124f8fae00a765c4b/evidence/v22_antigrief_20261024_2100_policy.txt
+Policy SHA-256: 6d28fec817147c71021eef61fa684ea9621fc8704bd05a9ed25c70151b010762
+
+Candidate Sepolia testnet transaction:
+0xdacd7b2f146f69dfe2c8f8296e63c7a0176ed5095efa66cd751bd6f4401cb809
+Reported sender and intended claimant: 0xD6b8A3A5eB329410D9504784812b8569afA8C2aF
+Reported recipient: 0x4C7cb73aC8F8999af21cfc9fF4cF2333a9508Dcb
+
+The transaction is an evidence reference, not an eligibility verdict. GenLayer validators must independently retrieve the Sepolia receipt and verify its successful status, exact sender and recipient, positive native test-ETH value and block timestamp within the locked interval. The report attestor confirms this report's SHA-256, not the factual existence of a loss.
+
+This drill checks that provisional submissions cannot permanently consume a verified award slot or another wallet's transaction reference. Only the rightful claimant with valid receipt evidence and an ELIGIBLE consensus outcome may obtain the single demo award. Inconclusive and ineligible claims receive no award; duplicate award redemption remains prohibited.
+END OF REPORT
