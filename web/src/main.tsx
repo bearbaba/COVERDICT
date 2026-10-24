@@ -303,7 +303,7 @@ function App(){
     {(liveTx.phase==='unverified'||liveTx.phase==='failed')&&liveTx.hash&&
       <button type="button" className="tx-monitor-recheck" disabled={!!busy} onClick={()=>void recheckLiveTx()}>Recheck on-chain (no signature) <RefreshCw size={14}/></button>}
     <small className="tx-monitor-foot">Studionet 61999 · Synthetic testnet only</small>
-   </aside>}:
+   </aside>:
   <section className="tx-standby" aria-label="Transaction monitor standby">
    <div className="tx-standby-kicker"><span className="tx-monitor-dot"/> LIVE TRANSACTION MONITOR</div>
    <div className="tx-standby-icon"><ShieldCheck size={29}/></div>
