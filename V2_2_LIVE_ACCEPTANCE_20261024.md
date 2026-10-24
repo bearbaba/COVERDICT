@@ -27,6 +27,17 @@ The user supplied both FINALIZED / GenVM SUCCESS / Consensus Accepted calls on *
 - **Readback after attestation:** still requested; expected `status=OPEN_FOR_CLAIMS`, `report_attested=true`. This is not yet independently recorded.
 - **Attack reproduction:** none documented so far. Do **not** claim the two admission vulnerabilities are fixed on-chain solely on the basis of attestation.
 
+## Live Test #2: same Sepolia hash, attacker-first, both submissions accepted
+
+**Selected V2.2:** `0x65F96FB47380996Aa672b1eC1de8DF95451eC150`.
+**Candidate Sepolia receipt:** `0xdacd7b2f146f69dfe2c8f8296e63c7a0176ed5095efa66cd751bd6f4401cb809`.
+
+- At 21:35:56 ICT, wallet D `0xfb82De94A24556838aCcac6D0987A76f6C9417DF` signed `submit_claim(1, B_tx_hash)`. [Transaction `0x18dbc5e044801d62f0aad7bfce1547617a8dcbbf095a34bce217b569627db52c`](https://explorer-studio.genlayer.com/tx/0x18dbc5e044801d62f0aad7bfce1547617a8dcbbf095a34bce217b569627db52c): **FINALIZED, SUCCESS, Accepted**, returned **case 2**.
+- At 21:37:20 ICT, rightful claimant wallet B `0xD6b8A3A5eB329410D9504784812b8569afA8C2aF` signed `submit_claim(1, identical B_tx_hash)`. [Transaction `0xb5fa49abe77ec104909036c697a61e7a4e3354c7b920e3497c903cc58fc8a805`](https://explorer-studio.genlayer.com/tx/0xb5fa49abe77ec104909036c697a61e7a4e3354c7b920e3497c903cc58fc8a805): **FINALIZED, SUCCESS, Accepted**, returned **case 3**.
+- **Conclusion limited to admission:** A provisional attacker-first claim did NOT prevent the legitimate receipt owner from submitting the same Sepolia hash. This directly addresses the V2 preemption vulnerability **at the `submit_claim` gate**.
+- **Outstanding:** `get_program(1)` readback for submission counters; independent Blockscout timestamp/value verification; `resolve_claim(2)` and `resolve_claim(3)`, approval, `claim_demo_award(3)`, duplicate award denial, cross-program replay.
+- Each pending claim expires 30 minutes after its own submission; aim to finish Case 2 before ~22:05:56 ICT, Case 3 before ~22:07:20 ICT.
+
 ## Live forged-receipt review: no award issued (24 October 2026)
 
 **Fake-hash attacker case ID 1:** `resolve_claim(1)` submitted by test wallet D `0xfb82De94A24556838aCcac6D0987A76f6C9417DF`, [Explorer TX `0x5ce39c1f51008435c1c9e3ddf9bbd5d6c1acb80afb202aedcd2b73277c7989cd`](https://explorer-studio.genlayer.com/tx/0x5ce39c1f51008435c1c9e3ddf9bbd5d6c1acb80afb202aedcd2b73277c7989cd), 24 Oct 21:28:31 ICT. **FINALIZED / SUCCESS / Accepted**; returned `SUBMITTED`.
