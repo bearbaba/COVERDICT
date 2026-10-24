@@ -152,8 +152,10 @@ def test_duplicate_unverified_hash_does_not_block_rightful_owner_even_while_pend
 def test_cross_program_replay_only_locked_after_approval(v22):
     c,gl,nondet,module,clock=v22
     gl.message.sender_address.as_hex=old.ISSUER
+    clock.return_value=old.START-1000
     assert c.create_program("A second program for replay defence",old.DEPOSIT,
         old.START,old.END,old.DEADLINE,old.POLICY_URL,old.POLICY_SHA,100,1,old.ATTESTOR)==2
+    clock.return_value=old.END+1
     c.attach_report(2,old.REPORT_URL,old.REPORT_SHA)
     gl.message.sender_address.as_hex=old.ATTESTOR
     c.attest_report(2,old.REPORT_SHA)
